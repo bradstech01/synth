@@ -3,11 +3,10 @@ import * as Tone from 'tone';
 import React, { Component } from 'react';
 import store from './store';
 import { Provider } from 'react-redux';
-import {Sound} from 'pts';
 import {Visualizer} from '../visualizer';
 import {MusicGui} from '../musicGui';
 
-class App extends React.Component {
+class App extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -34,10 +33,6 @@ class App extends React.Component {
 
       this.synth = synth;
       this.synth.toDestination();
-
-      const sound = Sound.from( this.synth, this.synth.context );
-      this.sound = sound;
-      this.sound.analyze(4096, -300, 0 ,0);
 
       this.setState({
         hasToneStarted: true,
@@ -162,7 +157,6 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        {this.renderVisualizer()}
         {this.renderMusicGui()}
       </div>
     );

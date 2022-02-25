@@ -1,9 +1,8 @@
-import {Pt, Group, Curve, Line, Create, Sound, Triangle, Const, Geom, Num, Tempo} from 'pts';
 import React, { Component } from 'react';
 import {PianoKey} from '../pianoKey';
 import * as Tone from 'tone';
 
-export class Keyboard extends React.Component {
+export class Keyboard extends Component {
   constructor(props) {
     super(props);
     this.state = {

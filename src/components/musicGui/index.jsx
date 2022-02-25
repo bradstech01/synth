@@ -1,4 +1,3 @@
-import {Pt, Group, Curve, Line, Create, Sound, Triangle, Const, Geom, Num, Tempo} from 'pts';
 import React, { Component } from 'react';
 import {Keyboard} from '../keyboard';
 import * as Tone from 'tone';

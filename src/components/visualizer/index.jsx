@@ -1,5 +1,4 @@
-import {Pt, Curve} from 'pts';
-import {PtsCanvas} from "react-pts-canvas";
+/*import {PtsCanvas} from "react-pts-canvas";
 import * as Tone from 'tone';
 
 export class Visualizer extends PtsCanvas {
@@ -36,7 +35,6 @@ export class Visualizer extends PtsCanvas {
   }
 
   animate(time, ftime) {
-    let numberSamplesNeeded;
     let tdWave;
 
     //For debugging purposes only
@@ -107,3 +105,4 @@ export class Visualizer extends PtsCanvas {
 
   }
 }
+*/

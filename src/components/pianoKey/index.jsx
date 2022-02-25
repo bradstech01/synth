@@ -3,7 +3,7 @@ import './style.css';
 import * as Tone from 'tone';
 import React, { Component } from 'react';
 
-export class PianoKey extends React.Component {
+export class PianoKey extends Component {
   constructor(props) {
     super(props);
     this.state = {
