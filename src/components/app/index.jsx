@@ -1,10 +1,9 @@
 import './style.css';
 import * as Tone from 'tone';
 import React, { Component } from 'react';
-import store from './store';
-import { Provider } from 'react-redux';
 import {Visualizer} from '../visualizer';
 import {MusicGui} from '../musicGui';
+import {SettingsGui} from '../settingsGui';
 
 class App extends Component {
   constructor(props) {
@@ -23,13 +22,11 @@ class App extends Component {
       await Tone.start();
       console.log('Tone engine started!');
 
-      const limiter = new Tone.Limiter(-5).toDestination();
       const synth = new Tone.PolySynth({
         oscillator: {
           type: 'sawtooth'
         },
       });
-      synth.connect(limiter);
 
       this.synth = synth;
       this.synth.toDestination();
@@ -48,10 +45,6 @@ class App extends Component {
   componentDidMount() {
     document.addEventListener('keydown', this.startTone);
     document.addEventListener('onclick', this.startTone);
-  }
-
-  updateFrequency = (frequencyData) => {
-    this.setState({frequency: this.synth.toFrequency(frequencyData)});
   }
 
   setUpMIDI() {
@@ -78,16 +71,9 @@ class App extends Component {
 
   triggerNote = (note) => {
     if (!this.isPlaying) {
-      console.log('trigger time: ');
-      console.log(Tone.now());
-
       this.synth.triggerAttack(note, '+.01');
 
-      console.log(this.synth);
-      console.log(this.synth.state);
-      this.updateFrequency(note);
       this.setState({
-        octave: this.state.octave,
         classList: this.state.classList + ' keyPressed',
         note: this.state.note,
       });
@@ -97,12 +83,8 @@ class App extends Component {
   }
 
   releaseNote = (note) => {
-    console.log('Hmm....');
-    console.log(this.isPlaying);
     if (this.isPlaying) {
-      console.log('yahoo!');
       this.synth.triggerRelease(note, '+.02');
-      this.updateFrequency(0);
       this.setState({
         octave: this.state.octave,
         classList: this.state.classList.replace(' keyPressed',''),
@@ -113,9 +95,26 @@ class App extends Component {
     }
   }
 
+  renderSettingsGui() {
+    if (this.state.hasToneStarted) {
+      return (
+        <div className='settingsGui'>
+          <SettingsGui />
+        </div>
+      );
+    }
+    else {
+      return (
+        <div className='splash'>
+          <p>Press any button...</p>
+        </div>
+      );
+    }
+  }
+
   //Only renders music GUI once the synth engine has actually loaded
   renderMusicGui() {
-    if (this.sound && this.state.hasToneStarted) {
+    if (this.state.hasToneStarted) {
       return (
         <div className='musicGui'>
           <MusicGui
@@ -127,7 +126,11 @@ class App extends Component {
       );
     }
     else {
-      return null;
+      return (
+        <div className='splash'>
+          <p>Press any button...</p>
+        </div>
+      );
     }
   }
 
@@ -157,6 +160,7 @@ class App extends Component {
   render() {
     return (
       <div>
+        {this.renderSettingsGui()}
         {this.renderMusicGui()}
       </div>
     );
@@ -165,9 +169,7 @@ class App extends Component {
 
 function app() {
   return (
-    <Provider store={store}>
       <App />
-    </Provider>
   );
 }
 

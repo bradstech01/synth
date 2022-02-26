@@ -33,7 +33,6 @@ div {
 
 .visualizer,.musicGui,.settingsGui {
   height: 33vh;
-  box-shadow:inset 0px 0px 0px 3px #f00;
   display: flex;
 }
 
@@ -76,7 +75,6 @@ div {
   top: 0;
   height: 60%;
   margin-left: 30px;
-
   display: flex;
   flex-direction: row;
 }
