@@ -12,10 +12,10 @@ export class MusicGui extends Component {
     return (
       <Keyboard
         currentlyPlaying={this.props.currentlyPlaying}
-        synth={this.props.synth}
+        onMouseDown={this.props.onMouseDown}
+        onMouseUp={this.props.onMouseUp}
         triggerNote={this.props.triggerNote}
         triggerRelease={this.props.triggerRelease}
-        keyMap={this.props.keyMap}
       />
     );
   }

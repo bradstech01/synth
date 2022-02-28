@@ -29,19 +29,24 @@ class App extends Component {
       i: 'C5'
     };
 
-    console.log('Set up currently playing; ');
-    console.log(this.state.currentlyPlaying);
     this.setUpMIDI();
 
     this.startTone = this.startTone.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleKeyRelease = this.handleKeyRelease.bind(this);
+    this.addToCurrentlyPlaying = this.addToCurrentlyPlaying.bind(this);
+    this.removeFromCurrentlyPlaying = this.removeFromCurrentlyPlaying.bind(this);
+  }
+
+  componentDidMount() {
+    //key listeners to start things; audio API doesn't work until user has pressed at least one button
+    document.addEventListener('keydown', this.startTone);
+    document.addEventListener('mousedown', this.startTone);
   }
 
   async startTone(e) {
     if (!this.state.hasToneStarted){
       await Tone.start();
-      console.log('Tone engine started!');
 
       const synth = new Tone.PolySynth({
         oscillator: {
@@ -52,8 +57,6 @@ class App extends Component {
       this.synth = synth;
       this.synth.toDestination();
 
-
-
       this.setState({
         hasToneStarted: true,
       });
@@ -61,57 +64,54 @@ class App extends Component {
     else {
       //remove key listeners to start Tone, add key listeners to handle notes
       document.removeEventListener('keydown', this.startTone);
-      document.removeEventListener('onclick', this.startTone);
+      document.removeEventListener('mousedown', this.startTone);
       document.addEventListener('keydown', this.handleKeyPress);
       document.addEventListener('keyup', this.handleKeyRelease);
     }
   }
 
-  componentDidMount() {
-    //key listeners to start things; audio API doesn't work until user has pressed at least one button
-    document.addEventListener('keydown', this.startTone);
-    document.addEventListener('onclick', this.startTone);
-  }
-
+  //Event handler functions
   //handles the key press within app; does not get passed around
   handleKeyPress(e) {
     if(this.keyMap[e.key]) {
-      if (!this.state.currentlyPlaying.includes(this.keyMap[e.key])) {
-        console.log('pressed key');
-        console.log(this.keyMap[e.key]);
-        let newPlaying = this.state.currentlyPlaying;
-        newPlaying.push(this.keyMap[e.key]);
-        this.setState({
-          currentlyPlaying: newPlaying
-        })
-        console.log(this.state.currentlyPlaying);
-      }
+      this.addToCurrentlyPlaying(this.keyMap[e.key]);
     }
   }
 
   //handles the key release within app; does not get passed around
   handleKeyRelease(e) {
     if(this.keyMap[e.key]) {
-      if (this.state.currentlyPlaying.includes(this.keyMap[e.key])) {
-        let newPlaying = this.state.currentlyPlaying.filter((value) => {
-          return value !== this.keyMap[e.key];
-        });
-        this.setState({
-          currentlyPlaying: newPlaying
-        })
-      }
+      this.removeFromCurrentlyPlaying(this.keyMap[e.key]);
     }
   }
 
+  addToCurrentlyPlaying(note) {
+    if (!this.state.currentlyPlaying.includes(note)) {
+      let newPlaying = this.state.currentlyPlaying;
+      newPlaying.push(note);
+      this.setState({
+        currentlyPlaying: newPlaying
+      })
+    }
+  }
+
+  removeFromCurrentlyPlaying(note) {
+    if (this.state.currentlyPlaying.includes(note)) {
+      let newPlaying = this.state.currentlyPlaying.filter((value) => {
+        return value !== note;
+      });
+      this.setState({
+        currentlyPlaying: newPlaying
+      })
+    }
+  }
+  
   //callback passed to piano keys to trigger attack. arrow function to maintain "this"
   triggerNote = (note) => {
-    console.log('Note triggered!');
-    console.log(note);
     this.synth.triggerAttack(note,Tone.now());
   }
   //callback passed to piano keys to trigger release. arrow function to maintain "this"
   triggerRelease = (note) => {
-    console.log('Note released!');
     this.synth.triggerRelease(note,Tone.now());
   }
 
@@ -163,7 +163,8 @@ class App extends Component {
             currentlyPlaying={this.state.currentlyPlaying}
             triggerNote={this.triggerNote}
             triggerRelease={this.triggerRelease}
-            synth={this.synth}
+            onMouseDown={this.addToCurrentlyPlaying}
+            onMouseUp={this.removeFromCurrentlyPlaying}
             keyMap={this.keyMap}
             background='#12f'
           />
@@ -180,6 +181,7 @@ class App extends Component {
   }
 
   //Only renders visualizer once the synth engine has actually loaded
+  //*not yet implemented*
   renderVisualizer() {
     if (this.sound && this.state.hasToneStarted) {
       return (
