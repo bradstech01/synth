@@ -14,7 +14,7 @@ export class SettingsGui extends Component {
   render() {
     return (
       <div>
-        ooga booga
+        Settings will go here (cutoff, ADSR, etc)
       </div>
     );
   }
