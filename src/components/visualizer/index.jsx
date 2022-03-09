@@ -1,108 +1,90 @@
-/*import {PtsCanvas} from "react-pts-canvas";
-import * as Tone from 'tone';
+/*import * as Tone from 'tone';
+import React, { Component } from 'react';
 
-export class Visualizer extends PtsCanvas {
+
+export class Visualizer extends Component {
   constructor(props) {
     super(props);
     this.state = {};
-
-    this.pointsPerSample = 5;
-
-    //Based on the bin size and sample rate, this tells us how much time in seconds our bin holds.
-    this.binLength = this.props.sound.binSize / this.props.sound.sampleRate;
   }
 
-  start(bound, space) {
-    document.addEventListener('keydown', this.handleKeyPress);
+  return (
+    <div>
+      <StreamVis synth={this.props.synth} context={this.props.context}/>
+    </div>
+  );
+}
+
+function visualize(canvas, stream) {
+  const audioCtx = this.props.context;
+  const canvasCtx = canvas.getContext("2d");
+
+  const source = this.props.synth;
+
+  const analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 2048;
+  const bufferLength = analyser.frequencyBinCount;
+  const dataArray = new Uint8Array(bufferLength);
+
+  source.connect(analyser);
+
+  function draw() {
+    if (!canvasCtx) return;
+    const WIDTH = canvas.width;
+    const HEIGHT = canvas.height;
+
+    analyser.getByteTimeDomainData(dataArray);
+
+    canvasCtx.fillStyle = "rgb(180, 180, 180)";
+    canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+
+    canvasCtx.lineWidth = 2;
+    canvasCtx.strokeStyle = "rgb(0, 0, 0)";
+
+    canvasCtx.beginPath();
+
+    const sliceWidth = (WIDTH * 1.0) / bufferLength;
+    let x = 0;
+
+    for (let i = 0; i < bufferLength; i++) {
+      const v = (dataArray[i] ?? 0) / 128.0;
+      const y = (v * HEIGHT) / 2;
+
+      if (i === 0) {
+        canvasCtx.moveTo(x, y);
+      } else {
+        canvasCtx.lineTo(x, y);
+      }
+
+      x += sliceWidth;
+    }
+
+    canvasCtx.lineTo(canvas.width, canvas.height / 2);
+    canvasCtx.stroke();
   }
 
-  handleKeyPress = (e) => {
-    if (e.keyCode === 190) {
-      if (!this.props.debug) {
-        console.log('Verbose debugging turned on');
-        this.props.debug = true;
-      }
-      else if (this.props.debug) {
-        console.log('Verbose debugging turned off');
-        this.props.debug = false;
-      }
+  return draw;
+}
+
+function StreamVis(props) {
+  const canvasRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (!canvasRef.current) return () => {};
+    const draw = visualize(canvasRef.current, stream);
+    let lastReq;
+    function reqDraw() {
+      lastReq = requestAnimationFrame(() => {
+        draw();
+        reqDraw();
+        // TODO: this happens too frequently...
+      });
     }
-    else if (e.keyCode === 188){
-      console.log('Wavelength: '+this.waveLength);
-      console.log('bin length: '+this.binLength);
-      console.log('number samples needed: '+this.numberSamplesNeeded);
-    }
-  }
-
-  animate(time, ftime) {
-    let tdWave;
-
-    //For debugging purposes only
-    if (this.time === undefined) {
-      this.time = time;
-    }
-
-    let td = this.props.sound.timeDomainTo( this.space.size ); //maps the "time domain" to the space
-
-    if (this.props.frequency > 0) {
-      this.waveLength = 1/this.props.frequency;
-      this.numberSamplesNeeded = Math.floor(this.props.sound.binSize / (this.binLength / this.waveLength)) + 1;
-    }
-    else {
-      this.numberSamplesNeeded = 0;
-    }
-
-    let positiveStartIdx = 0;
-
-    tdWave = td.slice(0, 0 + this.numberSamplesNeeded);
-
-    let max;
-
-    for (let i = 0; i < tdWave.length; i++) {
-      tdWave[i].x = i * this.space.size.x / tdWave.length;
-      if ((max === undefined) || (tdWave[i].y > max)) {
-        max = tdWave[i].y;
-      }
-    }
-
-    let mult = Math.pow(max,-1);
-
-    for (let i = 0; i < tdWave.length; i++) {
-      tdWave[i].y = ((tdWave[i].y * mult * this.space.size.y));
-    }
-
-    //Generate a curve; will end up being a Pts Group of order (this.pointsPerSample * tdWave.length)
-
-    if (false){//((tdWave.length === undefined) || (tdWave.length === 0 || tdWave.length === 1 || tdWave.length === 2)) {
-      this.form.strokeOnly("#f06", 5 ).line(new Pt(this.space.center.x - this.space.width/2, this.space.center.y),new Pt(this.space.center.x + this.space.width/2, this.space.center.y));
-      if (this.props.debug && (time - (this.time) > 3000)) {
-        console.log('yeehee!!');
-      }
-    }
-    else if (tdWave.length !== undefined && tdWave.length > 0) {
-      this.form.strokeOnly("#f06", 5 ).line( tdWave );
-      if (this.props.debug && (time - (this.time) > 3000)) {
-        console.log('yoohoo!!');
-      }
-    }
-
-
-    if (this.props.debug && (time - (this.time) > 3000)) {
-      console.log('Still kickin');
-      console.log(td);
-      console.log(tdWave);
-      console.log('Samples needed: ' + this.numberSamplesNeeded);
-      console.log('Start index: ' + positiveStartIdx);
-      console.log('End index: ' + (positiveStartIdx + this.NumberSamplesNeeded));
-      console.log('Center info: ');
-      console.log(this.space.center);
-      console.log(this.space.center.y);
-      console.log('Sample rate??: ');
-      console.log(this.props.sound.sampleRate);
-      console.log(new Tone.Gain().toFrequency());
-      this.time = time;
-    }
-
-  }
+    reqDraw();
+    return () => {
+      cancelAnimationFrame(lastReq);
+    };
+  }, [stream]);
+  return <canvas ref={canvasRef} />;
 }
 */

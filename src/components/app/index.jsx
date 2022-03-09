@@ -8,6 +8,7 @@ import {SettingsGui} from '../settingsGui';
 class App extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       hasToneStarted: false,
       currentlyPlaying: []
@@ -31,40 +32,52 @@ class App extends Component {
 
     this.setUpMIDI();
 
-    this.startTone = this.startTone.bind(this);
+    const filter = new Tone.Filter(1500, 'lowpass', -48).toDestination();
+    const synth = new Tone.PolySynth({
+      oscillator: {
+        type: 'sawtooth'
+      },
+    }).connect(filter).toDestination();
+
+    synth.set({
+      attackCurve: 'exponential',
+      decayCurve: 'exponential',
+      releaseCurve: 'exponential',
+      envelope: {
+        attack: 0,
+        decay: 1,
+        sustain: 1,
+        release: 1
+      }
+    });
+
+    synth.set({ detune: -1200 });
+
+
+    this.synth = synth;
+    this.filter = filter;
+
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleKeyRelease = this.handleKeyRelease.bind(this);
     this.addToCurrentlyPlaying = this.addToCurrentlyPlaying.bind(this);
     this.removeFromCurrentlyPlaying = this.removeFromCurrentlyPlaying.bind(this);
+    this.startTone = this.startTone.bind(this);
   }
 
   componentDidMount() {
-    //key listeners to start things; audio API doesn't work until user has pressed at least one button
-    document.addEventListener('keydown', this.startTone);
-    document.addEventListener('mousedown', this.startTone);
+    document.addEventListener('keydown',this.startTone);
+    document.addEventListener('mousedown',this.startTone);
   }
 
   async startTone(e) {
     if (!this.state.hasToneStarted){
       await Tone.start();
-
-      const synth = new Tone.PolySynth({
-        oscillator: {
-          type: 'sawtooth'
-        },
-      });
-
-      this.synth = synth;
-      this.synth.toDestination();
-
       this.setState({
         hasToneStarted: true,
       });
-    }
-    else {
-      //remove key listeners to start Tone, add key listeners to handle notes
-      document.removeEventListener('keydown', this.startTone);
-      document.removeEventListener('mousedown', this.startTone);
+      this.context = Tone.context;
+      document.removeEventListener('keydown',this.startTone);
+      document.removeEventListener('mousedown',this.startTone);
       document.addEventListener('keydown', this.handleKeyPress);
       document.addEventListener('keyup', this.handleKeyRelease);
     }
@@ -108,11 +121,12 @@ class App extends Component {
   
   //callback passed to piano keys to trigger attack. arrow function to maintain "this"
   triggerNote = (note) => {
-    this.synth.triggerAttack(note,Tone.now());
+      this.synth.triggerAttack(note,'+.003');
   }
+
   //callback passed to piano keys to trigger release. arrow function to maintain "this"
   triggerRelease = (note) => {
-    this.synth.triggerRelease(note,Tone.now());
+     this.synth.triggerRelease(note,'+.003');
   }
 
   setUpMIDI() {
@@ -137,20 +151,17 @@ class App extends Component {
     }
   }
 
+  //rendering methods
+
   renderSettingsGui() {
     if (this.state.hasToneStarted) {
       return (
         <div className='settingsGui'>
-          <SettingsGui />
+          <SettingsGui 
+          synth={this.synth}
+          filter={this.filter}/>
         </div>
-      );
-    }
-    else {
-      return (
-        <div className='splash'>
-          <p>Press any button...</p>
-        </div>
-      );
+      ); 
     }
   }
 
@@ -166,7 +177,7 @@ class App extends Component {
             onMouseDown={this.addToCurrentlyPlaying}
             onMouseUp={this.removeFromCurrentlyPlaying}
             keyMap={this.keyMap}
-            background='#12f'
+            //background='#12f'
           />
         </div>
       );
@@ -174,31 +185,23 @@ class App extends Component {
     else {
       return (
         <div className='splash'>
-          <p>Press any button...</p>
-        </div>
-      );
+          <h1>a synth</h1>
+          <h2>press any button to begin...</h2>
+        </div>      
+      )
     }
   }
 
   //Only renders visualizer once the synth engine has actually loaded
   //*not yet implemented*
   renderVisualizer() {
-    if (this.sound && this.state.hasToneStarted) {
+    if (this.state.hasToneStarted) {
       return (
         <div className='visualizer'>
           <Visualizer
-            sound={this.sound}
-            frequency={this.state.frequency}
-            background='#0cf'
-            play={true}
+            context = {this.context}
+            synth = {this.synth}
           />
-        </div>
-      );
-    }
-    else {
-      return (
-        <div className='splash'>
-          <p>Press any button...</p>
         </div>
       );
     }
