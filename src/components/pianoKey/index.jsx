@@ -32,13 +32,18 @@ export class PianoKey extends Component {
 
   render() {
     return (
-      <div>
-        <div className={this.classList + (this.props.currentlyPlaying ? ' keyPressed' : '')} 
-        onMouseDown={this.sendMouseDown} onMouseUp={this.sendMouseUp} onMouseLeave={this.sendMouseUp} onMouseEnter={this.sendMouseDown} onTouchStart={this.sendMouseDown} onTouchEnd={this.sendMouseUp}>
-          <p className={'keyText'}>
-            {this.props.triggerKey}
-          </p>
-        </div>
+      <div className={this.classList + (this.props.currentlyPlaying ? ' keyPressed' : '')} 
+      onMouseDown={this.sendMouseDown} 
+      onMouseUp={this.sendMouseUp} 
+      onMouseLeave={this.sendMouseUp} 
+      onMouseEnter={this.sendMouseDown} 
+      onTouchStart={this.sendMouseDown} 
+      onTouchEnd={this.sendMouseUp}
+      onTouchMove={this.sendMouseDown}
+      onTouchCancel={this.sendMouseUp}>
+        <p className={'keyText'}>
+          {this.props.triggerKey}
+        </p>
       </div>
     );
   }
