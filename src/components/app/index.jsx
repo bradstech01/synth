@@ -32,35 +32,13 @@ class App extends Component {
 
     this.setUpMIDI();
 
-    const filter = new Tone.Filter(1500, 'lowpass', -48).toDestination();
-    const synth = new Tone.PolySynth({
-      oscillator: {
-        type: 'sawtooth'
-      },
-    }).connect(filter).toDestination();
-
-    synth.set({
-      attackCurve: 'exponential',
-      decayCurve: 'exponential',
-      releaseCurve: 'exponential',
-      envelope: {
-        attack: 0,
-        decay: 1,
-        sustain: 1,
-        release: 1
-      }
-    });
+    const synth = new Tone.PolySynth(Tone.MonoSynth).toDestination();
 
     synth.set({ detune: -1200 });
-
+    console.log(synth.get());
 
     this.synth = synth;
-    this.filter = filter;
 
-    this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.handleKeyRelease = this.handleKeyRelease.bind(this);
-    this.addToCurrentlyPlaying = this.addToCurrentlyPlaying.bind(this);
-    this.removeFromCurrentlyPlaying = this.removeFromCurrentlyPlaying.bind(this);
     this.startTone = this.startTone.bind(this);
   }
 
@@ -85,20 +63,20 @@ class App extends Component {
 
   //Event handler functions
   //handles the key press within app; does not get passed around
-  handleKeyPress(e) {
+  handleKeyPress = (e) => {
     if(this.keyMap[e.key]) {
       this.addToCurrentlyPlaying(this.keyMap[e.key]);
     }
-  }
+  };
 
   //handles the key release within app; does not get passed around
-  handleKeyRelease(e) {
+  handleKeyRelease = (e) => {
     if(this.keyMap[e.key]) {
       this.removeFromCurrentlyPlaying(this.keyMap[e.key]);
     }
-  }
+  };
 
-  addToCurrentlyPlaying(note) {
+  addToCurrentlyPlaying = (note) => {
     if (!this.state.currentlyPlaying.includes(note)) {
       let newPlaying = this.state.currentlyPlaying;
       newPlaying.push(note);
@@ -106,9 +84,9 @@ class App extends Component {
         currentlyPlaying: newPlaying
       })
     }
-  }
+  };
 
-  removeFromCurrentlyPlaying(note) {
+  removeFromCurrentlyPlaying = (note) => {
     if (this.state.currentlyPlaying.includes(note)) {
       let newPlaying = this.state.currentlyPlaying.filter((value) => {
         return value !== note;
@@ -158,8 +136,7 @@ class App extends Component {
       return (
         <div className='settingsGui'>
           <SettingsGui 
-          synth={this.synth}
-          filter={this.filter}/>
+          synth={this.synth}/>
         </div>
       ); 
     }
@@ -209,9 +186,9 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        {this.renderSettingsGui()}
+      <div className='wrapper'>
         {this.renderMusicGui()}
+        {this.renderSettingsGui()}
       </div>
     );
   }

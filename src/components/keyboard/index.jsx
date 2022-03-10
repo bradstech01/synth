@@ -6,10 +6,11 @@ export class Keyboard extends Component {
     super(props);
     this.state = {
       isMouseDown: false
-    }
-    document.addEventListener('mousedown',this.setMouseFlag)
-    document.addEventListener('mouseup',this.setMouseFlag)
-    document.addEventListener('mouseleave',this.setMouseFlag)
+    };
+
+    document.addEventListener('mousedown',this.setMouseFlag);
+    document.addEventListener('mouseup',this.setMouseFlag);
+    document.addEventListener('mouseleave',this.setMouseFlag);
   }
 
   setMouseFlag = e => {
