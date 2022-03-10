@@ -8,21 +8,17 @@ export class PianoKey extends Component {
       playing: false
     }
     this.classList = 'pianoKey ' + (this.props.note.length < 3 ? 'keyWhite' : 'keyBlack');
-    this.sendMouseDown = this.sendMouseDown.bind(this);
-    this.sendMouseUp = this.sendMouseUp.bind(this);
   }
 
-  sendMouseDown(e) {
+  sendMouseDown = (e) => {
     if (e.type !== 'mouseenter' || (e.type === 'mouseenter' && this.props.isMouseDown === true)) {
       this.props.onMouseDown(this.props.note);
     }
-  }
+  };
 
-  sendMouseUp(e) {
+  sendMouseUp = (e) => {
     this.props.onMouseUp(this.props.note);
-  }
-
-
+  };
 
   shouldComponentUpdate(nextProps,nextState) {
     if (this.props.currentlyPlaying !== nextProps.currentlyPlaying) return true;
@@ -38,7 +34,7 @@ export class PianoKey extends Component {
     return (
       <div>
         <div className={this.classList + (this.props.currentlyPlaying ? ' keyPressed' : '')} 
-        onMouseDown={this.sendMouseDown} onMouseUp={this.sendMouseUp} onMouseLeave={this.sendMouseUp} onMouseEnter={this.sendMouseDown}>
+        onMouseDown={this.sendMouseDown} onMouseUp={this.sendMouseUp} onMouseLeave={this.sendMouseUp} onMouseEnter={this.sendMouseDown} onTouchStart={this.sendMouseDown} onTouchEnd={this.sendMouseUp}>
           <p className={'keyText'}>
             {this.props.triggerKey}
           </p>

@@ -33,9 +33,7 @@ class App extends Component {
     this.setUpMIDI();
 
     const synth = new Tone.PolySynth(Tone.MonoSynth).toDestination();
-
-    synth.set({ detune: -1200 });
-    console.log(synth.get());
+    Tone.Master.volume.value = -10
 
     this.synth = synth;
 
