@@ -1,53 +1,83 @@
-/*import * as Tone from 'tone';
+import * as Tone from 'tone';
 import React, { Component } from 'react';
 
 
 export class Visualizer extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    const analyser = this.props.audioCtx.createAnalyser();
+    this.props.synth.connect(analyser);
+    analyser.fftSize = 2048;
+    const bufferLength = analyser.frequencyBinCount;
+
+    this.analyser = analyser;
+    this.bufferLength = bufferLength;
+    
+    const dataArray = new Uint8Array(bufferLength);
+    this.state = {dataArray: dataArray};
   }
 
-  return (
-    <div>
-      <StreamVis synth={this.props.synth} context={this.props.context}/>
-    </div>
-  );
+  componentDidMount() {
+    this.rAF = requestAnimationFrame(this.updateAnimationState);
+  }
+
+  componentWillUnmount() {
+    cancelAnimationFrame(this.rAF);
+  }
+  
+  updateAnimationState = () => {
+    const newDataArray = new Uint8Array(this.bufferLength);
+    this.analyser.getByteTimeDomainData(newDataArray);
+    this.setState(prevState => ({ dataArray: newDataArray }));
+    this.rAF = requestAnimationFrame(this.updateAnimationState);
+  }
+  
+  render() {
+    return (
+      <Waveform
+        dataArray={this.state.dataArray}
+        bufferLength={this.bufferLength}
+      />
+    );
+  }
 }
 
-function visualize(canvas, stream) {
-  const audioCtx = this.props.context;
-  const canvasCtx = canvas.getContext("2d");
+class Waveform extends React.Component {
+  constructor(props) {
+    super(props);
+    this.canvasRef = React.createRef();
+  }
 
-  const source = this.props.synth;
+  componentDidMount() {
+    const canvas = this.canvasRef.current;
+    const canvasCtx = canvas.getContext('2d');
+  }
 
-  const analyser = audioCtx.createAnalyser();
-  analyser.fftSize = 2048;
-  const bufferLength = analyser.frequencyBinCount;
-  const dataArray = new Uint8Array(bufferLength);
+  componentDidUpdate() {
 
-  source.connect(analyser);
+    if (!this.canvasRef.current) return () => {};
 
-  function draw() {
+    const canvas = this.canvasRef.current;
+    const canvasCtx = canvas.getContext('2d');
+
     if (!canvasCtx) return;
+
     const WIDTH = canvas.width;
     const HEIGHT = canvas.height;
 
-    analyser.getByteTimeDomainData(dataArray);
-
-    canvasCtx.fillStyle = "rgb(180, 180, 180)";
+    canvasCtx.fillStyle = "rgb(0,0,0)";
     canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
 
-    canvasCtx.lineWidth = 2;
-    canvasCtx.strokeStyle = "rgb(0, 0, 0)";
+    canvasCtx.lineWidth = 1;
+    canvasCtx.strokeStyle = "rgb(255, 255, 255)";
 
     canvasCtx.beginPath();
 
-    const sliceWidth = (WIDTH * 1.0) / bufferLength;
+    const sliceWidth = (WIDTH * 1.0) / this.props.bufferLength;
     let x = 0;
 
-    for (let i = 0; i < bufferLength; i++) {
-      const v = (dataArray[i] ?? 0) / 128.0;
+    for (let i = 0; i < this.props.bufferLength; i++) {
+      const v = (this.props.dataArray[i] ?? 0) / 128.0;
       const y = (v * HEIGHT) / 2;
 
       if (i === 0) {
@@ -59,32 +89,11 @@ function visualize(canvas, stream) {
       x += sliceWidth;
     }
 
-    canvasCtx.lineTo(canvas.width, canvas.height / 2);
+    canvasCtx.lineTo(WIDTH, HEIGHT / 2);
     canvasCtx.stroke();
   }
 
-  return draw;
+  render() {
+    return <canvas className='waveform' ref={this.canvasRef}></canvas>;
+  } 
 }
-
-function StreamVis(props) {
-  const canvasRef = React.useRef(null);
-
-  React.useEffect(() => {
-    if (!canvasRef.current) return () => {};
-    const draw = visualize(canvasRef.current, stream);
-    let lastReq;
-    function reqDraw() {
-      lastReq = requestAnimationFrame(() => {
-        draw();
-        reqDraw();
-        // TODO: this happens too frequently...
-      });
-    }
-    reqDraw();
-    return () => {
-      cancelAnimationFrame(lastReq);
-    };
-  }, [stream]);
-  return <canvas ref={canvasRef} />;
-}
-*/

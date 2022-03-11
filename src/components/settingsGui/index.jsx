@@ -50,14 +50,14 @@ export class SettingsGui extends Component {
     <div className='setting'>
           {optionAry.map(option => {
             return (
-              <div>
-              <label>{option}</label>
-              <input type='radio' 
-              name={settingName} 
-              section={subProp} 
-              value={option} 
-              checked={this.state.synthSettings[subProp][settingName] === option}
-              onChange={this.handleChange}/>
+              <div key={option}>
+                <label>{option}</label>
+                <input type='radio' 
+                name={settingName} 
+                section={subProp} 
+                value={option} 
+                checked={this.state.synthSettings[subProp][settingName] === option}
+                onChange={this.handleChange}/>
               </div>
             )
           })}

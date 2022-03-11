@@ -11,12 +11,14 @@ export class PianoKey extends Component {
   }
 
   sendMouseDown = (e) => {
+    e.preventDefault();
     if (e.type !== 'mouseenter' || (e.type === 'mouseenter' && this.props.isMouseDown === true)) {
       this.props.onMouseDown(this.props.note);
     }
   };
 
   sendMouseUp = (e) => {
+    e.preventDefault();
     this.props.onMouseUp(this.props.note);
   };
 

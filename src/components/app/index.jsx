@@ -15,27 +15,30 @@ class App extends Component {
     };
 
     this.keyMap = {
-      q: 'C4',
-      2: 'C#4',
-      w: 'D4',
-      3: 'D#4',
-      e: 'E4',
-      r: 'F4',
-      5: 'F#4',
-      t: 'G4',
-      6: 'G#4',
-      y: 'A4',
-      7: 'A#4',
-      u: 'B4',
-      i: 'C5'
+      q: 'C3',
+      2: 'C#3',
+      w: 'D3',
+      3: 'D#3',
+      e: 'E3',
+      r: 'F3',
+      5: 'F#3',
+      t: 'G3',
+      6: 'G#3',
+      y: 'A3',
+      7: 'A#3',
+      u: 'B3',
+      i: 'C4'
     };
 
     this.setUpMIDI();
 
     const synth = new Tone.PolySynth(Tone.MonoSynth).toDestination();
-    Tone.Master.volume.value = -10
+    Tone.Destination.volume.value = -10
+
+    const audioCtx = Tone.getContext();
 
     this.synth = synth;
+    this.audioCtx = audioCtx;
 
     this.startTone = this.startTone.bind(this);
   }
@@ -174,7 +177,7 @@ class App extends Component {
       return (
         <div className='visualizer'>
           <Visualizer
-            context = {this.context}
+            audioCtx = {this.audioCtx}
             synth = {this.synth}
           />
         </div>
@@ -185,6 +188,7 @@ class App extends Component {
   render() {
     return (
       <div className='wrapper'>
+        {this.renderVisualizer()}
         {this.renderMusicGui()}
         {this.renderSettingsGui()}
       </div>
