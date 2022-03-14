@@ -47,7 +47,7 @@ export class PianoKey extends React.Component {
         onTouchEnd={this.sendMouseUp}
         onTouchMove={this.sendMouseDown}
         onTouchCancel={this.sendMouseUp}>
-        <p className={'keyText'}>
+        <p role='button' className={'keyText'}>
           {this.props.triggerKey}
         </p>
       </div>
