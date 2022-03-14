@@ -66,6 +66,8 @@ h2 {
 .setting {  
   height: 100px;
   width: 150px;
+  display: flex;
+  flex-direction: column;
 }
 
 @media only screen and (max-device-width: 481px) {

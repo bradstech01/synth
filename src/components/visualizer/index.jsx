@@ -1,13 +1,16 @@
-import * as Tone from 'tone';
-import React, { Component } from 'react';
+import React from 'react';
 
-
-export class Visualizer extends Component {
+/**
+ * Uses requestAnimationFrame to drive a roughly 60 FPS output. 
+ * Holds the audio time domain data in state, which is passed via props to a Waveform component that does the real rendering.
+ * TODO: Implement a way to "isolate" waveform/snapshot a waveform
+ */
+export class Visualizer extends React.Component {
   constructor(props) {
     super(props);
     const analyser = this.props.audioCtx.createAnalyser();
     this.props.synth.connect(analyser);
-    analyser.fftSize = 2048;
+    analyser.fftSize = 4096;
     const bufferLength = analyser.frequencyBinCount;
 
     this.analyser = analyser;
@@ -34,7 +37,7 @@ export class Visualizer extends Component {
   
   render() {
     return (
-      <Waveform
+      <VisualWaveform
         dataArray={this.state.dataArray}
         bufferLength={this.bufferLength}
       />
@@ -42,15 +45,15 @@ export class Visualizer extends Component {
   }
 }
 
-class Waveform extends React.Component {
+/**
+ * Uses props.dataArray to output audio data on an HTML canvas element. 
+ * TODO: Convert to functional component & test. 
+ */
+
+class VisualWaveform extends React.Component {
   constructor(props) {
     super(props);
     this.canvasRef = React.createRef();
-  }
-
-  componentDidMount() {
-    const canvas = this.canvasRef.current;
-    const canvasCtx = canvas.getContext('2d');
   }
 
   componentDidUpdate() {
@@ -65,11 +68,11 @@ class Waveform extends React.Component {
     const WIDTH = canvas.width;
     const HEIGHT = canvas.height;
 
-    canvasCtx.fillStyle = "rgb(0,0,0)";
+    canvasCtx.fillStyle = 'rgb(0,0,0)';
     canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
 
     canvasCtx.lineWidth = 1;
-    canvasCtx.strokeStyle = "rgb(255, 255, 255)";
+    canvasCtx.strokeStyle = 'rgb(255, 255, 255)';
 
     canvasCtx.beginPath();
 

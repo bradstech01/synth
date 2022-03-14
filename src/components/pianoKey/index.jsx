@@ -1,13 +1,17 @@
-//import './style.css';
-import React, { Component } from 'react';
+import React from 'react';
 
-export class PianoKey extends Component {
+/**
+ * Piano key element, which notably holds event listeners for mouse/touch input for each individual key. 
+ * Renders based on whether the note is currently being played.
+ * TODO: Convert to functional component as it is no longer stateful
+ * TODO: Try to hack through issues with touch support
+ */
+export class PianoKey extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       playing: false
     }
-    this.classList = 'pianoKey ' + (this.props.note.length < 3 ? 'keyWhite' : 'keyBlack');
   }
 
   sendMouseDown = (e) => {
@@ -34,15 +38,15 @@ export class PianoKey extends Component {
 
   render() {
     return (
-      <div className={this.classList + (this.props.currentlyPlaying ? ' keyPressed' : '')} 
-      onMouseDown={this.sendMouseDown} 
-      onMouseUp={this.sendMouseUp} 
-      onMouseLeave={this.sendMouseUp} 
-      onMouseEnter={this.sendMouseDown} 
-      onTouchStart={this.sendMouseDown} 
-      onTouchEnd={this.sendMouseUp}
-      onTouchMove={this.sendMouseDown}
-      onTouchCancel={this.sendMouseUp}>
+      <div role='button' className={'pianoKey ' + (this.props.note.length < 3 ? 'keyWhite' : 'keyBlack') + (this.props.currentlyPlaying ? ' keyPressed' : '')} 
+        onMouseDown={this.sendMouseDown} 
+        onMouseUp={this.sendMouseUp} 
+        onMouseLeave={this.sendMouseUp} 
+        onMouseEnter={this.sendMouseDown} 
+        onTouchStart={this.sendMouseDown} 
+        onTouchEnd={this.sendMouseUp}
+        onTouchMove={this.sendMouseDown}
+        onTouchCancel={this.sendMouseUp}>
         <p className={'keyText'}>
           {this.props.triggerKey}
         </p>

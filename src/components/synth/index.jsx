@@ -1,11 +1,15 @@
 import './style.css';
 import * as Tone from 'tone';
-import React, { Component } from 'react';
+import React from 'react';
 import {Visualizer} from '../visualizer';
 import {MusicGui} from '../musicGui';
 import {SettingsGui} from '../settingsGui';
 
-class App extends Component {
+  /**
+   * Root of the app. Contains a visualizer, a music GUI (keyboard & related controls), and a settings GUI to control the synth.
+   */
+
+class Synth extends React.Component {
   constructor(props) {
     super(props);
 
@@ -38,6 +42,18 @@ class App extends Component {
     const audioCtx = Tone.getContext();
 
     this.synth = synth;
+    console.log(synth.get());
+    this.synth.set({
+      filter: {
+        frequency: 0
+      },
+      filterEnvelope: {
+        attack: 0,
+        decay: 2,
+        sustain: 0,
+        release: 1
+      }
+    });
     this.audioCtx = audioCtx;
 
     this.startTone = this.startTone.bind(this);
@@ -100,12 +116,12 @@ class App extends Component {
   
   //callback passed to piano keys to trigger attack. arrow function to maintain "this"
   triggerNote = (note) => {
-      this.synth.triggerAttack(note,'+.003');
+      this.synth.triggerAttack(note,'+.001');
   }
 
   //callback passed to piano keys to trigger release. arrow function to maintain "this"
   triggerRelease = (note) => {
-     this.synth.triggerRelease(note,'+.003');
+     this.synth.triggerRelease(note,'+.001');
   }
 
   setUpMIDI() {
@@ -198,7 +214,7 @@ class App extends Component {
 
 function app() {
   return (
-      <App />
+      <Synth />
   );
 }
 

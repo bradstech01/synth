@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export class SettingsGui extends Component {
+export class SettingsGui extends React.Component {
   constructor(props) {
     super(props);
-    let synthProps = this.props.synth.get();
+    const synthSettings = this.props.synth.get();
     
     this.state = {
-      synthSettings: synthProps,
+      synthSettings: synthSettings,
     };
   }
 
@@ -23,7 +23,8 @@ export class SettingsGui extends Component {
     return (
       <div className='setting'>
         <label>{label}</label>
-        <input type='range' 
+        <input className='innerSetting slider'
+          type='range' 
           section={subProp} 
           name={settingName} 
           min={min} 
@@ -32,7 +33,8 @@ export class SettingsGui extends Component {
           step={step}
           onChange={this.handleChange}
         />
-        <input type='text' 
+        <input className='innerSetting'
+          type='text' 
           section={subProp} 
           name={settingName} 
           min={min} 

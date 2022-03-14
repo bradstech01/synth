@@ -1,7 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {PianoKey} from '../pianoKey';
 
-export class Keyboard extends Component {
+/**
+ * Component containing the visual keyboard; the "money maker", as it were.
+ * TODO: Fix current hacky CSS for the keyboard, so that it appropriately flexes and is better modularized for different viewports
+ */
+export class Keyboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -28,28 +32,41 @@ export class Keyboard extends Component {
     }
   }
 
+  renderPianoKey(note,octave,octaveShift,triggerKey) {
+    return (
+      <PianoKey note={note+(octave+octaveShift)} 
+      isMouseDown={this.state.isMouseDown} 
+      currentlyPlaying={this.props.currentlyPlaying.includes(note+(octave+octaveShift))} 
+      triggerKey={triggerKey} 
+      triggerNote={this.props.triggerNote} 
+      triggerRelease={this.props.triggerRelease} 
+      onMouseDown={this.props.onMouseDown} 
+      onMouseUp={this.props.onMouseUp}/>
+    );
+  }
+
   render() {
     return (
-      <div>
-        <div className='keyContainer'>
-          <div className='keyWhiteContainer'>
-            <PianoKey note={'C3'} isMouseDown={this.state.isMouseDown} currentlyPlaying={this.props.currentlyPlaying.includes('C3')} triggerKey={'Q'} triggerNote={this.props.triggerNote} triggerRelease={this.props.triggerRelease} onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}/>
-            <PianoKey note={'D3'} isMouseDown={this.state.isMouseDown} currentlyPlaying={this.props.currentlyPlaying.includes('D3')} triggerKey={'W'} triggerNote={this.props.triggerNote} triggerRelease={this.props.triggerRelease} onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}/>
-            <PianoKey note={'E3'} isMouseDown={this.state.isMouseDown} currentlyPlaying={this.props.currentlyPlaying.includes('E3')} triggerKey={'E'} triggerNote={this.props.triggerNote} triggerRelease={this.props.triggerRelease} onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}/>
-            <PianoKey note={'F3'} isMouseDown={this.state.isMouseDown} currentlyPlaying={this.props.currentlyPlaying.includes('F3')} triggerKey={'R'} triggerNote={this.props.triggerNote} triggerRelease={this.props.triggerRelease} onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}/>
-            <PianoKey note={'G3'} isMouseDown={this.state.isMouseDown} currentlyPlaying={this.props.currentlyPlaying.includes('G3')} triggerKey={'T'} triggerNote={this.props.triggerNote} triggerRelease={this.props.triggerRelease} onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}/>
-            <PianoKey note={'A3'} isMouseDown={this.state.isMouseDown} currentlyPlaying={this.props.currentlyPlaying.includes('A3')} triggerKey={'Y'} triggerNote={this.props.triggerNote} triggerRelease={this.props.triggerRelease} onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}/>
-            <PianoKey note={'B3'} isMouseDown={this.state.isMouseDown} currentlyPlaying={this.props.currentlyPlaying.includes('B3')} triggerKey={'U'} triggerNote={this.props.triggerNote} triggerRelease={this.props.triggerRelease} onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}/>
-            <PianoKey note={'C4'} isMouseDown={this.state.isMouseDown} currentlyPlaying={this.props.currentlyPlaying.includes('C4')} triggerKey={'I'} triggerNote={this.props.triggerNote} triggerRelease={this.props.triggerRelease} onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}/>
+      <div role='button'>
+        <div className='keyContainer' role='button'>
+          <div className='keyWhiteContainer' role='button'>
+            {this.renderPianoKey('C',3,0,'Q')}
+            {this.renderPianoKey('D',3,0,'W')}
+            {this.renderPianoKey('E',3,0,'E')}
+            {this.renderPianoKey('F',3,0,'R')}
+            {this.renderPianoKey('G',3,0,'T')}
+            {this.renderPianoKey('A',3,0,'Y')}
+            {this.renderPianoKey('B',3,0,'U')}
+            {this.renderPianoKey('C',4,0,'I')}
           </div>
-          <div className='keyBlackContainer'>
-            <PianoKey note={'C#3'} isMouseDown={this.state.isMouseDown} currentlyPlaying={this.props.currentlyPlaying.includes('C#3')} triggerKey={'2'} triggerNote={this.props.triggerNote} triggerRelease={this.props.triggerRelease} onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}/>
-            <PianoKey note={'D#3'} isMouseDown={this.state.isMouseDown} currentlyPlaying={this.props.currentlyPlaying.includes('D#3')} triggerKey={'3'} triggerNote={this.props.triggerNote} triggerRelease={this.props.triggerRelease} onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}/>
-            <div className='keyHidden keyBlack'/>
-            <PianoKey note={'F#3'} isMouseDown={this.state.isMouseDown} currentlyPlaying={this.props.currentlyPlaying.includes('F#3')} triggerKey={'5'} triggerNote={this.props.triggerNote} triggerRelease={this.props.triggerRelease} onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}/>
-            <PianoKey note={'G#3'} isMouseDown={this.state.isMouseDown} currentlyPlaying={this.props.currentlyPlaying.includes('G#3')} triggerKey={'6'} triggerNote={this.props.triggerNote} triggerRelease={this.props.triggerRelease} onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}/>
-            <PianoKey note={'A#3'} isMouseDown={this.state.isMouseDown} currentlyPlaying={this.props.currentlyPlaying.includes('A#3')} triggerKey={'7'} triggerNote={this.props.triggerNote} triggerRelease={this.props.triggerRelease} onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}/>
-            <div className='keyHidden keyBlack'/>
+          <div className='keyBlackContainer' role='button'>
+            {this.renderPianoKey('C#',3,0,'2')}
+            {this.renderPianoKey('D#',3,0,'3')}
+            <div className='keyHidden keyBlack' role='button'/>
+            {this.renderPianoKey('F#',3,0,'5')}
+            {this.renderPianoKey('G#',3,0,'6')}
+            {this.renderPianoKey('A#',3,0,'7')}
+            <div className='keyHidden keyBlack' role='button'/>
           </div>
         </div>
       </div>
