@@ -35,9 +35,9 @@ function PianoKeyInner(props) {
       onTouchEnd={sendMouseUp}
       onTouchMove={sendMouseDown}
       onTouchCancel={sendMouseUp}>
-      <p role='button' className={'keyText'}>
+      <div role='button' className={'keyText'}>
         {props.triggerKey}
-      </p>
+      </div>
     </div>
   );
 }
