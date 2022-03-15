@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 
 /**
  * Uses requestAnimationFrame to drive a roughly 60 FPS output. 
@@ -18,6 +20,11 @@ export class Visualizer extends React.Component {
     
     const dataArray = new Uint8Array(bufferLength);
     this.state = {dataArray: dataArray};
+  }
+
+  static propTypes = {
+    audioCtx: PropTypes.object.isRequired,
+    synth: PropTypes.object.isRequired,
   }
 
   componentDidMount() {
@@ -50,17 +57,14 @@ export class Visualizer extends React.Component {
  * TODO: Convert to functional component & test. 
  */
 
-class VisualWaveform extends React.Component {
-  constructor(props) {
-    super(props);
-    this.canvasRef = React.createRef();
-  }
+function VisualWaveform(props) {
+  const canvasRef = React.useRef(null);
+  React.useEffect(draw);
 
-  componentDidUpdate() {
+  function draw() {
+    if (!canvasRef.current) return () => {};
 
-    if (!this.canvasRef.current) return () => {};
-
-    const canvas = this.canvasRef.current;
+    const canvas = canvasRef.current;
     const canvasCtx = canvas.getContext('2d');
 
     if (!canvasCtx) return;
@@ -76,11 +80,11 @@ class VisualWaveform extends React.Component {
 
     canvasCtx.beginPath();
 
-    const sliceWidth = (WIDTH * 1.0) / this.props.bufferLength;
+    const sliceWidth = (WIDTH * 1.0) / props.bufferLength;
     let x = 0;
 
-    for (let i = 0; i < this.props.bufferLength; i++) {
-      const v = (this.props.dataArray[i] ?? 0) / 128.0;
+    for (let i = 0; i < props.bufferLength; i++) {
+      const v = (props.dataArray[i] ?? 0) / 128.0;
       const y = (v * HEIGHT) / 2;
 
       if (i === 0) {
@@ -96,7 +100,5 @@ class VisualWaveform extends React.Component {
     canvasCtx.stroke();
   }
 
-  render() {
-    return <canvas className='waveform' ref={this.canvasRef}></canvas>;
-  } 
+  return <canvas className='waveform' ref={canvasRef}/>;
 }

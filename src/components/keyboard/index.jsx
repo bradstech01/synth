@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {PianoKey} from '../pianoKey';
 
 /**
@@ -11,6 +12,15 @@ export class Keyboard extends React.Component {
     this.state = {
       isMouseDown: false
     };
+  }
+
+  static propTypes = {
+    role: PropTypes.string,
+    currentlyPlaying: PropTypes.array.isRequired,
+    onMouseDown: PropTypes.func.isRequired,
+    onMouseUp: PropTypes.func.isRequired,
+    triggerNote: PropTypes.func.isRequired,
+    triggerRelease: PropTypes.func.isRequired,
   }
 
   componentDidMount() {

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export class SettingsGui extends React.Component {
   constructor(props) {
@@ -8,6 +9,10 @@ export class SettingsGui extends React.Component {
     this.state = {
       synthSettings: synthSettings,
     };
+  }
+
+  static propTypes = {
+    synth: PropTypes.object.isRequired,
   }
 
   handleChange = (e) => {

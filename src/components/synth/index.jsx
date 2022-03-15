@@ -170,8 +170,6 @@ class Synth extends React.Component {
             triggerRelease={this.triggerRelease}
             onMouseDown={this.addToCurrentlyPlaying}
             onMouseUp={this.removeFromCurrentlyPlaying}
-            keyMap={this.keyMap}
-            //background='#12f'
           />
         </div>
       );

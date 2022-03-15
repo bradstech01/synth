@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {Keyboard} from '../keyboard';
 
 /**
@@ -12,6 +13,14 @@ export class MusicGui extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
+  }
+
+  static propTypes = {
+    currentlyPlaying: PropTypes.array.isRequired,
+    onMouseDown: PropTypes.func.isRequired,
+    onMouseUp: PropTypes.func.isRequired,
+    triggerNote: PropTypes.func.isRequired,
+    triggerRelease: PropTypes.func.isRequired,
   }
 
   render() {

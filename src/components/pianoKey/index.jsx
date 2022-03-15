@@ -1,56 +1,55 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Piano key element, which notably holds event listeners for mouse/touch input for each individual key. 
  * Renders based on whether the note is currently being played.
- * TODO: Convert to functional component as it is no longer stateful
+ * Note that the export is memoized, as every render should be linked to exactly ONE note trigger or release 
  * TODO: Try to hack through issues with touch support
  */
-export class PianoKey extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      playing: false
-    }
-  }
-
-  sendMouseDown = (e) => {
+function PianoKeyInner(props) {
+  const sendMouseDown = (e) => {
     e.preventDefault();
-    if (e.type !== 'mouseenter' || (e.type === 'mouseenter' && this.props.isMouseDown === true)) {
-      this.props.onMouseDown(this.props.note);
+    if (e.type !== 'mouseenter' || (e.type === 'mouseenter' && props.isMouseDown === true)) {
+      props.onMouseDown(props.note);
     }
   };
 
-  sendMouseUp = (e) => {
+  const sendMouseUp = (e) => {
     e.preventDefault();
-    this.props.onMouseUp(this.props.note);
+    props.onMouseUp(props.note);
   };
 
-  shouldComponentUpdate(nextProps,nextState) {
-    if (this.props.currentlyPlaying !== nextProps.currentlyPlaying) return true;
-    else return false;
-  }
+  React.useEffect(() => {
+    if (props.currentlyPlaying) props.triggerNote(props.note);
+    else props.triggerRelease(props.note);
+  });
 
-  componentDidUpdate(prevProps,prevState) {
-    if (this.props.currentlyPlaying) this.props.triggerNote(this.props.note);
-    else this.props.triggerRelease(this.props.note);
-  }
-
-  render() {
-    return (
-      <div role='button' className={'pianoKey ' + (this.props.note.length < 3 ? 'keyWhite' : 'keyBlack') + (this.props.currentlyPlaying ? ' keyPressed' : '')} 
-        onMouseDown={this.sendMouseDown} 
-        onMouseUp={this.sendMouseUp} 
-        onMouseLeave={this.sendMouseUp} 
-        onMouseEnter={this.sendMouseDown} 
-        onTouchStart={this.sendMouseDown} 
-        onTouchEnd={this.sendMouseUp}
-        onTouchMove={this.sendMouseDown}
-        onTouchCancel={this.sendMouseUp}>
-        <p role='button' className={'keyText'}>
-          {this.props.triggerKey}
-        </p>
-      </div>
-    );
-  }
+  return (
+    <div role='button' className={'pianoKey ' + (props.note.length < 3 ? 'keyWhite' : 'keyBlack') + (props.currentlyPlaying ? ' keyPressed' : '')} 
+      onMouseDown={sendMouseDown} 
+      onMouseUp={sendMouseUp} 
+      onMouseLeave={sendMouseUp} 
+      onMouseEnter={sendMouseDown} 
+      onTouchStart={sendMouseDown} 
+      onTouchEnd={sendMouseUp}
+      onTouchMove={sendMouseDown}
+      onTouchCancel={sendMouseUp}>
+      <p role='button' className={'keyText'}>
+        {props.triggerKey}
+      </p>
+    </div>
+  );
 }
+
+PianoKeyInner.propTypes = {
+  note: PropTypes.string.isRequired,
+  isMouseDown: PropTypes.bool.isRequired,
+  currentlyPlaying: PropTypes.bool.isRequired,
+  onMouseDown: PropTypes.func.isRequired,
+  onMouseUp: PropTypes.func.isRequired,
+  triggerNote: PropTypes.func.isRequired,
+  triggerRelease: PropTypes.func.isRequired,
+};
+
+export const PianoKey = React.memo(PianoKeyInner);
