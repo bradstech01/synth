@@ -57,28 +57,20 @@ export class Keyboard extends React.Component {
 
   render() {
     return (
-      <div role='button'>
-        <div className='keyContainer' role='button'>
-          <div className='keyWhiteContainer' role='button'>
-            {this.renderPianoKey('C',3,0,'Q')}
-            {this.renderPianoKey('D',3,0,'W')}
-            {this.renderPianoKey('E',3,0,'E')}
-            {this.renderPianoKey('F',3,0,'R')}
-            {this.renderPianoKey('G',3,0,'T')}
-            {this.renderPianoKey('A',3,0,'Y')}
-            {this.renderPianoKey('B',3,0,'U')}
-            {this.renderPianoKey('C',4,0,'I')}
-          </div>
-          <div className='keyBlackContainer' role='button'>
-            {this.renderPianoKey('C#',3,0,'2')}
-            {this.renderPianoKey('D#',3,0,'3')}
-            <div className='keyHidden keyBlack' role='button'/>
-            {this.renderPianoKey('F#',3,0,'5')}
-            {this.renderPianoKey('G#',3,0,'6')}
-            {this.renderPianoKey('A#',3,0,'7')}
-            <div className='keyHidden keyBlack' role='button'/>
-          </div>
-        </div>
+      <div className='keyboard' role='button'>
+        {this.renderPianoKey('C',3,0,'Q')}
+        {this.renderPianoKey('C#',3,0,'2')}
+        {this.renderPianoKey('D',3,0,'W')}
+        {this.renderPianoKey('D#',3,0,'3')}
+        {this.renderPianoKey('E',3,0,'E')}
+        {this.renderPianoKey('F',3,0,'R')}
+        {this.renderPianoKey('F#',3,0,'5')}
+        {this.renderPianoKey('G',3,0,'T')}
+        {this.renderPianoKey('G#',3,0,'6')}
+        {this.renderPianoKey('A',3,0,'Y')}
+        {this.renderPianoKey('A#',3,0,'7')}
+        {this.renderPianoKey('B',3,0,'U')}
+        {this.renderPianoKey('C',4,0,'I')}
       </div>
     );
   }

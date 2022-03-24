@@ -24,9 +24,9 @@ export class SettingsGui extends React.Component {
     this.props.synth.set(returnSettings);
   };
 
-  renderSetting = (label,subProp,settingName,min,max,step) => {
+  renderSetting = (label,subProp,settingName,extraCss,min,max,step) => {
     return (
-      <div className='setting'>
+      <div className={'setting ' + extraCss}>
         <label>{label}</label>
         <input className='innerSetting slider'
           type='range' 
@@ -54,12 +54,12 @@ export class SettingsGui extends React.Component {
   
   renderSelectSetting = (subProp,settingName,optionAry) => {
     return (
-    <div className='setting'>
+    <React.Fragment>
           {optionAry.map(option => {
             return (
-              <div key={option}>
+              <div key={option} className={'osc'+option} >
                 <label>{option}</label>
-                <input type='radio' 
+                <input type='radio'
                 name={settingName} 
                 section={subProp} 
                 value={option} 
@@ -68,33 +68,39 @@ export class SettingsGui extends React.Component {
               </div>
             )
           })}
-    </div>
+    </React.Fragment>
     );
   };
 
   render() {
     return (
-      <div>
-        <div className='settingGrp'>
+      <React.Fragment>
+        <div className='settingContainer osc'>
           <div className='settingsHdr'>oscillator</div>
-          {this.renderSelectSetting('oscillator','type',['sine','sawtooth','square','triangle'])}
+          <div className='settingGrp'>
+            {this.renderSelectSetting('oscillator','type',['sine','sawtooth','square','triangle'])}
+          </div>
         </div>
-        <div className='settingGrp'>
+        <div className='settingContainer lpEnv'>
           <div className='settingsHdr'>filter envelope</div>
-          {this.renderSetting('frequency','filter','frequency',0,44000,1)}
-          {this.renderSetting('attack','filterEnvelope','attack',0,15,.01)}
-          {this.renderSetting('decay','filterEnvelope','decay',0,15,.01)}
-          {this.renderSetting('sustain','filterEnvelope','sustain',0,1,.01)}
-          {this.renderSetting('release','filterEnvelope','release',0,15,.01)}
+          <div className='settingGrp'>
+            {this.renderSetting('frequency','filter','frequency','lpFreq',0,44000,1)}
+            {this.renderSetting('attack','filterEnvelope','attack','lpA',0,15,.01)}
+            {this.renderSetting('decay','filterEnvelope','decay','lpD',0,15,.01)}
+            {this.renderSetting('sustain','filterEnvelope','sustain','lpS',0,1,.01)}
+            {this.renderSetting('release','filterEnvelope','release','lpR',0,15,.01)}
+          </div>
         </div>
-        <div className='settingGrp'>
+        <div className='settingContainer ampEnv'>
           <div className='settingsHdr'>volume envelope</div>
-          {this.renderSetting('attack','envelope','attack',0,15,.01)}
-          {this.renderSetting('decay','envelope','decay',0,15,.01)}
-          {this.renderSetting('sustain','envelope','sustain',0,1,.01)}
-          {this.renderSetting('release','envelope','release',0,15,.01)}
-        </div>       
-      </div>
+          <div className='settingGrp'>
+            {this.renderSetting('attack','envelope','attack','ampA',0,15,.01)}
+            {this.renderSetting('decay','envelope','decay','ampD',0,15,.01)}
+            {this.renderSetting('sustain','envelope','sustain','ampS',0,1,.01)}
+            {this.renderSetting('release','envelope','release','ampR',0,15,.01)}
+          </div>     
+        </div>  
+      </React.Fragment>
     );
   }
 }

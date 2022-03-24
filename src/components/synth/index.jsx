@@ -1,4 +1,4 @@
-import './style.css';
+import './style.scss';
 import * as Tone from 'tone';
 import React from 'react';
 import {Visualizer} from '../visualizer';
@@ -35,14 +35,14 @@ class Synth extends React.Component {
     };
 
     this.setUpMIDI();
-
-    const synth = new Tone.PolySynth(Tone.MonoSynth).toDestination();
+    const reverb = new Tone.Reverb(2).toDestination();
+    const synth = new Tone.PolySynth(Tone.MonoSynth).connect(reverb).toDestination();
     Tone.Destination.volume.value = -10
 
     const audioCtx = Tone.getContext();
 
     this.synth = synth;
-    console.log(synth.get());
+
     this.synth.set({
       filter: {
         frequency: 0
@@ -116,12 +116,12 @@ class Synth extends React.Component {
   
   //callback passed to piano keys to trigger attack. arrow function to maintain "this"
   triggerNote = (note) => {
-      this.synth.triggerAttack(note,'+.001');
+      this.synth.triggerAttack(note,Tone.now());
   }
 
   //callback passed to piano keys to trigger release. arrow function to maintain "this"
   triggerRelease = (note) => {
-     this.synth.triggerRelease(note,'+.001');
+     this.synth.triggerRelease(note,Tone.now());
   }
 
   setUpMIDI() {
@@ -203,8 +203,8 @@ class Synth extends React.Component {
     return (
       <div className='wrapper'>
         {this.renderVisualizer()}
-        {this.renderMusicGui()}
         {this.renderSettingsGui()}
+        {this.renderMusicGui()}
       </div>
     );
   }

@@ -8,6 +8,11 @@ import PropTypes from 'prop-types';
  * TODO: Try to hack through issues with touch support
  */
 function PianoKeyInner(props) {
+  React.useEffect(() => {
+    if (props.currentlyPlaying) props.triggerNote(props.note);
+    else props.triggerRelease(props.note);
+  });
+
   const sendMouseDown = (e) => {
     e.preventDefault();
     if (e.type !== 'mouseenter' || (e.type === 'mouseenter' && props.isMouseDown === true)) {
@@ -20,13 +25,21 @@ function PianoKeyInner(props) {
     props.onMouseUp(props.note);
   };
 
-  React.useEffect(() => {
-    if (props.currentlyPlaying) props.triggerNote(props.note);
-    else props.triggerRelease(props.note);
-  });
+  const mapNoteToClass = (note) => {
+    const mapNote = note.slice(0,1);
+    switch (mapNote) {
+      case 'A': 
+      case 'B': 
+      case 'D': 
+      case 'E': 
+      case 'G': return ' '.concat(mapNote.toLowerCase());
+      default: return '';
+    }
+  };
 
   return (
-    <div role='button' className={'pianoKey ' + (props.note.length < 3 ? 'keyWhite' : 'keyBlack') + (props.currentlyPlaying ? ' keyPressed' : '')} 
+    <div role='button' 
+      className={'pianoKey ' + (props.note.length < 3 ? 'keyWhite' + mapNoteToClass(props.note): 'keyBlack') + (props.currentlyPlaying ? ' keyPressed' : '')} 
       onMouseDown={sendMouseDown} 
       onMouseUp={sendMouseUp} 
       onMouseLeave={sendMouseUp} 
