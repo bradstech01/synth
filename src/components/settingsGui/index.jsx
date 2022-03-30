@@ -85,19 +85,19 @@ export class SettingsGui extends React.Component {
           <div className='settingsHdr'>filter envelope</div>
           <div className='settingGrp'>
             {this.renderSetting('frequency','filter','frequency','lpFreq',0,44000,1)}
-            {this.renderSetting('attack','filterEnvelope','attack','lpA',0,15,.01)}
-            {this.renderSetting('decay','filterEnvelope','decay','lpD',0,15,.01)}
+            {this.renderSetting('attack','filterEnvelope','attack','lpA',0,4,.01)}
+            {this.renderSetting('decay','filterEnvelope','decay','lpD',0,4,.01)}
             {this.renderSetting('sustain','filterEnvelope','sustain','lpS',0,1,.01)}
-            {this.renderSetting('release','filterEnvelope','release','lpR',0,15,.01)}
+            {this.renderSetting('release','filterEnvelope','release','lpR',0,4,.01)}
           </div>
         </div>
         <div className='settingContainer ampEnv'>
           <div className='settingsHdr'>volume envelope</div>
           <div className='settingGrp'>
-            {this.renderSetting('attack','envelope','attack','ampA',0,15,.01)}
-            {this.renderSetting('decay','envelope','decay','ampD',0,15,.01)}
+            {this.renderSetting('attack','envelope','attack','ampA',0,4,.01)}
+            {this.renderSetting('decay','envelope','decay','ampD',0,4,.01)}
             {this.renderSetting('sustain','envelope','sustain','ampS',0,1,.01)}
-            {this.renderSetting('release','envelope','release','ampR',0,15,.01)}
+            {this.renderSetting('release','envelope','release','ampR',0,4,.01)}
           </div>     
         </div>  
       </React.Fragment>
