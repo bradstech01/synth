@@ -4,6 +4,8 @@ import React from 'react';
 import {Visualizer} from '../visualizer';
 import {MusicGui} from '../musicGui';
 import {SettingsGui} from '../settingsGui';
+import {Sequencer} from '../sequencer';
+import keyMap from '../../scripts/keyMap.js';
 
   /**
    * Root of the app. Contains a visualizer, a music GUI (keyboard & related controls), and a settings GUI to control the synth.
@@ -18,24 +20,8 @@ class Synth extends React.Component {
       currentlyPlaying: []
     };
 
-    this.keyMap = {
-      q: 'C3',
-      2: 'C#3',
-      w: 'D3',
-      3: 'D#3',
-      e: 'E3',
-      r: 'F3',
-      5: 'F#3',
-      t: 'G3',
-      6: 'G#3',
-      y: 'A3',
-      7: 'A#3',
-      u: 'B3',
-      i: 'C4'
-    };
-
     this.setUpMIDI();
-    const reverb = new Tone.Reverb(2).toDestination();
+    const reverb = new Tone.Reverb(1).toDestination();
     const synth = new Tone.PolySynth(Tone.MonoSynth).connect(reverb).toDestination();
     Tone.Destination.volume.value = -10
 
@@ -81,15 +67,15 @@ class Synth extends React.Component {
   //Event handler functions
   //handles the key press within app; does not get passed around
   handleKeyPress = (e) => {
-    if(this.keyMap[e.key]) {
-      this.addToCurrentlyPlaying(this.keyMap[e.key]);
+    if(keyMap(e.key)) {
+      this.addToCurrentlyPlaying(keyMap(e.key));
     }
   };
 
   //handles the key release within app; does not get passed around
   handleKeyRelease = (e) => {
-    if(this.keyMap[e.key]) {
-      this.removeFromCurrentlyPlaying(this.keyMap[e.key]);
+    if(keyMap(e.key)) {
+      this.removeFromCurrentlyPlaying(keyMap(e.key));
     }
   };
 
@@ -147,7 +133,6 @@ class Synth extends React.Component {
   }
 
   //rendering methods
-
   renderSettingsGui() {
     if (this.state.hasToneStarted) {
       return (
@@ -159,7 +144,6 @@ class Synth extends React.Component {
     }
   }
 
-  //Only renders music GUI once the synth engine has actually loaded
   renderMusicGui() {
     if (this.state.hasToneStarted) {
       return (
@@ -184,8 +168,6 @@ class Synth extends React.Component {
     }
   }
 
-  //Only renders visualizer once the synth engine has actually loaded
-  //*not yet implemented*
   renderVisualizer() {
     if (this.state.hasToneStarted) {
       return (
@@ -199,10 +181,24 @@ class Synth extends React.Component {
     }
   }
 
+  renderSequencer() {
+    if (this.state.hasToneStarted) {
+      return (
+        <div className='sequencer'>
+          <Sequencer
+            currentlyPlaying={this.state.currentlyPlaying}
+            synth = {this.synth}
+          />
+        </div>
+      );
+    }
+  }
+
   render() {
     return (
       <div className='wrapper'>
         {this.renderVisualizer()}
+        {this.renderSequencer()}
         {this.renderSettingsGui()}
         {this.renderMusicGui()}
       </div>
