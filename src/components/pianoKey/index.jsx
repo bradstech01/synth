@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 /**
- * Piano key element, which notably holds event listeners for mouse/touch input for each individual key. 
+ * Piano key element, which notably holds event listeners for mouse/touch input for each individual key.
  * Renders based on whether the note is currently being played.
- * Note that the export is memoized, as every render should be linked to exactly ONE note trigger or release 
+ * Note that the export is memoized, as every render should be linked to exactly ONE note trigger or release
  * TODO: Try to hack through issues with touch support
  */
 function PianoKeyInner(props) {
@@ -15,9 +15,9 @@ function PianoKeyInner(props) {
 
   const sendMouseDown = (e) => {
     e.preventDefault();
-    if (e.type !== 'mouseenter' || (e.type === 'mouseenter' && props.isMouseDown === true)) {
-      props.onMouseDown(props.note);
-    }
+    if (e.type === 'mouseover') {
+      if (props.isMouseDown) props.onMouseDown(props.note);
+    } else props.onMouseDown(props.note);
   };
 
   const sendMouseUp = (e) => {
@@ -26,29 +26,39 @@ function PianoKeyInner(props) {
   };
 
   const mapNoteToClass = (note) => {
-    const mapNote = note.slice(0,1);
+    const mapNote = note.slice(0, 1);
     switch (mapNote) {
-      case 'A': 
-      case 'B': 
-      case 'D': 
-      case 'E': 
-      case 'G': return ' '.concat(mapNote.toLowerCase());
-      default: return '';
+      case 'A':
+      case 'B':
+      case 'D':
+      case 'E':
+      case 'G':
+        return ' '.concat(mapNote.toLowerCase());
+      default:
+        return '';
     }
   };
 
   return (
-    <div role='button' 
-      className={'pianoKey ' + (props.note.length < 3 ? 'keyWhite' + mapNoteToClass(props.note): 'keyBlack') + (props.currentlyPlaying ? ' keyPressed' : '')} 
-      onMouseDown={sendMouseDown} 
-      onMouseUp={sendMouseUp} 
-      onMouseLeave={sendMouseUp} 
-      onMouseEnter={sendMouseDown} 
-      onTouchStart={sendMouseDown} 
+    <div
+      role="button"
+      className={
+        'pianoKey ' +
+        (props.note.length < 3
+          ? 'keyWhite' + mapNoteToClass(props.note)
+          : 'keyBlack') +
+        (props.currentlyPlaying ? ' keyPressed' : '')
+      }
+      onMouseDown={sendMouseDown}
+      onMouseUp={sendMouseUp}
+      onMouseOver={sendMouseDown}
+      onMouseOut={sendMouseUp}
+      onTouchStart={sendMouseDown}
       onTouchEnd={sendMouseUp}
       onTouchMove={sendMouseDown}
-      onTouchCancel={sendMouseUp}>
-      <div role='button' className={'keyText'}>
+      onTouchCancel={sendMouseUp}
+    >
+      <div role="button" className={'keyText'}>
         {props.triggerKey}
       </div>
     </div>
