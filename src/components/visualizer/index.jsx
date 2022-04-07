@@ -1,9 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-
+import React from "react";
+import PropTypes from "prop-types";
 
 /**
- * Uses requestAnimationFrame to drive a roughly 60 FPS output. 
+ * Uses requestAnimationFrame to drive a roughly 60 FPS output.
  * Holds the audio time domain data in state, which is passed via props to a Waveform component that does the real rendering.
  * TODO: Implement a way to "isolate" waveform/snapshot a waveform
  */
@@ -17,15 +16,15 @@ export class Visualizer extends React.Component {
 
     this.analyser = analyser;
     this.bufferLength = bufferLength;
-    
+
     const dataArray = new Uint8Array(bufferLength);
-    this.state = {dataArray: dataArray};
+    this.state = { dataArray: dataArray };
   }
 
   static propTypes = {
     audioCtx: PropTypes.object.isRequired,
     synth: PropTypes.object.isRequired,
-  }
+  };
 
   componentDidMount() {
     this.rAF = requestAnimationFrame(this.updateAnimationState);
@@ -34,14 +33,14 @@ export class Visualizer extends React.Component {
   componentWillUnmount() {
     cancelAnimationFrame(this.rAF);
   }
-  
+
   updateAnimationState = () => {
     const newDataArray = new Uint8Array(this.bufferLength);
     this.analyser.getByteTimeDomainData(newDataArray);
-    this.setState(prevState => ({ dataArray: newDataArray }));
+    this.setState((prevState) => ({ dataArray: newDataArray }));
     this.rAF = requestAnimationFrame(this.updateAnimationState);
-  }
-  
+  };
+
   render() {
     return (
       <VisualWaveform
@@ -53,8 +52,8 @@ export class Visualizer extends React.Component {
 }
 
 /**
- * Uses props.dataArray to output audio data on an HTML canvas element. 
- * TODO: Convert to functional component & test. 
+ * Uses props.dataArray to output audio data on an HTML canvas element.
+ * TODO: Convert to functional component & test.
  */
 
 function VisualWaveform(props) {
@@ -65,18 +64,18 @@ function VisualWaveform(props) {
     if (!canvasRef.current) return () => {};
 
     const canvas = canvasRef.current;
-    const canvasCtx = canvas.getContext('2d');
+    const canvasCtx = canvas.getContext("2d");
 
     if (!canvasCtx) return;
 
     const WIDTH = canvas.width;
     const HEIGHT = canvas.height;
 
-    canvasCtx.fillStyle = 'rgb(0,0,0)';
+    canvasCtx.fillStyle = "rgb(0,0,0)";
     canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
 
     canvasCtx.lineWidth = 1;
-    canvasCtx.strokeStyle = 'rgb(255, 255, 255)';
+    canvasCtx.strokeStyle = "rgb(255, 255, 255)";
 
     canvasCtx.beginPath();
 
@@ -100,5 +99,5 @@ function VisualWaveform(props) {
     canvasCtx.stroke();
   }
 
-  return <canvas className='waveform' ref={canvasRef}/>;
+  return <canvas className="waveform" ref={canvasRef} />;
 }

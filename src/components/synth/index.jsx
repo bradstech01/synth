@@ -1,15 +1,10 @@
 import './style.scss';
 import * as Tone from 'tone';
 import React from 'react';
-import {Visualizer} from '../visualizer';
-import {MusicGui} from '../musicGui';
-import {SettingsGui} from '../settingsGui';
-import {Sequencer} from '../sequencer';
-import keyMap from '../../scripts/keyMap.js';
-
-  /**
-   * Root of the app. Contains a visualizer, a music GUI (keyboard & related controls), and a settings GUI to control the synth.
-   */
+import { Visualizer } from '../visualizer';
+import { Keyboard } from '../keyboard';
+import { SettingsGui } from '../settingsGui';
+import { Sequencer } from '../sequencer';
 
 class Synth extends React.Component {
   constructor(props) {
@@ -17,28 +12,29 @@ class Synth extends React.Component {
 
     this.state = {
       hasToneStarted: false,
-      currentlyPlaying: []
     };
 
     this.setUpMIDI();
-    const reverb = new Tone.Reverb(1).toDestination();
-    const synth = new Tone.PolySynth(Tone.MonoSynth).connect(reverb).toDestination();
-    Tone.Destination.volume.value = -10
-
+    const synth = new Tone.PolySynth(Tone.MonoSynth).toDestination();
+    Tone.Destination.volume.value = -18;
     const audioCtx = Tone.getContext();
 
     this.synth = synth;
 
     this.synth.set({
       filter: {
-        frequency: 0
+        frequency: 0,
+        rolloff: -48,
       },
       filterEnvelope: {
-        attack: 0,
+        baseFrequency: 20,
+        attack: 1,
         decay: 2,
         sustain: 0,
-        release: 1
-      }
+        release: 1,
+        octaves: 6,
+        attackCurve: 'exponential',
+      },
     });
     this.audioCtx = audioCtx;
 
@@ -46,76 +42,40 @@ class Synth extends React.Component {
   }
 
   componentDidMount() {
-    document.addEventListener('keydown',this.startTone);
-    document.addEventListener('mousedown',this.startTone);
+    document.addEventListener('keydown', this.startTone);
+    document.addEventListener('mousedown', this.startTone);
   }
 
   async startTone(e) {
-    if (!this.state.hasToneStarted){
+    if (!this.state.hasToneStarted) {
       await Tone.start();
       this.setState({
         hasToneStarted: true,
       });
       this.context = Tone.context;
-      document.removeEventListener('keydown',this.startTone);
-      document.removeEventListener('mousedown',this.startTone);
-      document.addEventListener('keydown', this.handleKeyPress);
-      document.addEventListener('keyup', this.handleKeyRelease);
+      document.removeEventListener('keydown', this.startTone);
+      document.removeEventListener('mousedown', this.startTone);
     }
   }
 
-  //Event handler functions
-  //handles the key press within app; does not get passed around
-  handleKeyPress = (e) => {
-    if(keyMap(e.key)) {
-      this.addToCurrentlyPlaying(keyMap(e.key));
-    }
-  };
-
-  //handles the key release within app; does not get passed around
-  handleKeyRelease = (e) => {
-    if(keyMap(e.key)) {
-      this.removeFromCurrentlyPlaying(keyMap(e.key));
-    }
-  };
-
-  addToCurrentlyPlaying = (note) => {
-    if (!this.state.currentlyPlaying.includes(note)) {
-      let newPlaying = this.state.currentlyPlaying;
-      newPlaying.push(note);
-      this.setState({
-        currentlyPlaying: newPlaying
-      })
-    }
-  };
-
-  removeFromCurrentlyPlaying = (note) => {
-    if (this.state.currentlyPlaying.includes(note)) {
-      let newPlaying = this.state.currentlyPlaying.filter((value) => {
-        return value !== note;
-      });
-      this.setState({
-        currentlyPlaying: newPlaying
-      })
-    }
-  }
-  
   //callback passed to piano keys to trigger attack. arrow function to maintain "this"
   triggerNote = (note) => {
-      this.synth.triggerAttack(note,Tone.now());
-  }
+    this.synth.triggerAttack(note, Tone.now(), 0.3);
+  };
 
   //callback passed to piano keys to trigger release. arrow function to maintain "this"
   triggerRelease = (note) => {
-     this.synth.triggerRelease(note,Tone.now());
-  }
+    this.synth.triggerRelease(note, Tone.now());
+  };
 
   setUpMIDI() {
     // request MIDI access
     if (navigator.requestMIDIAccess) {
-      navigator.requestMIDIAccess({
-        sysex: false // this defaults to 'false' and we won't be covering sysex in this article.
-      }).then(onMIDISuccess, onMIDIFailure);
+      navigator
+        .requestMIDIAccess({
+          sysex: false, // this defaults to 'false' and we won't be covering sysex in this article.
+        })
+        .then(onMIDISuccess, onMIDIFailure);
     } else {
       console.log('No MIDI support in your browser.');
     }
@@ -127,55 +87,48 @@ class Synth extends React.Component {
     }
 
     function onMIDIFailure(e) {
-        // when we get a failed response, run this code
-        console.log('No access to MIDI devices or your browser doesn\'t support WebMIDI API. Please use WebMIDIAPIShim ' + e);
+      // when we get a failed response, run this code
+      console.log(
+        "No access to MIDI devices or your browser doesn't support WebMIDI API. Please use WebMIDIAPIShim " +
+          e
+      );
     }
   }
 
   //rendering methods
   renderSettingsGui() {
     if (this.state.hasToneStarted) {
-      return (
-        <div className='settingsGui'>
-          <SettingsGui 
-          synth={this.synth}/>
-        </div>
-      ); 
+      return <SettingsGui synth={this.synth} />;
     }
   }
 
   renderMusicGui() {
     if (this.state.hasToneStarted) {
       return (
-        <div className='musicGui'>
-          <MusicGui
-            currentlyPlaying={this.state.currentlyPlaying}
+        <div className="musicGui">
+          <Keyboard
             triggerNote={this.triggerNote}
             triggerRelease={this.triggerRelease}
-            onMouseDown={this.addToCurrentlyPlaying}
-            onMouseUp={this.removeFromCurrentlyPlaying}
           />
         </div>
       );
-    }
-    else {
+    } else {
       return (
-        <div className='splash'>
+        <div className="splash">
           <h1>a synth</h1>
           <h2>press any button to begin...</h2>
-        </div>      
-      )
+        </div>
+      );
     }
   }
 
   renderVisualizer() {
     if (this.state.hasToneStarted) {
       return (
-        <div className='visualizer'>
-          <Visualizer
-            audioCtx = {this.audioCtx}
-            synth = {this.synth}
-          />
+        <div className="visualizerContainer">
+          <div className="visualizer">
+            <Visualizer audioCtx={this.audioCtx} synth={this.synth} />
+          </div>
         </div>
       );
     }
@@ -184,10 +137,10 @@ class Synth extends React.Component {
   renderSequencer() {
     if (this.state.hasToneStarted) {
       return (
-        <div className='sequencer'>
+        <div className="sequencer">
           <Sequencer
             currentlyPlaying={this.state.currentlyPlaying}
-            synth = {this.synth}
+            synth={this.synth}
           />
         </div>
       );
@@ -196,20 +149,18 @@ class Synth extends React.Component {
 
   render() {
     return (
-      <div className='wrapper'>
+      <div className="wrapper">
         {this.renderVisualizer()}
-        {this.renderSequencer()}
         {this.renderSettingsGui()}
         {this.renderMusicGui()}
+        {this.renderSequencer()}
       </div>
     );
   }
 }
 
 function app() {
-  return (
-      <Synth />
-  );
+  return <Synth />;
 }
 
 export default app;
