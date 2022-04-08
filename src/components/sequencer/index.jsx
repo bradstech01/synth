@@ -166,23 +166,23 @@ export class Sequencer extends React.Component {
 
   renderControls = () => {
     return (
-      <div className="seqControls grid gridCenter">
+      <div className="seqControls">
         <div
-          className="seqStart gr1 gc1 gridItem"
+          className="seqStart"
           role="button"
           onMouseDown={this.handleSeqStart}
         ></div>
         <div
-          className="seqRecord gr1 gc2 gridItem"
+          className="seqRecord"
           role="button"
           onMouseDown={this.handleSeqRecord}
         ></div>
-        <div className="bpmDisplay gr1 gc3 gridItem">{this.state.bpm}</div>
+        <div className="bpmDisplay">{this.state.bpm}</div>
         <div className="bpmButtons grid gr1 gc4">
           <div className="bpmUp gr1 gc1 marg5" onMouseDown={this.raiseBpm} />
           <div className="bpmDown gr2 gc1 marg5" onMouseDown={this.lowerBpm} />
         </div>
-        <div className="grid gr1 gc5">
+        <div className="restHold gr1 gc5">
           <div className="rest gr1 gc1" onMouseDown={this.addRest}>
             rest
           </div>
