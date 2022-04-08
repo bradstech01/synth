@@ -239,7 +239,7 @@ export class SettingsGui extends React.Component {
 
   renderOscillatorSelection = () => {
     return (
-      <div className="settingContainer gc1 gr1">
+      <div className="oscillatorSelection">
         <div className="settingsHdr">oscillator</div>
         <div className="settingGrp">
           {this.renderSelectSetting('oscillator', 'type', [
@@ -255,14 +255,14 @@ export class SettingsGui extends React.Component {
 
   renderFilterEnvSettings = () => {
     return (
-      <div className="settingContainer gc1 gr2">
+      <div className="lpfEnv settingBox">
         <div className="settingsHdr">filter env</div>
-        <div className="settingGrp">
+        <div className="settingGrp lpfSettings">
           {this.renderSynthSetting(
             'env amt',
             'filterEnvelope',
             'octaves',
-            'freq gc1 gr1',
+            'freq',
             0,
             24,
             0.01
@@ -271,7 +271,7 @@ export class SettingsGui extends React.Component {
             'env frequency',
             'filterEnvelope',
             'baseFrequency',
-            'lpFreq gc3 gr1',
+            'lpFreq',
             0,
             500,
             1
@@ -280,7 +280,7 @@ export class SettingsGui extends React.Component {
             'attack',
             'filterEnvelope',
             'attack',
-            'lpA gc1 gr2',
+            'lpA',
             0,
             10,
             0.01
@@ -289,7 +289,7 @@ export class SettingsGui extends React.Component {
             'decay',
             'filterEnvelope',
             'decay',
-            'lpD gc2 gr2',
+            'lpD',
             0,
             10,
             0.01
@@ -298,7 +298,7 @@ export class SettingsGui extends React.Component {
             'sustain',
             'filterEnvelope',
             'sustain',
-            'lpS gc3 gr2',
+            'lpS',
             0,
             1,
             0.01
@@ -307,7 +307,7 @@ export class SettingsGui extends React.Component {
             'release',
             'filterEnvelope',
             'release',
-            'lpR gc4 gr2',
+            'lpR',
             0,
             4,
             0.01
@@ -319,7 +319,7 @@ export class SettingsGui extends React.Component {
 
   renderAmpEnvSettings = () => {
     return (
-      <div className="settingContainer gc2 gr2">
+      <div className="ampEnv">
         <div className="settingsHdr">amp env</div>
         <div className="settingGrp">
           {this.renderSynthSetting(
@@ -365,10 +365,10 @@ export class SettingsGui extends React.Component {
 
   renderVoiceFx = () => {
     return (
-      <React.Fragment>
-        <div className="settingContainer gc2 gr1 grid gridCenter">
-          <div className="settingsHdr gc1 gr1">width</div>
-          <div className="settingGrp gc1 gr2">
+      <div className="voiceFx">
+        <div className="width">
+          <div className="settingsHdr">width</div>
+          <div className="settingGrp">
             {this.renderFxSetting(
               'stereo amt',
               'stereoWidener',
@@ -381,9 +381,9 @@ export class SettingsGui extends React.Component {
             )}
           </div>
         </div>
-        <div className="settingContainer gc3 gr1 grid gridCenter">
-          <div className="settingsHdr gc3 gr1">eq</div>
-          <div className="settingGrp gridCenter gc3 gr2 grid">
+        <div className="eq">
+          <div className="settingsHdr">eq</div>
+          <div className="settingGrp">
             {this.renderFxSetting(
               'low',
               'eq',
@@ -416,9 +416,9 @@ export class SettingsGui extends React.Component {
             )}
           </div>
         </div>
-        <div className="settingContainer gc4 gr1 grid gridCenter">
-          <div className="settingsHdr gc5 gr1">distortion</div>
-          <div className="settingGrp gridCenter gc5 gr2">
+        <div className="distortion">
+          <div className="settingsHdr">distortion</div>
+          <div className="settingGrp">
             {this.renderFxSetting(
               'amount',
               'distortion',
@@ -431,14 +431,14 @@ export class SettingsGui extends React.Component {
             )}
           </div>
         </div>
-      </React.Fragment>
+      </div>
     );
   };
 
   renderTimeFx = () => {
     return (
       <React.Fragment>
-        <div className="settingContainer gc6 gr1 grid gridCenter">
+        <div className="gc6 gr1 grid gridCenter">
           <div className="settingsHdr gc1 gr1">delay</div>
           <div className="settingGrp gridCenter gc1 gr2">
             {this.renderFxSetting(
@@ -463,7 +463,7 @@ export class SettingsGui extends React.Component {
             )}
           </div>
         </div>
-        <div className="settingContainer gc7 gr1 grid gridCenter">
+        <div className="gc7 gr1 grid gridCenter">
           <div className="settingsHdr gc3 gr1">reverb</div>
           <div className="settingGrp gridCenter gc3 gr2 grid">
             {this.renderFxSetting(
@@ -488,7 +488,7 @@ export class SettingsGui extends React.Component {
             )}
           </div>
         </div>
-        <div className="settingContainer gc7 gr2 grid gridCenter">
+        <div className="gc7 gr2 grid gridCenter">
           <div className="settingsHdr gc5 gr1">chorus</div>
           <div className="settingGrp gridCenter gc5 gr2">
             {this.renderFxSetting(
@@ -513,7 +513,7 @@ export class SettingsGui extends React.Component {
             )}
           </div>
         </div>
-        <div className="settingContainer gc8 gr1 grid gridCenter">
+        <div className="gc8 gr1 grid gridCenter">
           <div className="settingsHdr gc5 gr1">tremolo</div>
           <div className="settingGrp gridCenter gc5 gr2">
             {this.renderFxSetting(
@@ -545,12 +545,12 @@ export class SettingsGui extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <div className="settingsGuiLeft settingsGui grid gridCenter">
+        <div className="settingsGuiLeft settingsGui">
           {this.renderOscillatorSelection()}
+          {this.renderAmpEnvSettings()}
           {this.renderFilterEnvSettings()}
         </div>
         <div className="settingsGuiMid settingsGui grid gridCenter">
-          {this.renderAmpEnvSettings()}
           {this.renderVoiceFx()}
         </div>
         <div className="settingsGuiRight settingsGui grid gridCenter">
