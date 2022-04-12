@@ -16,15 +16,15 @@ class Synth extends React.Component {
 
     this.setUpMIDI();
     const synth = new Tone.PolySynth(Tone.MonoSynth).toDestination();
-    Tone.Destination.volume.value = -18;
+    Tone.Destination.volume.value = -15;
     const audioCtx = Tone.getContext();
 
     this.synth = synth;
 
     this.synth.set({
       filter: {
-        frequency: 0,
-        rolloff: -48,
+        frequency: 20,
+        rolloff: -24,
       },
       filterEnvelope: {
         baseFrequency: 20,
@@ -33,7 +33,8 @@ class Synth extends React.Component {
         sustain: 0,
         release: 1,
         octaves: 6,
-        attackCurve: 'exponential',
+        attackCurve: 'linear',
+        delayCurve: 'linear',
       },
     });
     this.audioCtx = audioCtx;
@@ -137,12 +138,10 @@ class Synth extends React.Component {
   renderSequencer() {
     if (this.state.hasToneStarted) {
       return (
-        <div className="sequencer">
-          <Sequencer
-            currentlyPlaying={this.state.currentlyPlaying}
-            synth={this.synth}
-          />
-        </div>
+        <Sequencer
+          currentlyPlaying={this.state.currentlyPlaying}
+          synth={this.synth}
+        />
       );
     }
   }

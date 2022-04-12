@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 export function SequencerStep(props) {
   const setSelfAsActive = (e) => {
-    props.beatActivator((props.step.beat - 1) % 8);
+    props.beatActivator((props.step.beat - 1) % props.steps.length);
   };
 
   return (
@@ -11,13 +11,14 @@ export function SequencerStep(props) {
       onMouseDown={setSelfAsActive}
       key={props.step.beat}
       className={
-        'step gc' +
-        props.step.beat +
-        (props.step.beat % 8 === (props.beat + 1) % 8 ? ' activeStep' : '')
+        'step' +
+        (props.step.beat % props.steps.length ===
+        (props.beat + 1) % props.steps.length
+          ? ' activeStep'
+          : '')
       }
     >
-      {props.step.beat}
-      <div className={'gr2 stepInput'} beat={props.step.beat}>
+      <div className={'stepNoteDisplay'} beat={props.step.beat}>
         {props.steps[props.step.beat - 1].note}
       </div>
     </div>

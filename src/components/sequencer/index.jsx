@@ -8,13 +8,8 @@ export class Sequencer extends React.Component {
   constructor(props) {
     super(props);
     let steps = [];
-
-    for (let i = 0; i < 8; i++) {
-      steps[i] = {
-        beat: i + 1,
-        note: 'rest',
-      };
-    }
+    let numSteps = 64;
+    this.numSteps = numSteps;
 
     this.state = {
       bpm: 120,
@@ -23,6 +18,13 @@ export class Sequencer extends React.Component {
       recording: false,
       beat: 0,
     };
+
+    for (let i = 0; i < this.numSteps; i++) {
+      steps[i] = {
+        beat: i + 1,
+        note: 'rest',
+      };
+    }
 
     this.currentNote = '';
   }
@@ -52,7 +54,7 @@ export class Sequencer extends React.Component {
         );
         this.currentNote = this.state.steps[this.state.beat].note;
       }
-      this.setState({ beat: (this.state.beat + 1) % 8 });
+      this.setState({ beat: (this.state.beat + 1) % this.numSteps });
     }, '8n');
   }
 
@@ -113,7 +115,7 @@ export class Sequencer extends React.Component {
       return value !== note;
     });
     if (this.currentStepNotes.length === 0) {
-      this.setState({ beat: (this.state.beat + 1) % 8 });
+      this.setState({ beat: (this.state.beat + 1) % this.numSteps });
     }
   };
 
@@ -150,7 +152,7 @@ export class Sequencer extends React.Component {
     if (this.state.recording) {
       let newState = Object.assign({}, this.state);
       newState.steps[this.state.beat].note = 'rest';
-      newState.beat = (this.state.beat + 1) % 8;
+      newState.beat = (this.state.beat + 1) % this.numSteps;
       this.setState(newState);
     }
   };
@@ -159,7 +161,7 @@ export class Sequencer extends React.Component {
     if (this.state.recording) {
       let newState = this.state;
       newState.steps[this.state.beat].note = 'hold';
-      newState.beat = (this.state.beat + 1) % 8;
+      newState.beat = (this.state.beat + 1) % this.numSteps;
       this.setState(newState);
     }
   };
@@ -177,17 +179,23 @@ export class Sequencer extends React.Component {
           role="button"
           onMouseDown={this.handleSeqRecord}
         ></div>
-        <div className="bpmDisplay">{this.state.bpm}</div>
-        <div className="bpmButtons grid gr1 gc4">
-          <div className="bpmUp gr1 gc1 marg5" onMouseDown={this.raiseBpm} />
-          <div className="bpmDown gr2 gc1 marg5" onMouseDown={this.lowerBpm} />
-        </div>
-        <div className="restHold gr1 gc5">
-          <div className="rest gr1 gc1" onMouseDown={this.addRest}>
-            rest
+        <div className="bpmBox">
+          <div className="bpmDisplayBox">
+            <div className="bpmDisplay">
+              <span>{this.state.bpm}</span>
+            </div>
           </div>
-          <div className="hold gr2 gc1" onMouseDown={this.addHold}>
-            hold
+          <div className="bpmButtons">
+            <div className="bpmUp" onMouseDown={this.raiseBpm} />
+            <div className="bpmDown" onMouseDown={this.lowerBpm} />
+          </div>
+        </div>
+        <div className="seqCommands">
+          <div className="rest" onMouseDown={this.addRest}>
+            <span>rest</span>
+          </div>
+          <div className="hold" onMouseDown={this.addHold}>
+            <span>hold</span>
           </div>
         </div>
       </div>
@@ -196,18 +204,20 @@ export class Sequencer extends React.Component {
 
   renderSequence = (steps) => {
     return (
-      <div className="steps grid gridCenter">
-        {steps.map((step) => {
-          return (
-            <SequencerStep
-              key={step.beat}
-              step={step}
-              steps={this.state.steps}
-              beat={this.state.beat}
-              beatActivator={this.updateActiveBeat}
-            />
-          );
-        })}
+      <div className="stepsContainer">
+        <div className="steps">
+          {steps.map((step) => {
+            return (
+              <SequencerStep
+                key={step.beat}
+                step={step}
+                steps={this.state.steps}
+                beat={this.state.beat}
+                beatActivator={this.updateActiveBeat}
+              />
+            );
+          })}
+        </div>
       </div>
     );
   };
@@ -216,10 +226,10 @@ export class Sequencer extends React.Component {
 
   render() {
     return (
-      <React.Fragment>
+      <div className="sequencer">
         {this.renderControls()}
         {this.renderSequence(this.state.steps)}
-      </React.Fragment>
+      </div>
     );
   }
 }
