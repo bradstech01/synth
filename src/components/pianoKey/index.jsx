@@ -49,14 +49,14 @@ function PianoKeyInner(props) {
           : 'keyBlack') +
         (props.currentlyPlaying ? ' keyPressed' : '')
       }
-      onMouseDown={sendMouseDown}
-      onMouseUp={sendMouseUp}
-      onMouseOver={sendMouseDown}
-      onMouseOut={sendMouseUp}
-      onTouchStart={sendMouseDown}
-      onTouchEnd={sendMouseUp}
-      onTouchMove={sendMouseDown}
-      onTouchCancel={sendMouseUp}
+      onMouseDown={!props.isKeyDown ? sendMouseDown : undefined}
+      onMouseUp={!props.isKeyDown ? sendMouseUp : undefined}
+      onMouseOver={!props.isKeyDown ? sendMouseDown : undefined}
+      onMouseOut={!props.isKeyDown ? sendMouseUp : undefined}
+      onTouchStart={!props.isKeyDown ? sendMouseDown : undefined}
+      onTouchEnd={!props.isKeyDown ? sendMouseUp : undefined}
+      onTouchMove={!props.isKeyDown ? sendMouseDown : undefined}
+      onTouchCancel={!props.isKeyDown ? sendMouseUp : undefined}
     >
       <div role="button" className={'keyText'}>
         {props.triggerKey}
@@ -67,7 +67,7 @@ function PianoKeyInner(props) {
 
 PianoKeyInner.propTypes = {
   note: PropTypes.string.isRequired,
-  isMouseDown: PropTypes.bool.isRequired,
+  isKeyDown: PropTypes.bool.isRequired,
   currentlyPlaying: PropTypes.bool.isRequired,
   onMouseDown: PropTypes.func.isRequired,
   onMouseUp: PropTypes.func.isRequired,

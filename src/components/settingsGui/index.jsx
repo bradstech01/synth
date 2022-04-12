@@ -5,7 +5,7 @@ import * as Tone from 'tone';
 export class SettingsGui extends React.Component {
   constructor(props) {
     super(props);
-    const synthSettings = this.props.synth.get();
+    let synthSettings = this.getDefaults();
 
     this.state = {
       synthSettings: synthSettings,
@@ -60,38 +60,35 @@ export class SettingsGui extends React.Component {
     reverb: PropTypes.object,
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    let synthSettings = Object.assign({}, this.state['synthSettings']);
-    //this.props.synth.releaseAll(Tone.immediate());
-    this.props.synth.set(synthSettings);
-  }
-
   componentDidMount() {
     document.addEventListener('keydown', (e) => {
       if (e.key === 'p') {
         console.log(this.fx);
         console.log(this.props.synth);
         console.log(this.props.synth.get());
+        console.log(this.state);
       }
     });
   }
 
-  handleChangeNumeric = (e) => {
-    e.stopPropagation();
-    if (/[0-9]{1,}\.{0,1}[0-9]{1,}/.exec(e.target.value)) {
-      let returnState = { ...this.state };
-      returnState['synthSettings'][e.target.attributes.section.nodeValue][
-        e.target.name
-      ] = e.target.value;
-      this.setState(returnState);
-    }
-  };
+  /*componentDidUpdate(prevProps, prevState) {
+    const synthSettings = { ...this.state['synthSettings'] };
+    this.props.synth.set(synthSettings);
+  }*/
 
   handleChange = (e) => {
-    let returnState = Object.assign({}, this.state.synthSettings);
-    returnState['synthSettings'][e.target.attributes.section.nodeValue][
-      e.target.name
-    ] = e.target.value;
+    const val = e.target.value;
+    const section = e.target.attributes.section.nodeValue;
+    const name = e.target.name;
+
+    const newSetting = {};
+    newSetting[section] = {};
+    newSetting[section][name] = val;
+    this.props.synth.set(newSetting);
+
+    const returnState = { ...this.state.synthSettings };
+    returnState[section][name] = val;
+
     this.setState(returnState);
   };
 
@@ -148,6 +145,30 @@ export class SettingsGui extends React.Component {
     this.setState(returnState);
   };
 
+  getDefaults = () => {
+    const synthSettings = this.props.synth.get();
+    const stateSettings = {
+      oscillator: {
+        type: synthSettings.oscillator.type,
+      },
+      envelope: {
+        attack: synthSettings.envelope.attack,
+        decay: synthSettings.envelope.decay,
+        sustain: synthSettings.envelope.sustain,
+        release: synthSettings.envelope.release,
+      },
+      filterEnvelope: {
+        octaves: synthSettings.filterEnvelope.octaves,
+        baseFrequency: synthSettings.filterEnvelope.baseFrequency,
+        attack: synthSettings.filterEnvelope.attack,
+        decay: synthSettings.filterEnvelope.decay,
+        sustain: synthSettings.filterEnvelope.sustain,
+        release: synthSettings.filterEnvelope.release,
+      },
+    };
+    return stateSettings;
+  };
+
   renderSynthSetting = (
     label,
     subProp,
@@ -159,7 +180,7 @@ export class SettingsGui extends React.Component {
   ) => {
     return (
       <div className={'setting gridCenter' + extraCss}>
-        <label className="gc1 gr1">{label}</label>
+        <label>{label}</label>
         <div className="sliderWrapper">
           <input
             className="innerSetting slider gc1 gr2"
@@ -170,7 +191,7 @@ export class SettingsGui extends React.Component {
             max={max}
             value={this.state.synthSettings[subProp][settingName]}
             step={step}
-            onChange={this.handleChangeNumeric}
+            onChange={this.handleChange}
           />
         </div>
         <span className="textCenter">
@@ -182,7 +203,7 @@ export class SettingsGui extends React.Component {
 
   renderSelectSetting = (subProp, settingName, optionAry) => {
     return (
-      <React.Fragment>
+      <div className="oscillatorSelect grid">
         {optionAry.map((option) => {
           return (
             <div key={option} className={'osc' + option}>
@@ -200,7 +221,7 @@ export class SettingsGui extends React.Component {
             </div>
           );
         })}
-      </React.Fragment>
+      </div>
     );
   };
 
@@ -268,7 +289,7 @@ export class SettingsGui extends React.Component {
             0.01
           )}
           {this.renderSynthSetting(
-            'env frequency',
+            'env freq',
             'filterEnvelope',
             'baseFrequency',
             'lpFreq',
@@ -282,7 +303,7 @@ export class SettingsGui extends React.Component {
             'attack',
             'lpA',
             0,
-            10,
+            100,
             0.01
           )}
           {this.renderSynthSetting(
@@ -291,7 +312,7 @@ export class SettingsGui extends React.Component {
             'decay',
             'lpD',
             0,
-            10,
+            100,
             0.01
           )}
           {this.renderSynthSetting(
@@ -309,7 +330,7 @@ export class SettingsGui extends React.Component {
             'release',
             'lpR',
             0,
-            4,
+            24,
             0.01
           )}
         </div>
@@ -355,7 +376,7 @@ export class SettingsGui extends React.Component {
             'release',
             'ampR gc4 gr1',
             0,
-            4,
+            24,
             0.01
           )}
         </div>
@@ -382,7 +403,7 @@ export class SettingsGui extends React.Component {
           </div>
         </div>
         <div className="eq">
-          <div className="settingsHdr">eq</div>
+          <div className="settingsHdr">equalizer</div>
           <div className="settingGrp">
             {this.renderFxSetting(
               'low',
@@ -437,10 +458,10 @@ export class SettingsGui extends React.Component {
 
   renderTimeFx = () => {
     return (
-      <React.Fragment>
-        <div className="gc6 gr1 grid gridCenter">
-          <div className="settingsHdr gc1 gr1">delay</div>
-          <div className="settingGrp gridCenter gc1 gr2">
+      <div className="timeFx">
+        <div className="delay">
+          <div className="settingsHdr">delay</div>
+          <div className="settingGrp">
             {this.renderFxSetting(
               'time',
               'delay',
@@ -463,9 +484,9 @@ export class SettingsGui extends React.Component {
             )}
           </div>
         </div>
-        <div className="gc7 gr1 grid gridCenter">
-          <div className="settingsHdr gc3 gr1">reverb</div>
-          <div className="settingGrp gridCenter gc3 gr2 grid">
+        <div className="reverb">
+          <div className="settingsHdr">reverb</div>
+          <div className="settingGrp">
             {this.renderFxSetting(
               'mix',
               'reverb',
@@ -488,9 +509,9 @@ export class SettingsGui extends React.Component {
             )}
           </div>
         </div>
-        <div className="gc7 gr2 grid gridCenter">
-          <div className="settingsHdr gc5 gr1">chorus</div>
-          <div className="settingGrp gridCenter gc5 gr2">
+        <div className="chorus">
+          <div className="settingsHdr">chorus</div>
+          <div className="settingGrp">
             {this.renderFxSetting(
               'freq',
               'chorus',
@@ -513,9 +534,9 @@ export class SettingsGui extends React.Component {
             )}
           </div>
         </div>
-        <div className="gc8 gr1 grid gridCenter">
-          <div className="settingsHdr gc5 gr1">tremolo</div>
-          <div className="settingGrp gridCenter gc5 gr2">
+        <div className="tremolo">
+          <div className="settingsHdr">tremolo</div>
+          <div className="settingGrp">
             {this.renderFxSetting(
               'freq',
               'tremolo',
@@ -538,7 +559,7 @@ export class SettingsGui extends React.Component {
             )}
           </div>
         </div>
-      </React.Fragment>
+      </div>
     );
   };
 
@@ -550,10 +571,8 @@ export class SettingsGui extends React.Component {
           {this.renderAmpEnvSettings()}
           {this.renderFilterEnvSettings()}
         </div>
-        <div className="settingsGuiMid settingsGui grid gridCenter">
-          {this.renderVoiceFx()}
-        </div>
-        <div className="settingsGuiRight settingsGui grid gridCenter">
+        <div className="settingsGuiMid settingsGui">{this.renderVoiceFx()}</div>
+        <div className="settingsGuiRight settingsGui">
           {this.renderTimeFx()}
         </div>
       </React.Fragment>
