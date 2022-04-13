@@ -81,7 +81,7 @@ export class Keyboard extends React.Component {
     }
   };
 
-  renderPianoKey(note, octave, octaveShift, triggerKey) {
+  renderPianoKey(note, octave, octaveShift, triggerKey, hiddenOnMobile) {
     return (
       <PianoKey
         note={note + (octave + octaveShift)}
@@ -94,6 +94,7 @@ export class Keyboard extends React.Component {
         triggerRelease={this.props.triggerRelease}
         onMouseDown={this.addToCurrentlyPlaying}
         onMouseUp={this.removeFromCurrentlyPlaying}
+        hiddenOnMobile={hiddenOnMobile}
       />
     );
   }
@@ -119,18 +120,18 @@ export class Keyboard extends React.Component {
         {this.renderPianoKey('A#', 3, 0, '7')}
         {this.renderPianoKey('B', 3, 0, 'u')}
         {this.renderPianoKey('C', 4, 0, 'z')}
-        {this.renderPianoKey('C#', 4, 0, 's')}
-        {this.renderPianoKey('D', 4, 0, 'x')}
-        {this.renderPianoKey('D#', 4, 0, 'd')}
-        {this.renderPianoKey('E', 4, 0, 'c')}
-        {this.renderPianoKey('F', 4, 0, 'v')}
-        {this.renderPianoKey('F#', 4, 0, 'g')}
-        {this.renderPianoKey('G', 4, 0, 'b')}
-        {this.renderPianoKey('G#', 4, 0, 'h')}
-        {this.renderPianoKey('A', 4, 0, 'n')}
-        {this.renderPianoKey('A#', 4, 0, 'j')}
-        {this.renderPianoKey('B', 4, 0, 'm')}
-        {this.renderPianoKey('C', 5, 0, ',')}
+        {this.renderPianoKey('C#', 4, 0, 's', true)}
+        {this.renderPianoKey('D', 4, 0, 'x', true)}
+        {this.renderPianoKey('D#', 4, 0, 'd', true)}
+        {this.renderPianoKey('E', 4, 0, 'c', true)}
+        {this.renderPianoKey('F', 4, 0, 'v', true)}
+        {this.renderPianoKey('F#', 4, 0, 'g', true)}
+        {this.renderPianoKey('G', 4, 0, 'b', true)}
+        {this.renderPianoKey('G#', 4, 0, 'h', true)}
+        {this.renderPianoKey('A', 4, 0, 'n', true)}
+        {this.renderPianoKey('A#', 4, 0, 'j', true)}
+        {this.renderPianoKey('B', 4, 0, 'm', true)}
+        {this.renderPianoKey('C', 5, 0, ',', true)}
       </div>
     );
   }
