@@ -1,5 +1,5 @@
 export default function keyMap(key) {
-    let keyMap = {
+    const keyMap = {
         q: 'C3',
         2: 'C#3',
         w: 'D3',

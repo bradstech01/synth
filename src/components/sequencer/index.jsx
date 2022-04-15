@@ -8,8 +8,7 @@ export class Sequencer extends React.Component {
   constructor(props) {
     super(props);
     let steps = [];
-    let numSteps = 64;
-    this.numSteps = numSteps;
+    this.numSteps = 64;
 
     this.state = {
       bpm: 120,

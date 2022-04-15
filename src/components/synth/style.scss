@@ -25,10 +25,13 @@ html {
   margin: 2%;
 }
 
-.visualizer,.musicGui,.settingsGui {
+.visualizer,
+.musicGui,
+.settingsGui {
   background-color: #000;
   color: #fff;
 }
+
 .textCenter {
   text-align: center;
 }
@@ -36,37 +39,38 @@ html {
 
 
 @media only screen and (max-device-width: 480px) {
-  $keyboard_Width:  200vw;
-  $keyboard_Height: ($keyboard_Width * 0.18  );
-  $border_Width:    ($keyboard_Width * 0.0015);
-  $whiteKey_Count:  21;
+  $keyboard_Width: 200vw;
+  $keyboard_Height: ($keyboard_Width * 0.18);
+  $border_Width: ($keyboard_Width * 0.0015);
+  $whiteKey_Count: 21;
   $whiteKey_Height: $keyboard_Height;
-  $whiteKey_Width:  math.div($keyboard_Width, $whiteKey_Count);
+  $whiteKey_Width: math.div($keyboard_Width, $whiteKey_Count);
   $blackKey_Height: ($whiteKey_Height * 0.55);
-  $blackKey_Width:  ($whiteKey_Width  * 0.55);
+  $blackKey_Width: ($whiteKey_Width * 0.55);
   $blackKey_Offset: (-(math.div($blackKey_Width, 2)) - $border_Width);
 
-  $whiteKey_Color:       #eee;
-  $blackKey_Color:       #222222;
+  $whiteKey_Color: #eee;
+  $blackKey_Color: #222222;
   $blackKey_BorderColor: #000000;
   $whiteKey_BorderColor: #AAAAAA;
 
-  input[type=range] { 
+  input[type=range] {
     -webkit-appearance: none;
-    background: transparent; /* Otherwise white in Chrome */
+    background: transparent;
+    /* Otherwise white in Chrome */
   }
-  
+
   input[type=range]::-webkit-slider-runnable-track {
     background: #053a5f;
     height: 0.5rem;
   }
-  
+
   input[type=range]::-moz-range-track {
     background: #053a5f;
     height: 0.5rem;
     border-radius: 3px;
   }
-  
+
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     border: 1px solid #000000;
@@ -75,10 +79,12 @@ html {
     border-radius: 3px;
     background: #ffffff;
     cursor: pointer;
-    margin-top: -7px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; /* Add cool effects to your sliders! */
+    margin-top: -7px;
+    /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    /* Add cool effects to your sliders! */
   }
-  
+
   input[type=range]::-moz-range-thumb {
     -webkit-appearance: none;
     border: 1px solid #000000;
@@ -87,8 +93,10 @@ html {
     border-radius: 3px;
     background: #ffffff;
     cursor: pointer;
-    margin-top: -14px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; /* Add cool effects to your sliders! */
+    margin-top: -14px;
+    /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    /* Add cool effects to your sliders! */
   }
 
   .splash {
@@ -110,7 +118,7 @@ html {
     background-color: black;
 
     display: grid;
-    grid-template-columns: repeat(1,1fr);
+    grid-template-columns: repeat(1, 1fr);
     grid-template-rows: repeat(7, 1fr);
     column-gap: normal;
   }
@@ -175,14 +183,14 @@ html {
     grid-area: 5 / 1 / 5 / 1;
   }
 
-  
+
   .settingsHdr {
     font-size: 4em;
     text-align: center;
   }
 
   .voiceSettings {
-    grid-template-columns: repeat(3,fr);
+    grid-template-columns: repeat(3, fr);
     grid-template-rows: 1fr;
   }
 
@@ -272,8 +280,8 @@ html {
   .lpfSettings {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(8,minmax(0,12.5%));
-    grid-template-rows: repeat(1,minmax(0,100%));
+    grid-template-columns: repeat(8, minmax(0, 12.5%));
+    grid-template-rows: repeat(1, minmax(0, 100%));
   }
 
 
@@ -290,13 +298,13 @@ html {
     justify-content: center;
   }
 
-.stepsContainer {
-  width: 100%;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-evenly;
-}
-  
+  .stepsContainer {
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-evenly;
+  }
+
   .steps {
     width: 80%;
     display: flex;
@@ -325,7 +333,7 @@ html {
     border-width: 5vw 0vw 5vw 10vw;
     border-color: transparent transparent transparent #fff;
     border-radius: 3px;
-    }  
+  }
 
   .seqRecord {
     grid-area: 1 / 2 / 1 / 2;
@@ -337,10 +345,10 @@ html {
     border-radius: 10vw;
     margin: 5vw;
     outline: none;
-  } 
-  
+  }
+
   .bpmBox {
-    width:20vw;
+    width: 20vw;
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-evenly;
@@ -350,11 +358,11 @@ html {
     height: 100%;
     display: flex;
     flex-flow: column nowrap;
-    justify-content: space-evenly;  
+    justify-content: space-evenly;
   }
 
   .bpmDisplay {
-    display:flex;
+    display: flex;
     flex-flow: column nowrap;
     justify-content: space-evenly;
     width: 5vh;
@@ -409,15 +417,16 @@ html {
 
   }
 
-  .stepNoteDisplay { 
+  .stepNoteDisplay {
     width: 100%;
     height: 25%;
     margin-top: 37.5%;
   }
 
-  .rest,.hold {
+  .rest,
+  .hold {
     color: white;
-    border-radius:4px;
+    border-radius: 4px;
     border: 1px solid grey;
     margin: 2px;
     text-align: center;
@@ -579,14 +588,14 @@ html {
     display: flex;
     justify-content: space-evenly;
   }
-  
+
   .settingGrp {
     display: grid;
     border: 1px solid white;
     border-radius: 3px;
   }
 
-  .setting {  
+  .setting {
     font-size: 3em;
     text-align: center;
 
@@ -599,31 +608,36 @@ html {
     flex-shrink: 2;
   }
 
-  .keyboard > .pianoKey:last-child{
+  .keyboard>.pianoKey:last-child {
     border-right: $border_Width solid $whiteKey_BorderColor;
   }
 
   .keyWhite {
-    height:           $whiteKey_Height;
-    width:            $whiteKey_Width;
-    z-index:          1;
-    border-top:       $border_Width solid $whiteKey_BorderColor;
-    border-bottom:    $border_Width solid $whiteKey_BorderColor;
-    border-left:      $border_Width solid $whiteKey_BorderColor;
+    height: $whiteKey_Height;
+    width: $whiteKey_Width;
+    z-index: 1;
+    border-top: $border_Width solid $whiteKey_BorderColor;
+    border-bottom: $border_Width solid $whiteKey_BorderColor;
+    border-left: $border_Width solid $whiteKey_BorderColor;
     background-color: $whiteKey_Color;
     color: black;
   }
 
   .keyBlack {
-    height:           $blackKey_Height;
-    width:            $blackKey_Width;
-    z-index:          2;
-    border:           $border_Width solid $blackKey_BorderColor;
+    height: $blackKey_Height;
+    width: $blackKey_Width;
+    z-index: 2;
+    border: $border_Width solid $blackKey_BorderColor;
     background-color: $blackKey_Color;
     color: white;
   }
 
-  .a, .b, .d, .e, .g, .keyBlack{
+  .a,
+  .b,
+  .d,
+  .e,
+  .g,
+  .keyBlack {
     margin: 0 0 0 $blackKey_Offset;
   }
 
@@ -660,37 +674,38 @@ html {
 
 
 @media only screen and (min-device-width: 481px) {
-  $keyboard_Width:  70vw;
-  $keyboard_Height: ($keyboard_Width * 0.18  );
-  $border_Width:    ($keyboard_Width * 0.0015);
-  $whiteKey_Count:  21;
+  $keyboard_Width: 70vw;
+  $keyboard_Height: ($keyboard_Width * 0.18);
+  $border_Width: ($keyboard_Width * 0.0015);
+  $whiteKey_Count: 21;
   $whiteKey_Height: $keyboard_Height;
-  $whiteKey_Width:  math.div($keyboard_Width, $whiteKey_Count);
+  $whiteKey_Width: math.div($keyboard_Width, $whiteKey_Count);
   $blackKey_Height: ($whiteKey_Height * 0.55);
-  $blackKey_Width:  ($whiteKey_Width  * 0.55);
+  $blackKey_Width: ($whiteKey_Width * 0.55);
   $blackKey_Offset: (-(math.div($blackKey_Width, 2)) - $border_Width);
 
-  $whiteKey_Color:       #eee;
-  $blackKey_Color:       #222222;
+  $whiteKey_Color: #eee;
+  $blackKey_Color: #222222;
   $blackKey_BorderColor: #000000;
   $whiteKey_BorderColor: #AAAAAA;
 
-  input[type=range] { 
+  input[type=range] {
     -webkit-appearance: none;
-    background: transparent; /* Otherwise white in Chrome */
+    background: transparent;
+    /* Otherwise white in Chrome */
   }
-  
+
   input[type=range]::-webkit-slider-runnable-track {
     background: #053a5f;
     height: 0.5rem;
   }
-  
+
   input[type=range]::-moz-range-track {
     background: #053a5f;
     height: 0.5rem;
     border-radius: 3px;
   }
-  
+
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     border: 1px solid #000000;
@@ -699,10 +714,12 @@ html {
     border-radius: 3px;
     background: #ffffff;
     cursor: pointer;
-    margin-top: -4px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; /* Add cool effects to your sliders! */
+    margin-top: -4px;
+    /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    /* Add cool effects to your sliders! */
   }
-  
+
   input[type=range]::-moz-range-thumb {
     -webkit-appearance: none;
     border: 1px solid #000000;
@@ -711,8 +728,10 @@ html {
     border-radius: 3px;
     background: #ffffff;
     cursor: pointer;
-    margin-top: -14px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; /* Add cool effects to your sliders! */
+    margin-top: -14px;
+    /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    /* Add cool effects to your sliders! */
   }
 
   .splash {
@@ -735,8 +754,8 @@ html {
     /*overflow-x: hidden;*/
     overflow-y: hidden;
     display: grid;
-    grid-template-columns: repeat(3,minmax(0,33.333%));
-    grid-template-rows: repeat(3, minmax(0,33.333%));
+    grid-template-columns: repeat(3, minmax(0, 33.333%));
+    grid-template-rows: repeat(3, minmax(0, 33.333%));
     column-gap: normal;
   }
 
@@ -772,14 +791,14 @@ html {
     height: 33vh;
     grid-column: 1 / 1;
     grid-row: 1 / 1;
-    grid-template-columns: repeat(3,minmax(auto,33.333%));
-    grid-template-rows: repeat(2, minmax(auto,50%));
+    grid-template-columns: repeat(3, minmax(auto, 33.333%));
+    grid-template-rows: repeat(2, minmax(auto, 50%));
 
     display: flex;
     flex-flow: row wrap;
   }
 
-  .settingsGuiLeft > * {
+  .settingsGuiLeft>* {
     margin: 5px;
   }
 
@@ -799,18 +818,18 @@ html {
     grid-row: 1 / 1;
   }
 
-  .timeFx > * {
+  .timeFx>* {
     margin: 5px;
   }
 
-  
+
   .settingsHdr {
     font-size: 1em;
     text-align: center;
   }
 
   .voiceSettings {
-    grid-template-columns: repeat(3,fr);
+    grid-template-columns: repeat(3, fr);
     grid-template-rows: 1fr;
   }
 
@@ -902,8 +921,8 @@ html {
 
   .lpfSettings {
     display: grid;
-    grid-template-columns: repeat(4,minmax(0,25%));
-    grid-template-rows: repeat(2,minmax(0,50%));
+    grid-template-columns: repeat(4, minmax(0, 25%));
+    grid-template-rows: repeat(2, minmax(0, 50%));
   }
 
 
@@ -920,13 +939,13 @@ html {
     justify-content: center;
   }
 
-.stepsContainer {
-  width: 100%;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-evenly;
-}
-  
+  .stepsContainer {
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-evenly;
+  }
+
   .steps {
     width: 80%;
     display: flex;
@@ -955,7 +974,7 @@ html {
     border-width: 2.5vh 0vh 2.5vh 5vh;
     border-color: transparent transparent transparent #fff;
     border-radius: 3px;
-    }  
+  }
 
   .seqRecord {
     grid-area: 1 / 2 / 1 / 2;
@@ -967,24 +986,24 @@ html {
     border-radius: 5vh;
     margin: 2.5vh;
     outline: none;
-  } 
-  
+  }
+
   .bpmBox {
-    width:8vw;
+    width: 8vw;
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-evenly;
   }
 
-.bpmDisplayBox {
-  height: 100%;
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: space-evenly;  
-}
+  .bpmDisplayBox {
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-evenly;
+  }
 
   .bpmDisplay {
-    display:flex;
+    display: flex;
     flex-flow: column nowrap;
     justify-content: space-evenly;
     width: 5vh;
@@ -1032,15 +1051,16 @@ html {
 
   }
 
-  .stepNoteDisplay { 
+  .stepNoteDisplay {
     width: 100%;
     height: 25%;
     margin-top: 10px;
   }
 
-  .rest,.hold {
+  .rest,
+  .hold {
     color: white;
-    border-radius:4px;
+    border-radius: 4px;
     border: 1px solid grey;
     margin: 2px;
     text-align: center;
@@ -1201,14 +1221,14 @@ html {
     display: flex;
     justify-content: space-evenly;
   }
-  
+
   .settingGrp {
     display: grid;
     border: 1px solid white;
     border-radius: 3px;
   }
 
-  .setting {  
+  .setting {
     font-size: .8em;
     text-align: center;
 
@@ -1225,31 +1245,36 @@ html {
     height: 33vh;
   }
 
-  .keyboard > .pianoKey:last-child{
+  .keyboard>.pianoKey:last-child {
     border-right: $border_Width solid $whiteKey_BorderColor;
   }
 
   .keyWhite {
-    height:           $whiteKey_Height;
-    width:            $whiteKey_Width;
-    z-index:          1;
-    border-top:       $border_Width solid $whiteKey_BorderColor;
-    border-bottom:    $border_Width solid $whiteKey_BorderColor;
-    border-left:      $border_Width solid $whiteKey_BorderColor;
+    height: $whiteKey_Height;
+    width: $whiteKey_Width;
+    z-index: 1;
+    border-top: $border_Width solid $whiteKey_BorderColor;
+    border-bottom: $border_Width solid $whiteKey_BorderColor;
+    border-left: $border_Width solid $whiteKey_BorderColor;
     background-color: $whiteKey_Color;
     color: black;
   }
 
   .keyBlack {
-    height:           $blackKey_Height;
-    width:            $blackKey_Width;
-    z-index:          2;
-    border:           $border_Width solid $blackKey_BorderColor;
+    height: $blackKey_Height;
+    width: $blackKey_Width;
+    z-index: 2;
+    border: $border_Width solid $blackKey_BorderColor;
     background-color: $blackKey_Color;
     color: white;
   }
 
-  .a, .b, .d, .e, .g, .keyBlack{
+  .a,
+  .b,
+  .d,
+  .e,
+  .g,
+  .keyBlack {
     margin: 0 0 0 $blackKey_Offset;
   }
 

@@ -5,6 +5,8 @@ import { Visualizer } from '../visualizer';
 import { Keyboard } from '../keyboard';
 import { SettingsGui } from '../settingsGui';
 import { Sequencer } from '../sequencer';
+import keyMap from '../../scripts/keyMap.js';
+import midiMap from '../../scripts/midiMap.js';
 
 class Synth extends React.Component {
   constructor(props) {
@@ -12,11 +14,13 @@ class Synth extends React.Component {
 
     this.state = {
       hasToneStarted: false,
+      currentlyPlaying: [],
+      isMouseDown: false,
+      isKeyDown: false,
     };
 
-    this.setUpMIDI();
     const synth = new Tone.PolySynth(Tone.MonoSynth).toDestination();
-    Tone.Destination.volume.value = -15;
+    Tone.Destination.volume.value = -12;
     const audioCtx = Tone.getContext();
 
     this.synth = synth;
@@ -28,11 +32,11 @@ class Synth extends React.Component {
       },
       filterEnvelope: {
         baseFrequency: 20,
-        attack: 1,
+        attack: 0,
         decay: 2,
         sustain: 0,
         release: 1,
-        octaves: 6,
+        octaves: 10,
         attackCurve: 'linear',
         delayCurve: 'linear',
       },
@@ -54,19 +58,76 @@ class Synth extends React.Component {
         hasToneStarted: true,
       });
       this.context = Tone.context;
+      this.setUpMIDI();
+
       document.removeEventListener('keydown', this.startTone);
       document.removeEventListener('mousedown', this.startTone);
+      document.addEventListener('mousedown', this.setMouseFlag);
+      document.addEventListener('mouseup', this.setMouseFlag);
+      document.addEventListener('keydown', this.handleKeyPress);
+      document.addEventListener('keyup', this.handleKeyRelease);
     }
   }
 
   //callback passed to piano keys to trigger attack. arrow function to maintain "this"
-  triggerNote = (note) => {
-    this.synth.triggerAttack(note, Tone.now(), 0.3);
+  triggerNote = (note, velocity) => {
+    this.synth.triggerAttack(note, Tone.now(), velocity ? velocity : 0.5);
   };
 
   //callback passed to piano keys to trigger release. arrow function to maintain "this"
   triggerRelease = (note) => {
     this.synth.triggerRelease(note, Tone.now());
+  };
+
+  handleKeyPress = (e) => {
+    if (!this.state.isKeyDown) this.setState({ isKeyDown: true });
+
+    if (keyMap(e.key)) this.addToCurrentlyPlaying(keyMap(e.key));
+  };
+
+  //handles the key release within app; does not get passed around
+  handleKeyRelease = (e) => {
+    if (keyMap(e.key)) this.removeFromCurrentlyPlaying(keyMap(e.key));
+
+    if (this.state.currentlyPlaying.length === 0)
+      this.setState({ isKeyDown: false });
+  };
+
+  addToCurrentlyPlaying = (note) => {
+    if (!this.state.currentlyPlaying.includes(note)) {
+      let newPlaying = [...this.state.currentlyPlaying];
+      newPlaying.push(note);
+      this.setState({
+        currentlyPlaying: newPlaying,
+      });
+    }
+  };
+
+  removeFromCurrentlyPlaying = (note) => {
+    if (this.state.currentlyPlaying.includes(note)) {
+      let currentlyPlaying = [...this.state.currentlyPlaying];
+      let newPlaying = currentlyPlaying.filter((value) => {
+        return value !== note;
+      });
+      this.setState({
+        currentlyPlaying: newPlaying,
+      });
+    }
+  };
+
+  setMouseFlag = (e) => {
+    e.stopPropagation();
+    if (e.type === 'mousedown') this.setState({ isMouseDown: true });
+    else this.setState({ isMouseDown: false });
+
+    if (!this.state.isKeyDown && this.state.isMouseDown) {
+      document.removeEventListener('keydown', this.handleKeyPress);
+      document.removeEventListener('keyup', this.handleKeyRelease);
+    }
+    if (!this.state.isMouseDown) {
+      document.addEventListener('keydown', this.handleKeyPress);
+      document.addEventListener('keyup', this.handleKeyRelease);
+    }
   };
 
   setUpMIDI() {
@@ -76,25 +137,39 @@ class Synth extends React.Component {
         .requestMIDIAccess({
           sysex: false, // this defaults to 'false' and we won't be covering sysex in this article.
         })
-        .then(onMIDISuccess, onMIDIFailure);
+        .then(this.onMIDISuccess, this.onMIDIFailure);
     } else {
       console.log('No MIDI support in your browser.');
     }
-
-    // midi functions
-    function onMIDISuccess(midiAccess) {
-      // when we get a succesful response, run this code
-      console.log('MIDI Access Object', midiAccess);
-    }
-
-    function onMIDIFailure(e) {
-      // when we get a failed response, run this code
-      console.log(
-        "No access to MIDI devices or your browser doesn't support WebMIDI API. Please use WebMIDIAPIShim " +
-          e
-      );
-    }
   }
+
+  // midi functions
+  onMIDISuccess = (midiAccess) => {
+    // when we get a succesful response, run this code
+    console.log('MIDI Access Successful', midiAccess);
+    for (var input of midiAccess.inputs.values())
+      input.onmidimessage = this.getMIDIMessage;
+  };
+
+  getMIDIMessage = (midiMessage) => {
+    const dataArray = midiMessage.data;
+    const command = dataArray[0];
+    const note = midiMap(dataArray[1]);
+    const velocity = dataArray[2] / 3;
+    if (command === 144) {
+      this.triggerNote(note, velocity);
+    } else if (command === 128) {
+      this.triggerRelease(note);
+    }
+  };
+
+  onMIDIFailure = (e) => {
+    // when we get a failed response, run this code
+    console.log(
+      "No access to MIDI devices or your browser doesn't support WebMIDI API. Please use WebMIDIAPIShim " +
+        e
+    );
+  };
 
   //rendering methods
   renderSettingsGui() {
@@ -110,6 +185,12 @@ class Synth extends React.Component {
           <Keyboard
             triggerNote={this.triggerNote}
             triggerRelease={this.triggerRelease}
+            isKeyDown={this.state.isKeyDown}
+            isMouseDown={this.state.isMouseDown}
+            currentlyPlaying={this.state.currentlyPlaying}
+            setMouseFlag={this.setMouseFlag}
+            onMouseDown={this.addToCurrentlyPlaying}
+            onMouseUp={this.removeFromCurrentlyPlaying}
           />
         </div>
       );
