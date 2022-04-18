@@ -8,11 +8,11 @@ export class Sequencer extends React.Component {
   constructor(props) {
     super(props);
     let steps = [];
+    this.steps = steps;
     this.numSteps = 64;
 
     this.state = {
       bpm: 120,
-      steps: steps,
       started: false,
       recording: false,
       beat: 0,
@@ -30,31 +30,65 @@ export class Sequencer extends React.Component {
 
   static propTypes = {
     synth: PropTypes.object.isRequired,
+    currentlyPlaying: PropTypes.array.isRequired,
   };
 
   componentDidMount() {
+    document.addEventListener('keydown', (e) => {
+      if (e.key === ']') {
+        console.log(this.steps);
+        console.log(this.state.beat);
+      }
+    })
     Tone.Transport.scheduleRepeat((time) => {
       // use the callback time to schedule events
       if (
         this.currentNote !== '' &&
-        this.state.steps[this.state.beat].note !== 'hold'
+        this.steps[this.state.beat].note !== 'hold'
       ) {
         this.props.synth.triggerRelease(this.currentNote, time);
         this.currentNote = '';
       }
       if (
-        this.state.steps[this.state.beat].note !== 'rest' &&
-        this.state.steps[this.state.beat].note !== 'hold'
+        this.steps[this.state.beat].note !== 'rest' &&
+        this.steps[this.state.beat].note !== 'hold'
       ) {
         this.props.synth.triggerAttack(
-          this.state.steps[this.state.beat].note,
+          this.steps[this.state.beat].note,
           time,
           0.3
         );
-        this.currentNote = this.state.steps[this.state.beat].note;
+        this.currentNote = this.steps[this.state.beat].note;
       }
-      this.setState({ beat: (this.state.beat + 1) % this.numSteps });
+      this.updateActiveBeat((this.state.beat + 1) % this.numSteps);
     }, '8n');
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.recording) {
+      if (prevProps.currentlyPlaying != this.props.currentlyPlaying) {
+        if (this.props.currentlyPlaying.length === 0) {
+          this.advanceSequence();
+        }
+        else {
+          this.props.currentlyPlaying.forEach((note) => {
+            this.addToSequence(note);
+          });
+        }
+      }
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.recording) {
+      if (nextProps.currentlyPlaying != this.props.currentlyPlaying) {
+        return true;
+      }
+      return false;
+    }
+    else {
+      return true;
+    }
   }
 
   handleSeqStart = (e) => {
@@ -86,36 +120,24 @@ export class Sequencer extends React.Component {
 
   enableRecording = () => {
     this.setState({ recording: true });
-    document.addEventListener('keydown', this.addToSequence);
-    document.addEventListener('keyup', this.advanceSequence);
     this.currentStepNotes = [];
   };
 
   disableRecording = () => {
     this.setState({ recording: false });
-    document.removeEventListener('keydown', this.addToSequence);
-    document.removeEventListener('keyup', this.advanceSequence);
     this.currentStepNotes = null;
   };
 
-  addToSequence = (e) => {
-    let note = keyMap(e.key);
+  addToSequence = (note) => {
     if (!this.currentStepNotes.includes(note)) {
       this.currentStepNotes.push(note);
-      let newState = this.state;
-      newState.steps[this.state.beat].note = this.currentStepNotes;
-      this.setState(newState);
+      this.steps[this.state.beat].note = this.currentStepNotes;
     }
   };
 
-  advanceSequence = (e) => {
-    let note = keyMap(e.key);
-    this.currentStepNotes = this.currentStepNotes.filter((value) => {
-      return value !== note;
-    });
-    if (this.currentStepNotes.length === 0) {
-      this.setState({ beat: (this.state.beat + 1) % this.numSteps });
-    }
+  advanceSequence = () => {
+    this.currentStepNotes = [];
+    this.updateActiveBeat((this.state.beat + 1) % this.numSteps);
   };
 
   handleNoteUpdate = (e) => {
@@ -125,14 +147,12 @@ export class Sequencer extends React.Component {
       /['A','B','C','D','E','F','G']{1}#{0,1}[1-9]{1}/.exec(val) ||
       val === ''
     ) {
-      let steps = Object.assign({}, this.state.steps);
-      steps[parseInt(e.target.attributes.beat.value) - 1].note = val;
-      this.setState({ steps: steps });
+      this.steps[parseInt(e.target.attributes.beat.value) - 1].note = val;
     }
   };
 
-  updateActiveBeat = (beat) => {
-    this.setState({ beat: beat });
+  updateActiveBeat = (newBeat) => {
+    this.setState({ beat: newBeat });
   };
 
   raiseBpm = (e) => {
@@ -149,19 +169,15 @@ export class Sequencer extends React.Component {
 
   addRest = (e) => {
     if (this.state.recording) {
-      let newState = Object.assign({}, this.state);
-      newState.steps[this.state.beat].note = 'rest';
-      newState.beat = (this.state.beat + 1) % this.numSteps;
-      this.setState(newState);
+      this.steps[this.state.beat].note = 'rest';
+      this.updateActiveBeat((this.state.beat + 1) % this.numSteps);
     }
   };
 
   addHold = (e) => {
     if (this.state.recording) {
-      let newState = this.state;
-      newState.steps[this.state.beat].note = 'hold';
-      newState.beat = (this.state.beat + 1) % this.numSteps;
-      this.setState(newState);
+      this.steps[this.state.beat].note = 'hold';
+      this.updateActiveBeat((this.state.beat + 1) % this.numSteps);
     }
   };
 
@@ -210,9 +226,9 @@ export class Sequencer extends React.Component {
               <SequencerStep
                 key={step.beat}
                 step={step}
-                steps={this.state.steps}
+                steps={this.steps}
                 beat={this.state.beat}
-                beatActivator={this.updateActiveBeat}
+                updateActiveBeat={this.updateActiveBeat}
               />
             );
           })}
@@ -221,13 +237,13 @@ export class Sequencer extends React.Component {
     );
   };
 
-  renderStep = (step) => {};
+  renderStep = (step) => { };
 
   render() {
     return (
       <div className="sequencer">
         {this.renderControls()}
-        {this.renderSequence(this.state.steps)}
+        {this.renderSequence(this.steps)}
       </div>
     );
   }

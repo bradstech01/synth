@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 export function SequencerStep(props) {
   const setSelfAsActive = (e) => {
-    props.beatActivator((props.step.beat - 1) % props.steps.length);
+    props.updateActiveBeat((props.step.beat - 1) % props.steps.length);
   };
 
   return (
@@ -13,7 +13,7 @@ export function SequencerStep(props) {
       className={
         'step' +
         (props.step.beat % props.steps.length ===
-        (props.beat + 1) % props.steps.length
+          (props.beat + 1) % props.steps.length
           ? ' activeStep'
           : '')
       }
@@ -29,4 +29,5 @@ SequencerStep.propTypes = {
   step: PropTypes.object.isRequired,
   steps: PropTypes.array.isRequired,
   beat: PropTypes.number.isRequired,
+  updateActiveBeat: PropTypes.func.isRequired,
 };
