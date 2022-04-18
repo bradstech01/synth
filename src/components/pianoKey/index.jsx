@@ -8,11 +8,6 @@ import PropTypes from 'prop-types';
  * TODO: Try to hack through issues with touch support
  */
 function PianoKeyInner(props) {
-  React.useEffect(() => {
-    if (props.currentlyPlaying) props.triggerNote(props.note);
-    else props.triggerRelease(props.note);
-  });
-
   const sendMouseDown = (e) => {
     e.preventDefault();
     if (e.type === 'mouseover') {

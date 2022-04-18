@@ -15,9 +15,12 @@ class Synth extends React.Component {
     this.state = {
       hasToneStarted: false,
       currentlyPlaying: [],
+      defaultVelocity: .5,
       isMouseDown: false,
       isKeyDown: false,
     };
+
+    this.noteVelocityData = {};
 
     const synth = new Tone.PolySynth(Tone.MonoSynth).toDestination();
     Tone.Destination.volume.value = -12;
@@ -33,10 +36,10 @@ class Synth extends React.Component {
       filterEnvelope: {
         baseFrequency: 20,
         attack: 0,
-        decay: 2,
+        decay: 5,
         sustain: 0,
         release: 1,
-        octaves: 10,
+        octaves: 5.5,
         attackCurve: 'linear',
         delayCurve: 'linear',
       },
@@ -49,6 +52,15 @@ class Synth extends React.Component {
   componentDidMount() {
     document.addEventListener('keydown', this.startTone);
     document.addEventListener('mousedown', this.startTone);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    for (let note of this.state.currentlyPlaying) {
+      if (!prevState.currentlyPlaying.includes(note)) this.triggerNote(note, this.noteVelocityData[note]);
+    }
+    for (let note of prevState.currentlyPlaying) {
+      if (!this.state.currentlyPlaying.includes(note)) this.triggerRelease(note);
+    }
   }
 
   async startTone(e) {
@@ -71,7 +83,7 @@ class Synth extends React.Component {
 
   //callback passed to piano keys to trigger attack. arrow function to maintain "this"
   triggerNote = (note, velocity) => {
-    this.synth.triggerAttack(note, Tone.now(), velocity ? velocity : 0.5);
+    this.synth.triggerAttack(note, Tone.now(), velocity ? velocity : this.state.defaultVelocity);
   };
 
   //callback passed to piano keys to trigger release. arrow function to maintain "this"
@@ -93,10 +105,11 @@ class Synth extends React.Component {
       this.setState({ isKeyDown: false });
   };
 
-  addToCurrentlyPlaying = (note) => {
+  addToCurrentlyPlaying = (note, velocity) => {
     if (!this.state.currentlyPlaying.includes(note)) {
       let newPlaying = [...this.state.currentlyPlaying];
       newPlaying.push(note);
+      this.noteVelocityData[note] = velocity ? velocity : this.state.defaultVelocity;
       this.setState({
         currentlyPlaying: newPlaying,
       });
@@ -107,6 +120,7 @@ class Synth extends React.Component {
     if (this.state.currentlyPlaying.includes(note)) {
       let currentlyPlaying = [...this.state.currentlyPlaying];
       let newPlaying = currentlyPlaying.filter((value) => {
+        if (value === note) delete this.noteVelocityData[note];
         return value !== note;
       });
       this.setState({
@@ -155,11 +169,11 @@ class Synth extends React.Component {
     const dataArray = midiMessage.data;
     const command = dataArray[0];
     const note = midiMap(dataArray[1]);
-    const velocity = dataArray[2] / 3;
+    const velocity = (dataArray[2] / 200);
     if (command === 144) {
-      this.triggerNote(note, velocity);
+      this.addToCurrentlyPlaying(note, velocity);
     } else if (command === 128) {
-      this.triggerRelease(note);
+      this.removeFromCurrentlyPlaying(note);
     }
   };
 
@@ -167,7 +181,7 @@ class Synth extends React.Component {
     // when we get a failed response, run this code
     console.log(
       "No access to MIDI devices or your browser doesn't support WebMIDI API. Please use WebMIDIAPIShim " +
-        e
+      e
     );
   };
 
