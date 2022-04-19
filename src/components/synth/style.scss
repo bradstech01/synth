@@ -284,6 +284,14 @@ html {
     grid-template-rows: repeat(1, minmax(0, 100%));
   }
 
+  .ampSettings {
+    width: 100%;
+    border: 1px solid white;
+    border-radius: 3px;
+    display: flex;
+    flex-flow: row nowrap;
+  }
+
 
   .step {
     background-color: #eee;
@@ -335,6 +343,10 @@ html {
     border-radius: 3px;
   }
 
+  .seqStart:active {
+    border-color: transparent transparent transparent #ddd;
+  }
+
   .seqRecord {
     grid-area: 1 / 2 / 1 / 2;
     width: 10vw;
@@ -345,6 +357,10 @@ html {
     border-radius: 10vw;
     margin: 5vw;
     outline: none;
+  }
+
+  .seqRecord:active {
+    opacity: .75;
   }
 
   .bpmBox {
@@ -424,7 +440,8 @@ html {
   }
 
   .rest,
-  .hold {
+  .hold,
+  .clear {
     color: white;
     border-radius: 4px;
     border: 1px solid grey;
@@ -435,6 +452,11 @@ html {
     flex-flow: column nowrap;
     justify-content: space-evenly;
   }
+
+  .rest:active,.hold:active,.clear:active {
+    background-color: #ddd;
+  }
+
 
   .grid {
     display: grid;
@@ -925,6 +947,14 @@ html {
     grid-template-rows: repeat(2, minmax(0, 50%));
   }
 
+  .ampSettings {
+    width: 100%;
+    border: 1px solid white;
+    border-radius: 3px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-evenly;
+  }
 
   .step {
     background-color: #eee;
@@ -965,27 +995,32 @@ html {
   }
 
   .seqStart {
-    grid-area: 1 / 1 / 1 / 1;
-
     width: 0px;
     height: 0px;
-    margin-top: 2.5vh;
+    margin-top: 1.25vw;
     border-style: solid;
-    border-width: 2.5vh 0vh 2.5vh 5vh;
+    border-width: 1.25vw 0vw 1.25vw 2.5vw;
     border-color: transparent transparent transparent #fff;
     border-radius: 3px;
   }
 
+  .seqStart:active {
+    border-color: transparent transparent transparent #ddd;
+  }
+
   .seqRecord {
-    grid-area: 1 / 2 / 1 / 2;
-    width: 5vh;
-    height: 5vh;
+    width: 2.5vw;
+    height: 2.5vw;
     font-size: 0;
     background-color: red;
     border: 0;
-    border-radius: 5vh;
-    margin: 2.5vh;
+    border-radius: 2.5vw;
+    margin: 1.25vw;
     outline: none;
+  }
+
+  .seqRecord:active {
+    opacity: .75;
   }
 
   .bpmBox {
@@ -1006,10 +1041,11 @@ html {
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-evenly;
-    width: 5vh;
-    height: 3vh;
+    width: 3vw;
+    height: 1.5vw;
     border: 1px solid white;
     border-radius: 2px;
+    font-size: 1rem;
     text-align: center;
     color: white;
     background-color: black;
@@ -1027,23 +1063,31 @@ html {
     width: 0px;
     height: 0px;
     border-style: solid;
-    border-width: 2vh 2vh 2vh 2vh;
+    border-width: 1vw 1vw 1vw 1vw;
     border-color: transparent transparent #fff transparent;
     border-radius: 3px;
+  }
+
+  .bpmUp:active {
+    border-color: transparent transparent #ddd transparent;
   }
 
   .bpmDown {
     width: 0px;
     height: 0px;
     border-style: solid;
-    border-width: 2vh 2vh 2vh 2vh;
+    border-width: 1vw 1vw 1vw 1vw;
     border-color: #fff transparent transparent transparent;
     border-radius: 3px;
   }
 
+  .bpmDown:active {
+    border-color: #ddd transparent transparent transparent;
+  }
+
   .seqCommands {
-    width: 8vh;
-    height: 4vh;
+    width: 4vw;
+    height: 100%;
   }
 
   .stepBeatDisplay {
@@ -1058,7 +1102,8 @@ html {
   }
 
   .rest,
-  .hold {
+  .hold, 
+  .clear {
     color: white;
     border-radius: 4px;
     border: 1px solid grey;
@@ -1067,6 +1112,10 @@ html {
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-evenly;
+  }
+
+  .rest:active,.hold:active,.clear:active {
+    background-color: #aaa;
   }
 
   .grid {
@@ -1122,62 +1171,46 @@ html {
     grid-column: 8 / 8;
   }
 
-
-
-  .freq {
-    grid-column: 1 / 1;
-    grid-row: 1 / 1;
+  .radioContainer {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    cursor: pointer;
   }
 
-  .lpFreq {
-    grid-column: 2 / 2;
-    grid-row: 1 / 1;
+  .radioContainer:hover {
+    background-color: #333;
   }
 
-  .lpA {
-    grid-column: 1 / 1;
-    grid-row: 2 / 2;
+  .radioContainer:active {
+    background-color: #ddd;
   }
 
-  .lpD {
-    grid-column: 1 / 1;
-    grid-row: 3 / 3;
+  .radioContainer > input {
+    visibility: hidden;
+    position: absolute;
   }
 
-  .lpS {
-    grid-column: 2 / 2;
-    grid-row: 2 / 2;
+  .radioContainer > input + span {
+    width: 100%;
+    height: 100%;
+    display: block;
   }
 
-  .lpR {
-    grid-column: 2 / 2;
-    grid-row: 3 / 3;
+  .radioContainer > input:checked + span {
+    background-color: darkcyan;
   }
-
-  .ampA {
-    grid-column: 1 / 1;
-    grid-row: 1 / 1;
-  }
-
-  .ampD {
-    grid-column: 1 / 1;
-    grid-row: 2 / 2;
-  }
-
-  .ampS {
-    grid-column: 2 / 2;
-    grid-row: 1 / 1;
-  }
-
-  .ampR {
-    grid-column: 2 / 2;
-    grid-row: 2 / 2;
-  }
-
+  
   .oscsine {
     grid-column: 1 / 1;
     grid-row: 1 / 1;
-    font-size: .8em;
+    font-size: .6rem;
+    margin: .5vw;
+    border: 1px solid white;
+    border-radius: 3px;
+    width: 50%;
+    height: 50%;
 
     display: flex;
     justify-content: space-evenly;
@@ -1186,8 +1219,13 @@ html {
   .oscsawtooth {
     grid-column: 1 / 1;
     grid-row: 2 / 2;
-    font-size: .8em;
-
+    font-size: .6rem;
+    margin: .5vw;
+    border: 1px solid white;
+    border-radius: 3px;
+    width: 50%;
+    height: 50%;
+ 
     display: flex;
     justify-content: space-evenly
   }
@@ -1195,7 +1233,12 @@ html {
   .oscsquare {
     grid-column: 2 / 2;
     grid-row: 1 / 1;
-    font-size: .8em;
+    font-size: .6rem;
+    margin: .5vw;
+    border: 1px solid white;
+    border-radius: 3px;
+    width: 50%;
+    height: 50%;
 
     display: flex;
     justify-content: space-evenly
@@ -1204,7 +1247,12 @@ html {
   .osctriangle {
     grid-column: 2 / 2;
     grid-row: 2 / 2;
-    font-size: .8em;
+    font-size: .6rem;
+    margin: .5vw;
+    border: 1px solid white;
+    border-radius: 3px;
+    width: 50%;
+    height: 50%;
 
     display: flex;
     justify-content: space-evenly
@@ -1214,10 +1262,12 @@ html {
     transform: rotate(270deg);
     width: 3vw;
     margin-top: 1vw;
+    height: 1vw;
+    cursor: pointer;
   }
 
   .sliderWrapper {
-    height: 3.5vw;
+    height: 4vw;
     display: flex;
     justify-content: space-evenly;
   }
@@ -1239,6 +1289,23 @@ html {
 
   .innerSetting {
     flex-shrink: 2;
+  }
+
+  .circleSlider {
+    height: 3.5vw;
+    width: 3.5vw;
+    flex-shrink: 2;
+    background-color: white;
+    color: brown;
+  }
+
+  .circleTrack {
+    fill: rgba(255,0,0,.5);
+  }
+  
+  .circleProgress {
+    stroke-width: .2vw;
+    fill: rgba(0,255,0,.5);
   }
 
   .keyboard {

@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as Tone from 'tone';
-import keyMap from '../../scripts/keyMap.js';
 import { SequencerStep } from '../sequencerStep/index.jsx';
 
 export class Sequencer extends React.Component {
@@ -21,7 +20,7 @@ export class Sequencer extends React.Component {
     for (let i = 0; i < this.numSteps; i++) {
       steps[i] = {
         beat: i + 1,
-        note: 'rest',
+        note: '',
       };
     }
 
@@ -50,6 +49,7 @@ export class Sequencer extends React.Component {
         this.currentNote = '';
       }
       if (
+        this.steps[this.state.beat].note !== '' &&
         this.steps[this.state.beat].note !== 'rest' &&
         this.steps[this.state.beat].note !== 'hold'
       ) {
@@ -61,6 +61,10 @@ export class Sequencer extends React.Component {
         this.currentNote = this.steps[this.state.beat].note;
       }
       this.updateActiveBeat((this.state.beat + 1) % this.numSteps);
+      if (this.steps[this.state.beat].note === '') {
+        this.updateActiveBeat(0);
+        this.currentNote = this.steps[0].note;
+      }
     }, '8n');
   }
 
@@ -81,7 +85,7 @@ export class Sequencer extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.recording) {
-      if (nextProps.currentlyPlaying != this.props.currentlyPlaying) {
+      if ((nextProps.currentlyPlaying != this.props.currentlyPlaying) || (nextState.beat !== this.state.beat)) {
         return true;
       }
       return false;
@@ -181,6 +185,13 @@ export class Sequencer extends React.Component {
     }
   };
 
+  clearEntry = (e) => {
+    if (this.state.recording) {
+      this.steps[this.state.beat].note = '';
+      this.updateActiveBeat((this.state.beat + 1) % this.numSteps);
+    }
+  };
+
   renderControls = () => {
     return (
       <div className="seqControls">
@@ -211,6 +222,9 @@ export class Sequencer extends React.Component {
           </div>
           <div className="hold" onMouseDown={this.addHold}>
             <span>hold</span>
+          </div>
+          <div className="clear" onMouseDown={this.clearEntry}>
+            <span>clear</span>
           </div>
         </div>
       </div>

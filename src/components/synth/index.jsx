@@ -29,6 +29,7 @@ class Synth extends React.Component {
     this.synth = synth;
 
     this.synth.set({
+      maxPolyphony: 128,
       filter: {
         frequency: 20,
         rolloff: -24,
@@ -161,8 +162,9 @@ class Synth extends React.Component {
   onMIDISuccess = (midiAccess) => {
     // when we get a succesful response, run this code
     console.log('MIDI Access Successful', midiAccess);
-    for (var input of midiAccess.inputs.values())
+    for (var input of midiAccess.inputs.values()) {
       input.onmidimessage = this.getMIDIMessage;
+    }
   };
 
   getMIDIMessage = (midiMessage) => {

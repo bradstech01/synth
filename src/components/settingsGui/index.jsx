@@ -76,18 +76,14 @@ export class SettingsGui extends React.Component {
     this.props.synth.set(synthSettings);
   }*/
 
-  handleChange = (e) => {
-    const val = e.target.value;
-    const section = e.target.attributes.section.nodeValue;
-    const name = e.target.name;
-
+  handleChange = (value, section, name) => {
     const newSetting = {};
     newSetting[section] = {};
-    newSetting[section][name] = val;
+    newSetting[section][name] = value;
     this.props.synth.set(newSetting);
 
     const returnState = { ...this.state.synthSettings };
-    returnState[section][name] = val;
+    returnState[section][name] = value;
 
     this.setState(returnState);
   };
@@ -183,15 +179,13 @@ export class SettingsGui extends React.Component {
         <label>{label}</label>
         <div className="sliderWrapper">
           <input
-            className="innerSetting slider gc1 gr2"
+            className="innerSetting slider"
             type="range"
-            section={subProp}
-            name={settingName}
             min={min}
             max={max}
             value={this.state.synthSettings[subProp][settingName]}
             step={step}
-            onChange={this.handleChange}
+            onChange={(e) => { this.handleChange(e.target.value, subProp, settingName) }}
           />
         </div>
         <span className="textCenter">
@@ -207,17 +201,20 @@ export class SettingsGui extends React.Component {
         {optionAry.map((option) => {
           return (
             <div key={option} className={'osc' + option}>
-              <label>{option}</label>
-              <input
-                type="radio"
-                name={settingName}
-                section={subProp}
-                value={option}
-                checked={
-                  this.state.synthSettings[subProp][settingName] === option
-                }
-                onChange={this.handleChange}
-              />
+              <label className='radioContainer'>
+                <input
+                  key={option}
+                  type="radio"
+                  name={settingName}
+                  section={subProp}
+                  value={option}
+                  checked={
+                    this.state.synthSettings[subProp][settingName] === option
+                  }
+                  onChange={(e) => { this.handleChange(e.target.value, subProp, settingName) }}
+                />
+                <span>{option}</span>
+              </label>
             </div>
           );
         })}
@@ -280,6 +277,15 @@ export class SettingsGui extends React.Component {
         <div className="settingsHdr">filter env</div>
         <div className="settingGrp lpfSettings">
           {this.renderSynthSetting(
+            'cutoff',
+            'filterEnvelope',
+            'baseFrequency',
+            'lpFreq',
+            0,
+            500,
+            1
+          )}
+          {this.renderSynthSetting(
             'env amt',
             'filterEnvelope',
             'octaves',
@@ -287,15 +293,6 @@ export class SettingsGui extends React.Component {
             0,
             24,
             0.01
-          )}
-          {this.renderSynthSetting(
-            'env freq',
-            'filterEnvelope',
-            'baseFrequency',
-            'lpFreq',
-            0,
-            500,
-            1
           )}
           {this.renderSynthSetting(
             'attack',
@@ -342,12 +339,12 @@ export class SettingsGui extends React.Component {
     return (
       <div className="ampEnv">
         <div className="settingsHdr">amp env</div>
-        <div className="settingGrp">
+        <div className="ampSettings">
           {this.renderSynthSetting(
             'attack',
             'envelope',
             'attack',
-            'ampA gc1 gr1',
+            '',
             0,
             4,
             0.01
@@ -356,7 +353,7 @@ export class SettingsGui extends React.Component {
             'decay',
             'envelope',
             'decay',
-            'ampD gc2 gr1',
+            '',
             0,
             4,
             0.01
@@ -365,7 +362,7 @@ export class SettingsGui extends React.Component {
             'sustain',
             'envelope',
             'sustain',
-            'ampS gc3 gr1',
+            '',
             0,
             1,
             0.01
@@ -374,7 +371,7 @@ export class SettingsGui extends React.Component {
             'release',
             'envelope',
             'release',
-            'ampR gc4 gr1',
+            '',
             0,
             24,
             0.01
