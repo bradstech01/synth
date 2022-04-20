@@ -33,19 +33,13 @@ export class Sequencer extends React.Component {
   };
 
   componentDidMount() {
-    document.addEventListener('keydown', (e) => {
-      if (e.key === ']') {
-        console.log(this.steps);
-        console.log(this.state.beat);
-      }
-    })
     Tone.Transport.scheduleRepeat((time) => {
-      // use the callback time to schedule events
+      // reminder to use the callback time to schedule events
       if (
         this.currentNote !== '' &&
         this.steps[this.state.beat].note !== 'hold'
       ) {
-        this.props.synth.triggerRelease(this.currentNote, time);
+        //this.props.synth.triggerRelease(this.currentNote, time);
         this.currentNote = '';
       }
       if (
@@ -53,8 +47,8 @@ export class Sequencer extends React.Component {
         this.steps[this.state.beat].note !== 'rest' &&
         this.steps[this.state.beat].note !== 'hold'
       ) {
-        this.props.synth.triggerAttack(
-          this.steps[this.state.beat].note,
+        this.props.synth.triggerAttackRelease(
+          this.steps[this.state.beat].note, '8n',
           time,
           0.3
         );

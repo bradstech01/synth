@@ -291,7 +291,7 @@ export class SettingsGui extends React.Component {
             'octaves',
             'freq',
             0,
-            24,
+            16,
             0.01
           )}
           {this.renderSynthSetting(
@@ -300,7 +300,7 @@ export class SettingsGui extends React.Component {
             'attack',
             'lpA',
             0,
-            100,
+            11,
             0.01
           )}
           {this.renderSynthSetting(
@@ -309,7 +309,7 @@ export class SettingsGui extends React.Component {
             'decay',
             'lpD',
             0,
-            100,
+            11,
             0.01
           )}
           {this.renderSynthSetting(
@@ -327,7 +327,7 @@ export class SettingsGui extends React.Component {
             'release',
             'lpR',
             0,
-            24,
+            11,
             0.01
           )}
         </div>

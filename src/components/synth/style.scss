@@ -964,9 +964,16 @@ html {
     border-radius: 3px;
     border: 1px solid #222;
     font-size: .75rem;
-
     display: grid;
     justify-content: center;
+  }
+
+  .step:hover {
+    background-color: #bbb;
+  }
+
+  .step:active {
+    background-color: #ddd;
   }
 
   .stepsContainer {
@@ -976,15 +983,15 @@ html {
     justify-content: space-evenly;
   }
 
+  .activeStep {
+    background-color: #666;
+  }
+
   .steps {
     width: 80%;
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
-  }
-
-  .activeStep {
-    background-color: #bbb;
   }
 
   .seqControls {
@@ -1002,10 +1009,15 @@ html {
     border-width: 1.25vw 0vw 1.25vw 2.5vw;
     border-color: transparent transparent transparent #fff;
     border-radius: 3px;
+    
+  }
+
+  .seqStart:hover {
+    border-color: transparent transparent transparent #ddd;
   }
 
   .seqStart:active {
-    border-color: transparent transparent transparent #ddd;
+    border-color: transparent transparent transparent #bbb;
   }
 
   .seqRecord {
@@ -1019,8 +1031,12 @@ html {
     outline: none;
   }
 
-  .seqRecord:active {
+  .seqRecord:hover {
     opacity: .75;
+  }
+
+  .seqRecord:active {
+    opacity: .6;
   }
 
   .bpmBox {
@@ -1068,8 +1084,12 @@ html {
     border-radius: 3px;
   }
 
-  .bpmUp:active {
+  .bpmUp:hover {
     border-color: transparent transparent #ddd transparent;
+  }
+
+  .bpmUp:active {
+    border-color: transparent transparent #bbb transparent;
   }
 
   .bpmDown {
@@ -1081,8 +1101,12 @@ html {
     border-radius: 3px;
   }
 
-  .bpmDown:active {
+  .bpmDown:hover {
     border-color: #ddd transparent transparent transparent;
+  }
+
+  .bpmDown:active {
+    border-color: #bbb transparent transparent transparent;
   }
 
   .seqCommands {
