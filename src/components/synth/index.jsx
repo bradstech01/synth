@@ -1,12 +1,13 @@
-import './style.scss';
+import '../../css/index.scss';
 import * as Tone from 'tone';
 import React from 'react';
 import { Visualizer } from '../visualizer';
 import { Keyboard } from '../keyboard';
 import { SettingsGui } from '../settingsGui';
 import { Sequencer } from '../sequencer';
-import keyMap from '../../scripts/keyMap.js';
-import midiMap from '../../scripts/midiMap.js';
+
+import { keyMap } from '../../scripts/inputMaps.js';
+import * as midiFunctions from '../../scripts/midiFunctions.js'
 
 class Synth extends React.Component {
   constructor(props) {
@@ -22,11 +23,10 @@ class Synth extends React.Component {
 
     this.noteVelocityData = {};
 
-    const synth = new Tone.PolySynth(Tone.MonoSynth).toDestination();
     Tone.Destination.volume.value = -12;
     const audioCtx = Tone.getContext();
 
-    this.synth = synth;
+    this.synth = this.props.synth;
 
     this.synth.set({
       maxPolyphony: 128,
@@ -71,7 +71,7 @@ class Synth extends React.Component {
         hasToneStarted: true,
       });
       this.context = Tone.context;
-      this.setUpMIDI();
+      midiFunctions.setUpMIDI();
 
       document.removeEventListener('keydown', this.startTone);
       document.removeEventListener('mousedown', this.startTone);
@@ -145,48 +145,6 @@ class Synth extends React.Component {
     }
   };
 
-  setUpMIDI() {
-    // request MIDI access
-    if (navigator.requestMIDIAccess) {
-      navigator
-        .requestMIDIAccess({
-          sysex: false, // this defaults to 'false' and we won't be covering sysex in this article.
-        })
-        .then(this.onMIDISuccess, this.onMIDIFailure);
-    } else {
-      console.log('No MIDI support in your browser.');
-    }
-  }
-
-  // midi functions
-  onMIDISuccess = (midiAccess) => {
-    // when we get a succesful response, run this code
-    console.log('MIDI Access Successful', midiAccess);
-    for (var input of midiAccess.inputs.values()) {
-      input.onmidimessage = this.getMIDIMessage;
-    }
-  };
-
-  getMIDIMessage = (midiMessage) => {
-    const dataArray = midiMessage.data;
-    const command = dataArray[0];
-    const note = midiMap(dataArray[1]);
-    const velocity = (dataArray[2] / 200);
-    if (command === 144) {
-      this.addToCurrentlyPlaying(note, velocity);
-    } else if (command === 128) {
-      this.removeFromCurrentlyPlaying(note);
-    }
-  };
-
-  onMIDIFailure = (e) => {
-    // when we get a failed response, run this code
-    console.log(
-      "No access to MIDI devices or your browser doesn't support WebMIDI API. Please use WebMIDIAPIShim " +
-      e
-    );
-  };
-
   //rendering methods
   renderSettingsGui() {
     if (this.state.hasToneStarted) {
@@ -255,8 +213,10 @@ class Synth extends React.Component {
   }
 }
 
+export const synth = new Tone.PolySynth(Tone.MonoSynth).toDestination();
+
 function app() {
-  return <Synth />;
+  return <Synth synth={synth} />;
 }
 
 export default app;
