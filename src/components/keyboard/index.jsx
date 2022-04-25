@@ -16,8 +16,6 @@ export class Keyboard extends React.Component {
     currentlyPlaying: PropTypes.array.isRequired,
     isMouseDown: PropTypes.bool.isRequired,
     isKeyDown: PropTypes.bool.isRequired,
-    triggerNote: PropTypes.func.isRequired,
-    triggerRelease: PropTypes.func.isRequired,
     setMouseFlag: PropTypes.func.isRequired,
     onMouseDown: PropTypes.func.isRequired,
     onMouseUp: PropTypes.func.isRequired,
@@ -28,12 +26,11 @@ export class Keyboard extends React.Component {
       <PianoKey
         note={note + (octave + octaveShift)}
         isKeyDown={this.props.isKeyDown}
+        isMouseDown={this.props.isMouseDown}
         currentlyPlaying={this.props.currentlyPlaying.includes(
           note + (octave + octaveShift)
         )}
         triggerKey={triggerKey}
-        triggerNote={this.props.triggerNote}
-        triggerRelease={this.props.triggerRelease}
         onMouseDown={this.props.onMouseDown}
         onMouseUp={this.props.onMouseUp}
         hiddenOnMobile={hiddenOnMobile}

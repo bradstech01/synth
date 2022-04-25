@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Oscilloscope } from '../oscilloscope';
+import { audioCtx, synth } from '../../scripts/synthAPI.js';
 
 /**
  * Uses requestAnimationFrame to drive a roughly 60 FPS output.
@@ -10,8 +11,8 @@ import { Oscilloscope } from '../oscilloscope';
 export class Visualizer extends React.Component {
   constructor(props) {
     super(props);
-    const analyser = this.props.audioCtx.createAnalyser();
-    this.props.synth.connect(analyser);
+    const analyser = audioCtx.createAnalyser();
+    synth.connect(analyser);
     analyser.fftSize = 4096;
     const bufferLength = analyser.frequencyBinCount;
 
@@ -22,10 +23,6 @@ export class Visualizer extends React.Component {
     this.state = { dataArray: dataArray };
   }
 
-  static propTypes = {
-    audioCtx: PropTypes.object.isRequired,
-    synth: PropTypes.object.isRequired,
-  };
 
   componentDidMount() {
     this.rAF = requestAnimationFrame(this.updateAnimationState);

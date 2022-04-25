@@ -68,8 +68,6 @@ PianoKeyInner.propTypes = {
   hiddenOnMobile: PropTypes.bool,
   onMouseDown: PropTypes.func.isRequired,
   onMouseUp: PropTypes.func.isRequired,
-  triggerNote: PropTypes.func.isRequired,
-  triggerRelease: PropTypes.func.isRequired,
 };
 
 export const PianoKey = React.memo(PianoKeyInner);

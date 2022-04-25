@@ -3,10 +3,10 @@ import PropTypes from "prop-types";
 
 export function OscillatorBox(props) {
 
-    const renderSelectSetting = (subProp, settingName, optionAry) => {
+    const renderOscillatorTypes = (subProp, settingName, optionArray) => {
         return (
-            <div className="oscillatorSelect grid">
-                {optionAry.map((option) => {
+            <div className="grid">
+                {optionArray.map((option) => {
                     return (
                         <div key={option} className={'osc' + option}>
                             <label className='radioContainer'>
@@ -33,14 +33,12 @@ export function OscillatorBox(props) {
     return (
         <div className="oscillatorSelection">
             <div className="settingsHdr">oscillator</div>
-            <div className="settingGrp">
-                {renderSelectSetting('oscillator', 'type', [
-                    'sine',
-                    'sawtooth',
-                    'square',
-                    'triangle',
-                ])}
-            </div>
+            {renderOscillatorTypes('oscillator', 'type', [
+                'sine',
+                'sawtooth',
+                'square',
+                'triangle',
+            ])}
         </div>
     )
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as Tone from 'tone';
 import { SequencerStep } from '../sequencerStep/index.jsx';
+import { synth } from '../../scripts/synthAPI.js';
 
 export class Sequencer extends React.Component {
   constructor(props) {
@@ -28,7 +29,6 @@ export class Sequencer extends React.Component {
   }
 
   static propTypes = {
-    synth: PropTypes.object.isRequired,
     currentlyPlaying: PropTypes.array.isRequired,
   };
 
@@ -39,7 +39,7 @@ export class Sequencer extends React.Component {
         this.currentNote !== '' &&
         this.steps[this.state.beat].note !== 'hold'
       ) {
-        //this.props.synth.triggerRelease(this.currentNote, time);
+        //synth.triggerRelease(this.currentNote, time);
         this.currentNote = '';
       }
       if (
@@ -47,7 +47,7 @@ export class Sequencer extends React.Component {
         this.steps[this.state.beat].note !== 'rest' &&
         this.steps[this.state.beat].note !== 'hold'
       ) {
-        this.props.synth.triggerAttackRelease(
+        synth.triggerAttackRelease(
           this.steps[this.state.beat].note, '8n',
           time,
           0.3
@@ -93,7 +93,7 @@ export class Sequencer extends React.Component {
     if (this.state.started) {
       Tone.Transport.stop();
       this.setState({ started: false, beat: 0 });
-      this.props.synth.triggerRelease(this.currentNote, Tone.now());
+      synth.triggerRelease(this.currentNote, Tone.now());
       this.currentNote = '';
     } else {
       if (this.state.recording) this.disableRecording();
@@ -188,37 +188,39 @@ export class Sequencer extends React.Component {
 
   renderControls = () => {
     return (
-      <div className="seqControls">
-        <div
-          className="seqStart"
-          role="button"
-          onMouseDown={this.handleSeqStart}
-        ></div>
-        <div
-          className="seqRecord"
-          role="button"
-          onMouseDown={this.handleSeqRecord}
-        ></div>
-        <div className="bpmBox">
-          <div className="bpmDisplayBox">
-            <div className="bpmDisplay">
-              <span>{this.state.bpm}</span>
+      <div className='centerX'>
+        <div className="seqControls">
+          <div
+            className="seqStart"
+            role="button"
+            onMouseDown={this.handleSeqStart}
+          ></div>
+          <div
+            className="seqRecord"
+            role="button"
+            onMouseDown={this.handleSeqRecord}
+          ></div>
+          <div className="bpmBox">
+            <div className="bpmDisplayBox">
+              <div className="bpmDisplay">
+                <span>{this.state.bpm}</span>
+              </div>
+            </div>
+            <div className="bpmButtons">
+              <div className="bpmUp" onMouseDown={this.raiseBpm} />
+              <div className="bpmDown" onMouseDown={this.lowerBpm} />
             </div>
           </div>
-          <div className="bpmButtons">
-            <div className="bpmUp" onMouseDown={this.raiseBpm} />
-            <div className="bpmDown" onMouseDown={this.lowerBpm} />
-          </div>
-        </div>
-        <div className="seqCommands">
-          <div className="rest" onMouseDown={this.addRest}>
-            <span>rest</span>
-          </div>
-          <div className="hold" onMouseDown={this.addHold}>
-            <span>hold</span>
-          </div>
-          <div className="clear" onMouseDown={this.clearEntry}>
-            <span>clear</span>
+          <div className="seqCommands">
+            <div className="rest" onMouseDown={this.addRest}>
+              <span>rest</span>
+            </div>
+            {/*<div className="hold" onMouseDown={this.addHold}>
+              <span>hold</span>
+            </div>*/}
+            <div className="clear" onMouseDown={this.clearEntry}>
+              <span>clear</span>
+            </div>
           </div>
         </div>
       </div>
@@ -227,32 +229,32 @@ export class Sequencer extends React.Component {
 
   renderSequence = (steps) => {
     return (
-      <div className="stepsContainer">
-        <div className="steps">
-          {steps.map((step) => {
-            return (
-              <SequencerStep
-                key={step.beat}
-                step={step}
-                steps={this.steps}
-                beat={this.state.beat}
-                updateActiveBeat={this.updateActiveBeat}
-              />
-            );
-          })}
+      <div className='centerX'>
+        <div className="stepsContainer">
+          <div className="steps">
+            {steps.map((step) => {
+              return (
+                <SequencerStep
+                  key={step.beat}
+                  step={step}
+                  steps={this.steps}
+                  beat={this.state.beat}
+                  updateActiveBeat={this.updateActiveBeat}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
     );
   };
 
-  renderStep = (step) => { };
-
   render() {
     return (
-      <div className="sequencer">
+      <React.Fragment>
         {this.renderControls()}
         {this.renderSequence(this.steps)}
-      </div>
+      </React.Fragment>
     );
   }
 }
