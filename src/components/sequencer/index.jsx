@@ -201,9 +201,11 @@ export class Sequencer extends React.Component {
             onMouseDown={this.handleSeqRecord}
           ></div>
           <div className="bpmBox">
-            <div className="bpmDisplayBox">
-              <div className="bpmDisplay">
-                <span>{this.state.bpm}</span>
+            <div className='centerY'>
+              <div className="bpmDisplayBox">
+                <div className="bpmDisplay">
+                  <span>{this.state.bpm}</span>
+                </div>
               </div>
             </div>
             <div className="bpmButtons">

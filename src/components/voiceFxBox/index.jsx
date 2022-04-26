@@ -10,13 +10,13 @@ export function VoiceFxBox(props) {
     return (
         <div className="voiceFx">
             <div className="width">
-                <div className="settingsHdr">width</div>
+                <h2>width</h2>
                 <div className="showAsRows">
-                    <Setting definition={stereoWidener.settings.width} label="stereo amt" synthSettings={props.synthSettings} onChange={props.onChange} />
+                    <Setting definition={stereoWidener.settings.width} label="amt" synthSettings={props.synthSettings} onChange={props.onChange} />
                 </div>
             </div>
             <div className="eq">
-                <div className="settingsHdr">equalizer</div>
+                <h2>equalizer</h2>
                 <div className="showAsRows">
                     <Setting definition={eq.settings.low} label="low" css=' gc1 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
                     <Setting definition={eq.settings.mid} label="mid" css=' gc2 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
@@ -24,7 +24,7 @@ export function VoiceFxBox(props) {
                 </div>
             </div>
             <div className="distortion">
-                <div className="settingsHdr">distortion</div>
+                <h2>distortion</h2>
                 <div className="showAsRows">
                     <Setting definition={distortion.settings.distortion} label="amount" synthSettings={props.synthSettings} onChange={props.onChange} />
                 </div>

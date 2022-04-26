@@ -10,28 +10,28 @@ export function TimeFxBox(props) {
     return (
         <div className="timeFx">
             <div className="delay">
-                <div className="settingsHdr">delay</div>
+                <h2>delay</h2>
                 <div className="showAsRows">
                     <Setting definition={delay.settings.delayTime} label="time" css='gc1 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
-                    <Setting definition={delay.settings.feedback} label="repeat" css='gc2e gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
+                    <Setting definition={delay.settings.feedback} label="repeat" css='gc2 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
                 </div>
             </div>
             <div className="reverb">
-                <div className="settingsHdr">reverb</div>
+                <h2>reverb</h2>
                 <div className="showAsRows">
                     <Setting definition={reverb.settings.wet} label="mix" css='gc1 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
                     <Setting definition={reverb.settings.decay} label="decay" css='gc2 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
                 </div>
             </div>
             <div className="chorus">
-                <div className="settingsHdr">chorus</div>
+                <h2>chorus</h2>
                 <div className="showAsRows">
                     <Setting definition={chorus.settings.frequency} label="freq" css='gc1 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
                     <Setting definition={chorus.settings.depth} label="depth" css='gc2 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
                 </div>
             </div>
             <div className="tremolo">
-                <div className="settingsHdr">tremolo</div>
+                <h2>tremolo</h2>
                 <div className="showAsRows">
                     <Setting definition={tremolo.settings.frequency} label="freq" css='gc1 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
                     <Setting definition={tremolo.settings.depth} label="depth" css='gc2 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />

@@ -9,7 +9,7 @@ import { filterEnvelope } from '../../scripts/settingsDefinitions.js';
 export function LpfEnvBox(props) {
     return (
         <div className="lpfEnv">
-            <h1>filter env</h1>
+            <h2>filter env</h2>
             <div className="lpfSettings">
                 <Setting definition={filterEnvelope.settings.cutoff} label="cutoff" css="lpFreq" synthSettings={props.synthSettings} onChange={props.onChange} />
                 <Setting definition={filterEnvelope.settings.octaves} label="env amt" css="freq" synthSettings={props.synthSettings} onChange={props.onChange} />

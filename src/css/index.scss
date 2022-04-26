@@ -3,6 +3,7 @@ $small: 650px;
 :export {
   small:  $small;
 }
+
 $bkgcolor: rgba(0, 0, 0, .2);
 $primary-font-color: black;
 $secondary-font-color: white;
@@ -10,6 +11,30 @@ $accent-color: #345414;
 $btncolor: rgba(0, 0, 0, .8);
 $btnhover: rgba(20, 20, 20, .8);
 $btnpress: rgba(40, 40, 40, .8);
+
+$keyboard_Width: 70vw;
+$keyboard_Height: ($keyboard_Width * 0.18);
+$border_Width: ($keyboard_Width * 0.0015);
+$whiteKey_Count: 15;
+$whiteKey_Height: $keyboard_Height;
+$whiteKey_Width: math.div($keyboard_Width, $whiteKey_Count);
+$blackKey_Height: ($whiteKey_Height * 0.55);
+$blackKey_Width: ($whiteKey_Width * 0.55);
+$blackKey_Offset: (-(math.div($blackKey_Width, 2)) - $border_Width);
+$whiteKey_Color: #eee;
+$blackKey_Color: #222222;
+$blackKey_BorderColor: #000000;
+$whiteKey_BorderColor: #AAAAAA;
+
+$small_keyboard_Width: 150vw;
+$small_keyboard_Height: ($small_keyboard_Width * 0.18);
+$small_border_Width: ($small_keyboard_Width * 0.0015);
+$small_whiteKey_Count: 8;
+$small_whiteKey_Height: $small_keyboard_Height;
+$small_whiteKey_Width: math.div($small_keyboard_Width, $whiteKey_Count);
+$small_blackKey_Height: ($small_whiteKey_Height * 0.55);
+$small_blackKey_Width: ($small_whiteKey_Width * 0.55);
+$small_blackKey_Offset: (-(math.div($small_blackKey_Width, 2)) - $small_border_Width);
 
 @font-face {
 font-family: "MajorMono";
@@ -53,21 +78,6 @@ margin: 2%;
 display: block;
 text-align: center;
 }
-
-
-$keyboard_Width: 85vw;
-$keyboard_Height: ($keyboard_Width * 0.18);
-$border_Width: ($keyboard_Width * 0.0015);
-$whiteKey_Count: 21;
-$whiteKey_Height: $keyboard_Height;
-$whiteKey_Width: math.div($keyboard_Width, $whiteKey_Count);
-$blackKey_Height: ($whiteKey_Height * 0.55);
-$blackKey_Width: ($whiteKey_Width * 0.55);
-$blackKey_Offset: (-(math.div($blackKey_Width, 2)) - $border_Width);
-$whiteKey_Color: #eee;
-$blackKey_Color: #222222;
-$blackKey_BorderColor: #000000;
-$whiteKey_BorderColor: #AAAAAA;
 
 input[type=range] {
   -webkit-appearance: none;
@@ -113,6 +123,12 @@ input[type=range]::-moz-range-thumb {
   display: None;
   z-index: -1;
 }
+  @media screen and (max-width: $small) {
+  .hiddenOnMobile {
+    display: None !important;
+  } 
+ }
+
 
 .centerX {
   display: flex;
@@ -194,6 +210,10 @@ input[type=range]::-moz-range-thumb {
   justify-content: space-evenly;
 }
 
+.keyboardWrapper > * {
+  height: 50%;
+}
+
 .visualizerContainer {
   height: 80%;
   width: 50%;
@@ -241,23 +261,19 @@ input[type=range]::-moz-range-thumb {
 .settingsHdr {
   font-size: 1rem;
 }
-.voiceSettings {
-  grid-template-columns: repeat(3, fr);
-  grid-template-rows: 1fr;
-}
-.voiceFx {
+.voiceFx,.timeFx {
   width: 50%;
   height: 100%;
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-evenly;
-}
-.timeFx {
-  width: 50%;
-  height: 100%;
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: space-evenly;
+  h2 {
+    margin-left: 5%;
+    font-size: 2rem;
+  }
+  label, span {
+    font-size: 1.25rem;
+  }
 }
 .width {
   width: 100%;
@@ -354,12 +370,13 @@ input[type=range]::-moz-range-thumb {
       } 
     }
 }
-.ampEnv {
+.ampEnv, .lpfEnv{
   width: 80%;
   height: 25%;
   display: flex;
   flex-flow: column nowrap;
-  h1 {
+  h2 {
+    margin-left: 5%;
     @media screen and (min-width: $small) {
       font-size: 2rem;
     }
@@ -368,7 +385,7 @@ input[type=range]::-moz-range-thumb {
       font-size: 1.5rem;
     }  
   }
-  label {
+  label, span {
     @media screen and (min-width: $small) {
       font-size: 1.5rem;
     }
@@ -377,36 +394,7 @@ input[type=range]::-moz-range-thumb {
       font-size: 1rem;
     }
   }
-  .ampSettings {
-    width: 100%;
-    border-radius: 3px;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-evenly;
-  }
-}
-.lpfEnv {
-  width: 80%;
-  height: 25%;
-  display: flex;
-  flex-flow: column nowrap;
-  h1 {
-    @media screen and (min-width: $small) {
-      font-size: 2rem;
-    }
-    @media screen and (max-width: $small) {
-      font-size: 1.5rem;
-    }
-  }
-  label {
-    @media screen and (min-width: $small) {
-      font-size: 1.5rem;
-    }
-    @media screen and (max-width: $small) {
-      font-size: 1rem;
-    }
-  }
-  .lpfSettings {
+  .ampSettings, .lpfSettings {
     width: 100%;
     display: flex;
     flex-flow: column nowrap;
@@ -432,7 +420,13 @@ input[type=range]::-moz-range-thumb {
   background-color: #ddd;
 }
 .stepsContainer {
-  width: 90%;
+  @media screen and (min-width: $small) {
+    width: 40%;
+  }
+  
+  @media screen and (max-width: $small) {
+    width: 80%;
+  }
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-evenly;
@@ -441,13 +435,19 @@ input[type=range]::-moz-range-thumb {
   background-color: #666;
 }
 .steps {
-  width: 40%;
+  width: 100%;
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
 }
 .seqControls {
-  width: 40%;
+  @media screen and (min-width: $small) {
+    width: 40%;
+  }
+  
+  @media screen and (max-width: $small) {
+    width: 80%;
+  }
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-evenly;
@@ -455,9 +455,10 @@ input[type=range]::-moz-range-thumb {
 .seqStart {
   width: 0px;
   height: 0px;
-  margin-top: 1.25vw;
+  margin-top: 1.5rem;
+  border-width: 1.5rem 0rem 1.5rem 3rem;
+  
   border-style: solid;
-  border-width: 1.25vw 0vw 1.25vw 2.5vw;
   border-color: transparent transparent transparent $btncolor;
   border-radius: 3px;
 }
@@ -468,13 +469,15 @@ input[type=range]::-moz-range-thumb {
   border-color: transparent transparent transparent $btnpress;
 }
 .seqRecord {
-  width: 2.5vw;
-  height: 2.5vw;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 3rem;
+  margin: 1.5rem;
+
   font-size: 0;
   background-color: red;
   border: 0;
-  border-radius: 2.5vw;
-  margin: 1.25vw;
+
   outline: none;
 }
 .seqRecord:hover {
@@ -484,13 +487,17 @@ input[type=range]::-moz-range-thumb {
   opacity: .6;
 }
 .bpmBox {
-  width: 8vw;
+  width: 20%;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-evenly;
 }
+.bpmBox > * {
+  margin: 5px;
+}
 .bpmDisplayBox {
-  height: 100%;
+  height: 70%;
+  width: 100%;
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-evenly;
@@ -499,8 +506,8 @@ input[type=range]::-moz-range-thumb {
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-evenly;
-  width: 3vw;
-  height: 1.5vw;
+  width: 100%;
+  height: 80%;
   border: 1px solid white;
   border-radius: 2px;
   font-size: 1rem;
@@ -513,13 +520,14 @@ input[type=range]::-moz-range-thumb {
   flex-flow: column nowrap;
   justify-content: space-evenly;
   height: 100%;
-  width: 4vh;
+  width: 50%;
 }
 .bpmUp {
   width: 0px;
   height: 0px;
+  margin-bottom: 3px;
   border-style: solid;
-  border-width: 1vw 1vw 1vw 1vw;
+  border-width: 1rem;
   border-color: transparent transparent $btncolor transparent;
   border-radius: 3px;
 }
@@ -532,8 +540,9 @@ input[type=range]::-moz-range-thumb {
 .bpmDown {
   width: 0px;
   height: 0px;
+  margin-top: 3px;
   border-style: solid;
-  border-width: 1vw 1vw 1vw 1vw;
+  border-width: 1rem;
   border-color: $btncolor transparent transparent transparent;
   border-radius: 3px;
 }
@@ -544,7 +553,7 @@ input[type=range]::-moz-range-thumb {
   border-color: $btnpress transparent transparent transparent;
 }
 .seqCommands {
-  width: 4vw;
+  width: 25%;
   height: 100%;
 }
 .stepBeatDisplay {
@@ -558,6 +567,7 @@ input[type=range]::-moz-range-thumb {
 .rest, .hold, .clear {
   color: $secondary-font-color;
   background-color: $btncolor;
+  width: 100%;
   border-radius: 4px;
   border: 1px solid grey;
   margin: 2px;
@@ -681,30 +691,77 @@ input[type=range]::-moz-range-thumb {
   height: 50%;
   filter: drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 0.2));
 }
-.keyboard>.pianoKey:last-child {
-  border-right: $border_Width solid $whiteKey_BorderColor;
+
+@media screen and (max-width: $small) {
+  .keyboard>.pianoKey:last-child {
+    border-right: $small_border_Width solid $whiteKey_BorderColor;
+  }
+  
+  .keyWhite {
+    height: $small_whiteKey_Height;
+    width: $small_whiteKey_Width;
+    z-index: 1;
+    border-top: $small_border_Width solid $whiteKey_BorderColor;
+    border-bottom: $small_border_Width solid $whiteKey_BorderColor;
+    border-left: $small_border_Width solid $whiteKey_BorderColor;
+    background-color: $whiteKey_Color;
+    color: black;
+  }
+  
+  .keyBlack {
+    height: $small_blackKey_Height;
+    width: $small_blackKey_Width;
+    z-index: 2;
+    border: $small_border_Width solid $blackKey_BorderColor;
+    background-color: $blackKey_Color;
+    color: white;
+  }
+  .a,
+  .b,
+  .d,
+  .e,
+  .g,
+  .keyBlack {
+    margin: 0 0 0 $small_blackKey_Offset;
+  }
 }
-.keyWhite {
-  height: $whiteKey_Height;
-  width: $whiteKey_Width;
-  z-index: 1;
-  border-top: $border_Width solid $whiteKey_BorderColor;
-  border-bottom: $border_Width solid $whiteKey_BorderColor;
-  border-left: $border_Width solid $whiteKey_BorderColor;
-  background-color: $whiteKey_Color;
-  color: black;
+  
+@media screen and (min-width: $small) {
+  .keyboard>.pianoKey:last-child {
+    border-right: $border_Width solid $whiteKey_BorderColor;
+  }
+
+  .keyWhite {
+    height: $whiteKey_Height;
+    width: $whiteKey_Width;
+    z-index: 1;
+    border-top: $border_Width solid $whiteKey_BorderColor;
+    border-bottom: $border_Width solid $whiteKey_BorderColor;
+    border-left: $border_Width solid $whiteKey_BorderColor;
+    background-color: $whiteKey_Color;
+    color: black;
+  }
+
+  .keyBlack {
+    height: $blackKey_Height;
+    width: $blackKey_Width;
+    z-index: 2;
+    border: $border_Width solid $blackKey_BorderColor;
+    background-color: $blackKey_Color;
+    color: white;
+  }
+  .a,
+  .b,
+  .d,
+  .e,
+  .g,
+  .keyBlack {
+    margin: 0 0 0 $blackKey_Offset;
+  }
 }
-.keyBlack {
-  height: $blackKey_Height;
-  width: $blackKey_Width;
-  z-index: 2;
-  border: $border_Width solid $blackKey_BorderColor;
-  background-color: $blackKey_Color;
-  color: white;
-}
-.a, .b, .d, .e, .g, .keyBlack {
-  margin: 0 0 0 $blackKey_Offset;
-}
+
+
+
 .pianoKey {
   float: left;
   position: relative;
