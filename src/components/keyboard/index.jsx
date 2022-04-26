@@ -6,72 +6,66 @@ import { PianoKey } from '../pianoKey';
  * Component containing the visual keyboard; the "money maker", as it were.
  * TODO: Fix current hacky CSS for the keyboard, so that it appropriately flexes and is better modularized for different viewports
  */
-export class Keyboard extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  static propTypes = {
-    role: PropTypes.string,
-    currentlyPlaying: PropTypes.array.isRequired,
-    isMouseDown: PropTypes.bool.isRequired,
-    isKeyDown: PropTypes.bool.isRequired,
-    setMouseFlag: PropTypes.func.isRequired,
-    onMouseDown: PropTypes.func.isRequired,
-    onMouseUp: PropTypes.func.isRequired,
-  };
-
-  renderPianoKey(note, octave, octaveShift, triggerKey, hiddenOnMobile) {
+export function Keyboard(props) {
+  const renderPianoKey = (note, octave, triggerKey, hiddenOnMobile) => {
     return (
       <PianoKey
-        note={note + (octave + octaveShift)}
-        isKeyDown={this.props.isKeyDown}
-        isMouseDown={this.props.isMouseDown}
-        currentlyPlaying={this.props.currentlyPlaying.includes(
-          note + (octave + octaveShift)
+        note={note + (octave + props.octaveShift)}
+        isKeyDown={props.isKeyDown}
+        isMouseDown={props.isMouseDown}
+        currentlyPlaying={props.currentlyPlaying.includes(
+          note + (octave + props.octaveShift)
         )}
         triggerKey={triggerKey}
-        onMouseDown={this.props.onMouseDown}
-        onMouseUp={this.props.onMouseUp}
+        onMouseDown={props.onMouseDown}
+        onMouseUp={props.onMouseUp}
         hiddenOnMobile={hiddenOnMobile}
       />
     );
-  }
+  };
 
-  render() {
-    return (
-      <div
-        className="keyboard"
-        role="button"
-        onMouseDown={this.props.setMouseFlag}
-        onMouseUp={this.props.setMouseFlag}
-      >
-        {this.renderPianoKey('C', 3, 0, 'q')}
-        {this.renderPianoKey('C#', 3, 0, '2')}
-        {this.renderPianoKey('D', 3, 0, 'w')}
-        {this.renderPianoKey('D#', 3, 0, '3')}
-        {this.renderPianoKey('E', 3, 0, 'e')}
-        {this.renderPianoKey('F', 3, 0, 'r')}
-        {this.renderPianoKey('F#', 3, 0, '5')}
-        {this.renderPianoKey('G', 3, 0, 't')}
-        {this.renderPianoKey('G#', 3, 0, '6')}
-        {this.renderPianoKey('A', 3, 0, 'y')}
-        {this.renderPianoKey('A#', 3, 0, '7')}
-        {this.renderPianoKey('B', 3, 0, 'u')}
-        {this.renderPianoKey('C', 4, 0, 'z')}
-        {this.renderPianoKey('C#', 4, 0, 's', true)}
-        {this.renderPianoKey('D', 4, 0, 'x', true)}
-        {this.renderPianoKey('D#', 4, 0, 'd', true)}
-        {this.renderPianoKey('E', 4, 0, 'c', true)}
-        {this.renderPianoKey('F', 4, 0, 'v', true)}
-        {this.renderPianoKey('F#', 4, 0, 'g', true)}
-        {this.renderPianoKey('G', 4, 0, 'b', true)}
-        {this.renderPianoKey('G#', 4, 0, 'h', true)}
-        {this.renderPianoKey('A', 4, 0, 'n', true)}
-        {this.renderPianoKey('A#', 4, 0, 'j', true)}
-        {this.renderPianoKey('B', 4, 0, 'm', true)}
-        {this.renderPianoKey('C', 5, 0, ',', true)}
-      </div>
-    );
-  }
+  return (
+    <div
+      className="keyboard"
+      role="button"
+      onMouseDown={props.setMouseFlag}
+      onMouseUp={props.setMouseFlag}
+    >
+      {renderPianoKey('C', 3, 'q')}
+      {renderPianoKey('C#', 3, '2')}
+      {renderPianoKey('D', 3, 'w')}
+      {renderPianoKey('D#', 3, '3')}
+      {renderPianoKey('E', 3, 'e')}
+      {renderPianoKey('F', 3, 'r')}
+      {renderPianoKey('F#', 3, '5')}
+      {renderPianoKey('G', 3, 't')}
+      {renderPianoKey('G#', 3, '6')}
+      {renderPianoKey('A', 3, 'y')}
+      {renderPianoKey('A#', 3, '7')}
+      {renderPianoKey('B', 3, 'u')}
+      {renderPianoKey('C', 4, 'z')}
+      {renderPianoKey('C#', 4, 's', true)}
+      {renderPianoKey('D', 4, 'x', true)}
+      {renderPianoKey('D#', 4, 'd', true)}
+      {renderPianoKey('E', 4, 'c', true)}
+      {renderPianoKey('F', 4, 'v', true)}
+      {renderPianoKey('F#', 4, 'g', true)}
+      {renderPianoKey('G', 4, 'b', true)}
+      {renderPianoKey('G#', 4, 'h', true)}
+      {renderPianoKey('A', 4, 'n', true)}
+      {renderPianoKey('A#', 4, 'j', true)}
+      {renderPianoKey('B', 4, 'm', true)}
+      {renderPianoKey('C', 5, ',', true)}
+    </div>
+  );
 }
+
+Keyboard.propTypes = {
+  setMouseFlag: PropTypes.func.isRequired,
+  isKeyDown: PropTypes.bool.isRequired,
+  isMouseDown: PropTypes.bool.isRequired,
+  currentlyPlaying: PropTypes.array.isRequired,
+  onMouseDown: PropTypes.func.isRequired,
+  onMouseUp: PropTypes.func.isRequired,
+  octaveShift: PropTypes.number.isRequired,
+};

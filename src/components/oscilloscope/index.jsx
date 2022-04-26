@@ -50,3 +50,8 @@ export function Oscilloscope(props) {
 
     return <canvas className="waveform" ref={canvasRef} />;
 }
+
+Oscilloscope.propTypes = {
+    bufferLength: PropTypes.number.isRequired,
+    dataArray: PropTypes.object.isRequired,
+};

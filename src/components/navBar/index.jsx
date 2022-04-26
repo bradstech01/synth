@@ -15,15 +15,19 @@ export function NavBar(props) {
                             view={view}
                             onChange={props.onChange}
                         />
-                    )
+                    );
                 })}
             </React.Fragment>
-        )
-    }
+        );
+    };
 
     return (
         <div className="navBar">
-            {renderViews(['keyboard', 'oscillator', 'fx', 'sequence'])}
+            {renderViews([['KEYBOARD', 'KEYS'], ['OSCILLATOR', 'OSC'], ['EFFECTS', 'FX'], ['SEQUENCE', 'SEQ']])}
         </div>
     );
 }
+
+NavBar.propTypes = {
+    onChange: PropTypes.func.isRequired,
+};

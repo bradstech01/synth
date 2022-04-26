@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Oscilloscope } from '../oscilloscope';
 import { audioCtx, synth } from '../../scripts/synthAPI.js';
 
@@ -13,7 +12,7 @@ export class Visualizer extends React.Component {
     super(props);
     const analyser = audioCtx.createAnalyser();
     synth.connect(analyser);
-    analyser.fftSize = 4096;
+    analyser.fftSize = 512;
     const bufferLength = analyser.frequencyBinCount;
 
     this.analyser = analyser;
@@ -22,7 +21,6 @@ export class Visualizer extends React.Component {
     const dataArray = new Uint8Array(bufferLength);
     this.state = { dataArray: dataArray };
   }
-
 
   componentDidMount() {
     this.rAF = requestAnimationFrame(this.updateAnimationState);
@@ -48,4 +46,3 @@ export class Visualizer extends React.Component {
     );
   }
 }
-

@@ -40,3 +40,7 @@ export function TimeFxBox(props) {
         </div>
     );
 }
+TimeFxBox.propTypes = {
+    synthSettings: PropTypes.object.isRequired,
+    onChange: PropTypes.func.isRequired,
+};

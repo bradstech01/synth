@@ -1,313 +1,382 @@
 @use "sass:math";
-$small: 450px;
+$small: 650px;
+:export {
+  small:  $small;
+}
+$bkgcolor: rgba(0, 0, 0, .2);
+$primary-font-color: black;
+$secondary-font-color: white;
+$accent-color: #345414;
+$btncolor: rgba(0, 0, 0, .8);
+$btnhover: rgba(20, 20, 20, .8);
+$btnpress: rgba(40, 40, 40, .8);
 
-
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@font-face {
+font-family: "MajorMono";
+/*Can be any text*/
+src: local("MajorMonoDisplay-Regular"),
+  url("../fonts/MajorMonoDisplay-Regular.ttf") format("truetype");
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+body {
+margin: 0;
+font-family: MajorMono, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
 }
 
 * {
-  user-select: none;
-}
-
-html {
-  font-size: 1.2vw;
+user-select: none;
 }
 
 .debug {
-  border: 1px solid red;
+border: 1px solid red;
 }
 
 .waveform {
-  width: 100%;
-  height: 100%;
+width: 100%;
+height: 100%;
 }
 
 .btn {
-  padding: 2%;
-  width: 2%;
-  margin: 2%;
+padding: 2%;
+width: 2%;
+margin: 2%;
 }
 
 .visualizer, .musicGui, .settingsGui {
-  background-color: #000;
+  background-color: $bkgcolor;
   color: #fff;
 }
 
 .textCenter {
-  display: block;
-  text-align: center;
+display: block;
+text-align: center;
 }
 
 
-  $keyboard_Width: 85vw;
-  $keyboard_Height: ($keyboard_Width * 0.18);
-  $border_Width: ($keyboard_Width * 0.0015);
-  $whiteKey_Count: 21;
-  $whiteKey_Height: $keyboard_Height;
-  $whiteKey_Width: math.div($keyboard_Width, $whiteKey_Count);
-  $blackKey_Height: ($whiteKey_Height * 0.55);
-  $blackKey_Width: ($whiteKey_Width * 0.55);
-  $blackKey_Offset: (-(math.div($blackKey_Width, 2)) - $border_Width);
-  $whiteKey_Color: #eee;
-  $blackKey_Color: #222222;
-  $blackKey_BorderColor: #000000;
-  $whiteKey_BorderColor: #AAAAAA;
+$keyboard_Width: 85vw;
+$keyboard_Height: ($keyboard_Width * 0.18);
+$border_Width: ($keyboard_Width * 0.0015);
+$whiteKey_Count: 21;
+$whiteKey_Height: $keyboard_Height;
+$whiteKey_Width: math.div($keyboard_Width, $whiteKey_Count);
+$blackKey_Height: ($whiteKey_Height * 0.55);
+$blackKey_Width: ($whiteKey_Width * 0.55);
+$blackKey_Offset: (-(math.div($blackKey_Width, 2)) - $border_Width);
+$whiteKey_Color: #eee;
+$blackKey_Color: #222222;
+$blackKey_BorderColor: #000000;
+$whiteKey_BorderColor: #AAAAAA;
 
-  input[type=range] {
-    -webkit-appearance: none;
-    background: transparent;
-    /* Otherwise white in Chrome */
-  }
-  input[type=range]::-webkit-slider-runnable-track {
-    background: darkcyan;
-    height: 1rem;
-  }
-  input[type=range]::-moz-range-track {
-    background: darkcyan;
-    height: 1rem;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    border: 1px solid #000000;
-    height: 2.5vh;
-    width: 4px;
-    border-radius: 3px;
-    background: #ffffff;
-    cursor: pointer;
-    margin-top: -4px;
-    /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-    /* Add cool effects to your sliders! */
-  }
-  input[type=range]::-moz-range-thumb {
-    -webkit-appearance: none;
-    border: 1px solid #000000;
-    height: 2.5vh;
-    width: 4px;
-    border-radius: 3px;
-    background: #ffffff;
-    cursor: pointer;
-    margin-top: -15%;
-    /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-    /* Add cool effects to your sliders! */
-  }
+input[type=range] {
+  -webkit-appearance: none;
+  background: transparent;
+  /* Otherwise white in Chrome */
+}
+input[type=range]::-webkit-slider-runnable-track {
+  background: $accent-color;
+  height: 1rem;
+}
+input[type=range]::-moz-range-track {
+  background: $accent-color;
+  height: 1rem;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: 1px solid #000000;
+  height: 2.5vh;
+  width: 4px;
+  border-radius: 3px;
+  background: #ffffff;
+  cursor: pointer;
+  margin-top: -4px;
+  /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  /* Add cool effects to your sliders! */
+}
+input[type=range]::-moz-range-thumb {
+  -webkit-appearance: none;
+  border: 1px solid #000000;
+  height: 2.5vh;
+  width: 4px;
+  border-radius: 3px;
+  background: #ffffff;
+  cursor: pointer;
+  margin-top: -15%;
+  /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  /* Add cool effects to your sliders! */
+}
 
-  .hidden {
-    display: None;
-    z-index: -1;
-  }
+.hidden {
+  display: None;
+  z-index: -1;
+}
 
-  .centerX {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
-  }
+.centerX {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+}
 
-  .centerY {
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: center;
-  }
+.centerY {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+}
 
-  .fitContainer {
-    height: 100%;
-    width: 100%;
-  }
+.centerCross {
+  align-items: center;
+}
 
-  .splash {
-    height: 100vh;
-    width: 100vw;
-    text-align: center;
-    background-color: black;
-    overflow: hidden;
-    color: #fff;
-    transition-property: opacity;
-    transition-duration: 4s;
-  }
+.fitContainer {
+  height: 100%;
+  width: 100%;
+}
 
-  .app {
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
-  }
-  
-  .wrapper {
-    height: 90%;
-    width: 100%;
-    background-color: black;
-  }
+.splash {
+  height: 100vh;
+  width: 100vw;
+  text-align: center;
+  background-color: black;
+  overflow: hidden;
+  color: #fff;
+  transition-property: opacity;
+  transition-duration: 4s;
+}
 
-  .navBar{
-    height: 10%;
-    width: 100%;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-evenly;
-    background-color:#222;
-    color: white;
-  }
+.app {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
 
-  .navButton{
-    width: 25%;
-    height: 100%;
+.wrapper {
+  height: 90%;
+  width: 100%;
+}
 
-    @media screen and (min-width: $small+1) {
-      font-size: 1rem;
-    }
-    @media screen and (max-width: $small) {
-          font-size: 4rem;
+.navBar{
+  height: 10%;
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-evenly;
+  background-color:#222;
+  color: $secondary-font-color;
+  filter: drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 0.2));
+}
 
-    }
-  }
+.navBar > .radioContainer {
+  width: 25%;
+  height: 100%;
 
-  .keyboardWrapper {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-evenly;
+  h1 {
+    display: block;
   }
 
-  .visualizerContainer {
-    height: 35%;
-    width: 100%;
-    padding: 1px;
-    background-color: white;
-    clip-path: circle();
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-evenly;
-  }
-  .musicGui {
-    height: 35%;
-    width: 100%;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-evenly;
-  }
-  .sequencer {
-    width: 100%;
-    height: 100%;
-  }
-  .oscSettings {
-    width: 100%;
-    height: 100%;
-    background-color: black;
-    color: white;
-    display: flex;
-    flex-flow: column wrap;
-  }
-
-  .oscSettings>* {
-    margin: 5px;
-  }
-
-  .fxSettings {
-    width: 100%;
-    height: 100%;
-    background-color: black;
-    color: white;
-    display: flex;
-    flex-flow: row wrap;
-  }
-
-  .timeFx>* {
-    margin: 5px;
-  }
-  .settingsHdr {
+  @media screen and (min-width: $small) {
     font-size: 1rem;
   }
-  .voiceSettings {
-    grid-template-columns: repeat(3, fr);
-    grid-template-rows: 1fr;
-  }
-  .voiceFx {
-    width: 50%;
-    height: 100%;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-evenly;
-  }
-  .timeFx {
-    width: 50%;
-    height: 100%;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-evenly;
-  }
-  .width {
-    width: 100%;
-    height: 20%;
-  }
-  .eq {
-    width: 100%;
-    height: 20%;
-    display: flex;
-    flex-flow: column nowrap;
-  }
-  .showAsRows {
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-evenly;
-  }
-  .distortion {
-    width: 100%;
-    height: 20%;
-  }
-  .delay {
-        width: 100%;
-    height: 20%;
-  }
-  .reverb {
-        width: 100%;
-    height: 20%;
-  }
-  .chorus {
-        width: 100%;
-    height: 20%;
-  }
-  .tremolo {
-        width: 100%;
-    height: 20%;
-  }
-  .visualizer {
-    height: 100%;
-    width: 100%;
-    shape-outside: circle();
-    clip-path: circle();
-  }
-  .oscillatorSelection {
-    width: 25%;
-    height: 25%;
-  }
-  .ampEnv {
-    width: 80%;
-    height: 25%;
-    display: flex;
-    flex-flow: column nowrap;
-  }
-  .lpfEnv {
-    width: 80%;
-    height: 25%;
-    display: flex;
-    flex-flow: column nowrap;
-  }
-  .lpfSettings {
-    width: 100%;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-evenly;
-  }
   
+  @media screen and (max-width: $small) {
+    font-size: 1rem;
+  }
+}
+
+.keyboardWrapper {
+  width: 100%;
+  height: 100%;
+  background-color: $bkgcolor;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-evenly;
+}
+
+.visualizerContainer {
+  height: 80%;
+  width: 50%;
+  padding: 1px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-evenly;
+  filter: drop-shadow(0 0.4rem .5rem rgba(0, 0, 0, 0.5));
+}
+.musicGui {
+  height: 35%;
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-evenly;
+}
+.sequencer {
+  width: 100%;
+  height: 100%;
+  background-color: $bkgcolor;
+}
+.oscSettings {
+  width: 100%;
+  height: 100%;
+  background-color: $bkgcolor;
+  display: flex;
+  flex-flow: column wrap;
+}
+
+.oscSettings>* {
+  margin: 5px;
+}
+
+.fxSettings {
+  width: 100%;
+  height: 100%;
+  background-color: $bkgcolor;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.timeFx>* {
+  margin: 5px;
+}
+.settingsHdr {
+  font-size: 1rem;
+}
+.voiceSettings {
+  grid-template-columns: repeat(3, fr);
+  grid-template-rows: 1fr;
+}
+.voiceFx {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-evenly;
+}
+.timeFx {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-evenly;
+}
+.width {
+  width: 100%;
+  height: 20%;
+}
+.eq {
+  width: 100%;
+  height: 20%;
+  display: flex;
+  flex-flow: column nowrap;
+}
+.showAsRows {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-evenly;
+}
+.distortion {
+  width: 100%;
+  height: 20%;
+}
+.delay {
+  width: 100%;
+  height: 20%;
+}
+.reverb {
+  width: 100%;
+  height: 20%;
+}
+.chorus {
+  width: 100%;
+  height: 20%;
+}
+.tremolo {
+  width: 100%;
+  height: 20%;
+}
+.visualizer {
+  height: 100%;
+  width: 100%;
+  shape-outside: circle();
+  clip-path: circle();
+
+}
+.oscillatorSelection {
+  width: 25%;
+  height: 25%;
+
+  h1 {
+    @media screen and (min-width: $small) {
+      font-size: 2rem;
+    }
+    @media screen and (max-width: $small) {
+      font-size: 1.5rem;
+    }    
+  }
+
+    .osc {
+      width: calc(100% - 1px);
+      height: calc(100% - 1px);
+      border: 1px solid white;
+      border-radius: 3px;
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: space-evenly;
+      align-items: center;
+
+      .sine {
+        grid-column: 1 / 1;
+        grid-row: 1 / 1;
+      }
+      
+      .sawtooth {
+        grid-column: 1 / 1;
+        grid-row: 2 / 2;
+      }
+      
+      .square {
+        grid-column: 2 / 2;
+        grid-row: 1 / 1;
+      }
+      
+      .triangle {
+        grid-column: 2 / 2;
+        grid-row: 2 / 2;
+      }
+
+      span {
+        @media screen and (min-width: $small) {
+          font-size: 1.5rem;
+        }
+        @media screen and (max-width: $small) {
+          font-size: 1rem;
+        }        
+      } 
+    }
+}
+.ampEnv {
+  width: 80%;
+  height: 25%;
+  display: flex;
+  flex-flow: column nowrap;
+  h1 {
+    @media screen and (min-width: $small) {
+      font-size: 2rem;
+    }
+    
+    @media screen and (max-width: $small) {
+      font-size: 1.5rem;
+    }  
+  }
+  label {
+    @media screen and (min-width: $small) {
+      font-size: 1.5rem;
+    }
+    
+    @media screen and (max-width: $small) {
+      font-size: 1rem;
+    }
+  }
   .ampSettings {
     width: 100%;
     border-radius: 3px;
@@ -315,358 +384,339 @@ html {
     flex-flow: column nowrap;
     justify-content: space-evenly;
   }
-  .step {
-    background-color: #eee;
-    width: calc(12% - 1px);
-    height: 0;
-    padding-bottom: calc(12% - 1px);
-    border-radius: 3px;
-    border: 1px solid #222;
-    font-size: .75rem;
-    display: grid;
-    justify-content: center;
+}
+.lpfEnv {
+  width: 80%;
+  height: 25%;
+  display: flex;
+  flex-flow: column nowrap;
+  h1 {
+    @media screen and (min-width: $small) {
+      font-size: 2rem;
+    }
+    @media screen and (max-width: $small) {
+      font-size: 1.5rem;
+    }
   }
-  .step:hover {
-    background-color: #bbb;
+  label {
+    @media screen and (min-width: $small) {
+      font-size: 1.5rem;
+    }
+    @media screen and (max-width: $small) {
+      font-size: 1rem;
+    }
   }
-  .step:active {
-    background-color: #ddd;
-  }
-  .stepsContainer {
-    width: 90%;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-evenly;
-  }
-  .activeStep {
-    background-color: #666;
-  }
-  .steps {
-    width: 80%;
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-  }
-  .seqControls {
-    width: 90%;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-evenly;
-  }
-  .seqStart {
-    width: 0px;
-    height: 0px;
-    margin-top: 1.25vw;
-    border-style: solid;
-    border-width: 1.25vw 0vw 1.25vw 2.5vw;
-    border-color: transparent transparent transparent #fff;
-    border-radius: 3px;
-  }
-  .seqStart:hover {
-    border-color: transparent transparent transparent #ddd;
-  }
-  .seqStart:active {
-    border-color: transparent transparent transparent #bbb;
-  }
-  .seqRecord {
-    width: 2.5vw;
-    height: 2.5vw;
-    font-size: 0;
-    background-color: red;
-    border: 0;
-    border-radius: 2.5vw;
-    margin: 1.25vw;
-    outline: none;
-  }
-  .seqRecord:hover {
-    opacity: .75;
-  }
-  .seqRecord:active {
-    opacity: .6;
-  }
-  .bpmBox {
-    width: 8vw;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-evenly;
-  }
-  .bpmDisplayBox {
-    height: 100%;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-evenly;
-  }
-  .bpmDisplay {
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-evenly;
-    width: 3vw;
-    height: 1.5vw;
-    border: 1px solid white;
-    border-radius: 2px;
-    font-size: 1rem;
-    text-align: center;
-    color: white;
-    background-color: black;
-  }
-  .bpmButtons {
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-evenly;
-    height: 100%;
-    width: 4vh;
-  }
-  .bpmUp {
-    width: 0px;
-    height: 0px;
-    border-style: solid;
-    border-width: 1vw 1vw 1vw 1vw;
-    border-color: transparent transparent #fff transparent;
-    border-radius: 3px;
-  }
-  .bpmUp:hover {
-    border-color: transparent transparent #ddd transparent;
-  }
-  .bpmUp:active {
-    border-color: transparent transparent #bbb transparent;
-  }
-  .bpmDown {
-    width: 0px;
-    height: 0px;
-    border-style: solid;
-    border-width: 1vw 1vw 1vw 1vw;
-    border-color: #fff transparent transparent transparent;
-    border-radius: 3px;
-  }
-  .bpmDown:hover {
-    border-color: #ddd transparent transparent transparent;
-  }
-  .bpmDown:active {
-    border-color: #bbb transparent transparent transparent;
-  }
-  .seqCommands {
-    width: 4vw;
-    height: 100%;
-  }
-  .stepBeatDisplay {
-    margin-left: 0px;
-  }
-  .stepNoteDisplay {
+  .lpfSettings {
     width: 100%;
-    height: 25%;
-    margin-top: 10px;
-  }
-  .rest, .hold, .clear {
-    color: white;
-    border-radius: 4px;
-    border: 1px solid grey;
-    margin: 2px;
-    text-align: center;
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-evenly;
   }
-  .rest:active, .hold:active, .clear:active {
-    background-color: #aaa;
-  }
-  .grid {
-    display: grid;
-  }
-  .marg5 {
-    margin: 5px;
-  }
-  .gr1 {
-    grid-row: 1 / 1;
-  }
-  .gr2 {
-    grid-row: 2 / 2;
-  }
-  .gc1 {
-    grid-column: 1 / 1;
-  }
-  .gc2 {
-    grid-column: 2 / 2;
-  }
-  .gc3 {
-    grid-column: 3 / 3;
-  }
-  .gc4 {
-    grid-column: 4 / 4;
-  }
-  .gc4span2 {
-    grid-column: 4 / 5;
-  }
-  .gc5 {
-    grid-column: 5 / 5;
-  }
-  .gc6 {
-    grid-column: 6 / 6;
-  }
-  .gc7 {
-    grid-column: 7 / 7;
-  }
-  .gc8 {
-    grid-column: 8 / 8;
-  }
-  .radioContainer {
-    display: block;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    cursor: pointer;
-  }
-  .radioContainer:hover {
-    background-color: #333;
-  }
-  .radioContainer:active {
-    background-color: #ddd;
-  }
-  .radioContainer>input {
-    visibility: hidden;
-    position: absolute;
-  }
-  .radioContainer>input+span {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
-  .radioContainer>input:checked+span {
-    background-color: darkcyan;
-  }
-  .oscsine {
-    grid-column: 1 / 1;
-    grid-row: 1 / 1;
-    font-size: .6rem;
-    margin: .5vw;
-    border: 1px solid white;
-    border-radius: 3px;
-    width: 50%;
-    height: 50%;
-    display: flex;
-    justify-content: space-evenly;
-  }
-  .oscsawtooth {
-    grid-column: 1 / 1;
-    grid-row: 2 / 2;
-    font-size: .6rem;
-    margin: .5vw;
-    border: 1px solid white;
-    border-radius: 3px;
-    width: 50%;
-    height: 50%;
-    display: flex;
-    justify-content: space-evenly
-  }
-  .oscsquare {
-    grid-column: 2 / 2;
-    grid-row: 1 / 1;
-    font-size: .6rem;
-    margin: .5vw;
-    border: 1px solid white;
-    border-radius: 3px;
-    width: 50%;
-    height: 50%;
-    display: flex;
-    justify-content: space-evenly
-  }
-  .osctriangle {
-    grid-column: 2 / 2;
-    grid-row: 2 / 2;
-    font-size: .6rem;
-    margin: .5vw;
-    border: 1px solid white;
-    border-radius: 3px;
-    width: 50%;
-    height: 50%;
-    display: flex;
-    justify-content: space-evenly
-  }
-  .slider {
-    width: 90%;
-    margin-left: 5%;
-    margin-right: 0%;
-    height: 25%;
-    cursor: pointer;
-  }
-  .sliderWrapper {
-    height: 100%;
-    width: 70%;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-evenly;
-  }
-  .settingGrp {
-    display: grid;
-    border: 1px solid white;
-    border-radius: 3px;
-  }
+}
 
-  .setting { 
-    font-size: .8em;
-    text-align: center;
-    display: flex;
-    flex-flow: row nowrap;
-    margin: .2%;
-  }
-  .settingLbl {
-    width: 10%;
-  }
-  .circleSlider {
-    height: 3.5vw;
-    width: 3.5vw;
-    flex-shrink: 2;
-    background-color: white;
-    color: brown;
-  }
-  .circleTrack {
-    fill: rgba(255, 0, 0, .5);
-  }
-  .circleProgress {
-    stroke-width: .2vw;
-    fill: rgba(0, 255, 0, .5);
-  }
-  .keyboard {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-evenly;
-    height: 33vh;
-  }
-  .keyboard>.pianoKey:last-child {
-    border-right: $border_Width solid $whiteKey_BorderColor;
-  }
-  .keyWhite {
-    height: $whiteKey_Height;
-    width: $whiteKey_Width;
-    z-index: 1;
-    border-top: $border_Width solid $whiteKey_BorderColor;
-    border-bottom: $border_Width solid $whiteKey_BorderColor;
-    border-left: $border_Width solid $whiteKey_BorderColor;
-    background-color: $whiteKey_Color;
-    color: black;
-  }
-  .keyBlack {
-    height: $blackKey_Height;
-    width: $blackKey_Width;
-    z-index: 2;
-    border: $border_Width solid $blackKey_BorderColor;
-    background-color: $blackKey_Color;
-    color: white;
-  }
-  .a, .b, .d, .e, .g, .keyBlack {
-    margin: 0 0 0 $blackKey_Offset;
-  }
-  .pianoKey {
-    float: left;
-    position: relative;
-    display: flex;
-    justify-content: center;
-  }
-  .keyPressed {
-    background-color: lightgrey;
-  }
-  .keyText {
-    position: absolute;
-    text-align: center;
-    bottom: 10%;
-    width: 50%;
-  }
+.step {
+  background-color: #eee;
+  width: calc(12% - 1px);
+  height: 0;
+  padding-bottom: calc(12% - 1px);
+  border-radius: 3px;
+  border: 1px solid #222;
+  font-size: .75rem;
+  display: grid;
+  justify-content: center;
+}
+.step:hover {
+  background-color: #bbb;
+}
+.step:active {
+  background-color: #ddd;
+}
+.stepsContainer {
+  width: 90%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-evenly;
+}
+.activeStep {
+  background-color: #666;
+}
+.steps {
+  width: 40%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+.seqControls {
+  width: 40%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-evenly;
+}
+.seqStart {
+  width: 0px;
+  height: 0px;
+  margin-top: 1.25vw;
+  border-style: solid;
+  border-width: 1.25vw 0vw 1.25vw 2.5vw;
+  border-color: transparent transparent transparent $btncolor;
+  border-radius: 3px;
+}
+.seqStart:hover {
+  border-color: transparent transparent transparent $btnhover;
+}
+.seqStart:active {
+  border-color: transparent transparent transparent $btnpress;
+}
+.seqRecord {
+  width: 2.5vw;
+  height: 2.5vw;
+  font-size: 0;
+  background-color: red;
+  border: 0;
+  border-radius: 2.5vw;
+  margin: 1.25vw;
+  outline: none;
+}
+.seqRecord:hover {
+  opacity: .75;
+}
+.seqRecord:active {
+  opacity: .6;
+}
+.bpmBox {
+  width: 8vw;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-evenly;
+}
+.bpmDisplayBox {
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-evenly;
+}
+.bpmDisplay {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-evenly;
+  width: 3vw;
+  height: 1.5vw;
+  border: 1px solid white;
+  border-radius: 2px;
+  font-size: 1rem;
+  text-align: center;
+  background-color: $btncolor;
+  color: $secondary-font-color;
+}
+.bpmButtons {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-evenly;
+  height: 100%;
+  width: 4vh;
+}
+.bpmUp {
+  width: 0px;
+  height: 0px;
+  border-style: solid;
+  border-width: 1vw 1vw 1vw 1vw;
+  border-color: transparent transparent $btncolor transparent;
+  border-radius: 3px;
+}
+.bpmUp:hover {
+  border-color: transparent transparent $btnhover transparent;
+}
+.bpmUp:active {
+  border-color: transparent transparent $btnpress transparent;
+}
+.bpmDown {
+  width: 0px;
+  height: 0px;
+  border-style: solid;
+  border-width: 1vw 1vw 1vw 1vw;
+  border-color: $btncolor transparent transparent transparent;
+  border-radius: 3px;
+}
+.bpmDown:hover {
+  border-color: $btnhover transparent transparent transparent;
+}
+.bpmDown:active {
+  border-color: $btnpress transparent transparent transparent;
+}
+.seqCommands {
+  width: 4vw;
+  height: 100%;
+}
+.stepBeatDisplay {
+  margin-left: 0px;
+}
+.stepNoteDisplay {
+  width: 100%;
+  height: 25%;
+  margin-top: 10px;
+}
+.rest, .hold, .clear {
+  color: $secondary-font-color;
+  background-color: $btncolor;
+  border-radius: 4px;
+  border: 1px solid grey;
+  margin: 2px;
+  text-align: center;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-evenly;
+}
+.rest:hover,
+.hold:hover,
+.clear:hover {
+  background-color: $btnhover;
+}
+.rest:active, .hold:active, .clear:active {
+  background-color: $btnpress;
+}
+.grid {
+  display: grid;
+}
+.marg5 {
+  margin: 5px;
+}
+.gr1 {
+  grid-row: 1 / 1;
+}
+.gr2 {
+  grid-row: 2 / 2;
+}
+.gc1 {
+  grid-column: 1 / 1;
+}
+.gc2 {
+  grid-column: 2 / 2;
+}
+.gc3 {
+  grid-column: 3 / 3;
+}
+.gc4 {
+  grid-column: 4 / 4;
+}
+.gc4span2 {
+  grid-column: 4 / 5;
+}
+.gc5 {
+  grid-column: 5 / 5;
+}
+.gc6 {
+  grid-column: 6 / 6;
+}
+.gc7 {
+  grid-column: 7 / 7;
+}
+.gc8 {
+  grid-column: 8 / 8;
+}
+.radioContainer {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  cursor: pointer;
+}
+.radioContainer:hover {
+  background-color: #333;
+}
+.radioContainer:active {
+  background-color: #ddd;
+}
+.radioContainer>input {
+  visibility: hidden;
+  position: absolute;
+}
+.radioContainer>input+span {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.radioContainer>input:checked+span {
+  background-color: $accent-color;
+}
+
+.osc {
+  color: $secondary-font-color;
+  background-color: $btncolor;
+}
+
+
+.slider {
+  width: 90%;
+  margin-left: 5%;
+  margin-right: 0%;
+  height: 25%;
+  cursor: pointer;
+}
+.sliderWrapper {
+  height: 100%;
+  width: 70%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-evenly;
+}
+.settingGrp {
+  display: grid;
+  border: 1px solid white;
+  border-radius: 3px;
+}
+
+.setting { 
+  text-align: center;
+  display: flex;
+  flex-flow: row nowrap;
+  margin: .2%;
+}
+.settingLbl {
+  width: 10%;
+}
+.keyboard {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-evenly;
+  height: 50%;
+  filter: drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 0.2));
+}
+.keyboard>.pianoKey:last-child {
+  border-right: $border_Width solid $whiteKey_BorderColor;
+}
+.keyWhite {
+  height: $whiteKey_Height;
+  width: $whiteKey_Width;
+  z-index: 1;
+  border-top: $border_Width solid $whiteKey_BorderColor;
+  border-bottom: $border_Width solid $whiteKey_BorderColor;
+  border-left: $border_Width solid $whiteKey_BorderColor;
+  background-color: $whiteKey_Color;
+  color: black;
+}
+.keyBlack {
+  height: $blackKey_Height;
+  width: $blackKey_Width;
+  z-index: 2;
+  border: $border_Width solid $blackKey_BorderColor;
+  background-color: $blackKey_Color;
+  color: white;
+}
+.a, .b, .d, .e, .g, .keyBlack {
+  margin: 0 0 0 $blackKey_Offset;
+}
+.pianoKey {
+  float: left;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+.keyPressed {
+  background-color: lightgrey;
+}
+.keyText {
+  position: absolute;
+  text-align: center;
+  bottom: 10%;
+  width: 50%;
+}

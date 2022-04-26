@@ -64,7 +64,7 @@ export class Sequencer extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.recording) {
-      if (prevProps.currentlyPlaying != this.props.currentlyPlaying) {
+      if (prevProps.currentlyPlaying !== this.props.currentlyPlaying) {
         if (this.props.currentlyPlaying.length === 0) {
           this.advanceSequence();
         }
@@ -79,7 +79,7 @@ export class Sequencer extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.recording) {
-      if ((nextProps.currentlyPlaying != this.props.currentlyPlaying) || (nextState.beat !== this.state.beat)) {
+      if ((nextProps.currentlyPlaying !== this.props.currentlyPlaying) || (nextState.beat !== this.state.beat)) {
         return true;
       }
       return false;
@@ -211,15 +211,15 @@ export class Sequencer extends React.Component {
               <div className="bpmDown" onMouseDown={this.lowerBpm} />
             </div>
           </div>
-          <div className="seqCommands">
+          <div className="seqCommands centerY">
             <div className="rest" onMouseDown={this.addRest}>
-              <span>rest</span>
+              <span>REST</span>
             </div>
             {/*<div className="hold" onMouseDown={this.addHold}>
               <span>hold</span>
             </div>*/}
             <div className="clear" onMouseDown={this.clearEntry}>
-              <span>clear</span>
+              <span>CLEAR</span>
             </div>
           </div>
         </div>

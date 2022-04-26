@@ -1,6 +1,10 @@
 import '../../css/index.scss';
 import * as Tone from 'tone';
 import React from 'react';
+import Particles from 'react-tsparticles';
+import { loadFull } from 'tsparticles';
+import { particleOptions } from '../../assets/particles';
+
 import { Visualizer } from '../visualizer';
 import { Keyboard } from '../keyboard';
 import { OscillatorSettings } from '../oscillatorSettings';
@@ -8,10 +12,10 @@ import { FxSettings } from '../fxSettings';
 import { Sequencer } from '../sequencer';
 import { NavBar } from '../navBar';
 
-import { keyMap } from '../../scripts/inputMaps.js';
+import { keyMap, midiMap } from '../../scripts/inputMaps.js';
 import * as midiFunctions from '../../scripts/midiFunctions.js';
 import { handleChange, handleFxChange, getDefaults } from '../../scripts/settingsAPI.js';
-import { synth, triggerNote, triggerRelease } from '../../scripts/synthAPI.js';
+import { triggerNote, triggerRelease } from '../../scripts/synthAPI.js';
 
 
 class Synth extends React.Component {
@@ -24,12 +28,17 @@ class Synth extends React.Component {
       hasToneStarted: false,
       currentlyPlaying: [],
       isKeyDown: false,
-      activeView: 'keyboard',
+      activeView: 'KEYBOARD',
       synthSettings: synthSettings,
     };
 
     this.isMouseDown = false;
+    this.octaveShift = 0;
     this.noteVelocityData = {};
+
+    this.particlesInit = async (main) => {
+      await loadFull(main);
+    };
 
     this.startTone = this.startTone.bind(this);
     this.handleChange = handleChange.bind(this);
@@ -67,7 +76,7 @@ class Synth extends React.Component {
       this.setState({
         hasToneStarted: true,
       });
-      midiFunctions.setUpMIDI();
+      midiFunctions.setUpMIDI(this.getMIDIMessage);
 
       document.removeEventListener('keydown', this.startTone);
       document.removeEventListener('mousedown', this.startTone);
@@ -78,16 +87,31 @@ class Synth extends React.Component {
     }
   }
 
+  getMIDIMessage = midiMessage => {
+    const dataArray = midiMessage.data;
+    const command = dataArray[0];
+    const note = midiMap(dataArray[1]);
+    const velocity = (dataArray[2] / 200);
+    if (command === 144) {
+      this.addToCurrentlyPlaying(note, velocity);
+    } else if (command === 128) {
+      this.removeFromCurrentlyPlaying(note);
+    }
+  };
+
   handleKeyPress = (e) => {
-    if (!this.state.isKeyDown) this.setState({ isKeyDown: true });
-    if (keyMap(e.key)) this.addToCurrentlyPlaying(keyMap(e.key));
+    var newState = {};
+    if (keyMap(e.key)) newState = this.addToCurrentlyPlaying(keyMap(e.key));
+    if (!this.state.isKeyDown) newState.isKeyDown = true;
+    this.setState(newState);
   };
 
   //handles the key release within app; does not get passed around
   handleKeyRelease = (e) => {
-    if (keyMap(e.key)) this.removeFromCurrentlyPlaying(keyMap(e.key));
-    if (this.state.currentlyPlaying.length === 0)
-      this.setState({ isKeyDown: false });
+    var newState = {};
+    if (keyMap(e.key)) newState = this.removeFromCurrentlyPlaying(keyMap(e.key));
+    if (this.state.currentlyPlaying.length === 0) newState.isKeyDown = false;
+    this.setState(newState);
   };
 
   addToCurrentlyPlaying = (note, velocity) => {
@@ -95,10 +119,11 @@ class Synth extends React.Component {
       let newPlaying = [...this.state.currentlyPlaying];
       newPlaying.push(note);
       this.noteVelocityData[note] = velocity ? velocity : this.state.synthSettings.misc.defaultVelocity;
-      this.setState({
+      return {
         currentlyPlaying: newPlaying,
-      });
+      };
     }
+    else return {};
   };
 
   removeFromCurrentlyPlaying = (note) => {
@@ -108,10 +133,11 @@ class Synth extends React.Component {
         if (value === note) delete this.noteVelocityData[note];
         return value !== note;
       });
-      this.setState({
+      return {
         currentlyPlaying: newPlaying,
-      });
+      };
     }
+    else return {};
   };
 
   setMouseFlag = (e) => {
@@ -129,6 +155,11 @@ class Synth extends React.Component {
     }
   };
 
+
+  setOctaveShift = value => {
+    this.octaveShift = value;
+  };
+
   setActiveView = value => {
     this.setState({ activeView: value });
   };
@@ -137,12 +168,12 @@ class Synth extends React.Component {
   renderSettings() {
     return (
       <React.Fragment>
-        <div className={(this.state.activeView === 'oscillator') ? 'oscSettings' : 'hidden'}>
+        <div className={(this.state.activeView === 'OSCILLATOR') ? 'oscSettings' : 'hidden'}>
           <OscillatorSettings
             synthSettings={this.state.synthSettings}
             handleChange={(value, setting, name) => { this.updateSettingState(value, setting, name, this.handleChange); }} />
         </div>
-        <div className={(this.state.activeView === 'fx') ? 'fxSettings' : 'hidden'}>
+        <div className={(this.state.activeView === 'EFFECTS') ? 'fxSettings' : 'hidden'}>
           <FxSettings
             synthSettings={this.state.synthSettings}
             handleFxChange={(value, setting, name) => { this.updateSettingState(value, setting, name, this.handleFxChange); }} />
@@ -158,6 +189,7 @@ class Synth extends React.Component {
           isKeyDown={this.state.isKeyDown}
           isMouseDown={this.isMouseDown}
           currentlyPlaying={this.state.currentlyPlaying}
+          octaveShift={0}
           setMouseFlag={this.setMouseFlag}
           onMouseDown={this.addToCurrentlyPlaying}
           onMouseUp={this.removeFromCurrentlyPlaying}
@@ -178,8 +210,10 @@ class Synth extends React.Component {
 
   renderMusicGui() {
     return (
-      <div className={(this.state.activeView === 'keyboard') ? 'keyboardWrapper' : 'hidden'}>
-        {this.renderVisualizer()}
+      <div className={(this.state.activeView === 'KEYBOARD') ? 'keyboardWrapper' : 'hidden'}>
+        <div className='centerX centerCross'>
+          {this.renderVisualizer()}
+        </div>
         {this.renderKeyboard()}
       </div>
     );
@@ -187,7 +221,7 @@ class Synth extends React.Component {
 
   renderSequencer() {
     return (
-      <div className={(this.state.activeView === 'sequence') ? 'sequencer' : 'hidden'}>
+      <div className={(this.state.activeView === 'SEQUENCE') ? 'sequencer' : 'hidden'}>
         <Sequencer
           currentlyPlaying={this.state.currentlyPlaying}
         />
@@ -195,24 +229,41 @@ class Synth extends React.Component {
     );
   }
 
+  renderSplash() {
+    return (
+      <div className="splash">
+        <h2>press any button to begin...</h2>
+      </div>
+    );
+  }
+
+  renderApp() {
+    return (
+      <React.Fragment>
+        <NavBar onChange={this.setActiveView} />
+        <div className="wrapper">
+          {this.renderMusicGui()}
+          {this.renderSettings()}
+          {this.renderSequencer()}
+        </div>
+      </React.Fragment>
+    );
+  }
+
   render() {
     if (this.state.hasToneStarted) {
       return (
-        <div className='app'>
-          <NavBar onChange={this.setActiveView} />
-          <div className="wrapper">
-            {this.renderMusicGui()}
-            {this.renderSettings()}
-            {this.renderSequencer()}
-          </div>
-        </div>
+        <React.Fragment>
+          <Particles init={this.particlesInit} options={particleOptions} />
+          {this.renderApp()};
+        </React.Fragment>
       );
     }
     else {
       return (
-        <div className="splash">
-          <h2>press any button to begin...</h2>
-        </div>
+        <React.Fragment>
+          {this.renderSplash()}
+        </React.Fragment>
       );
     }
   }

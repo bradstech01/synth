@@ -24,3 +24,7 @@ export function Setting(props) {
         </div>
     );
 }
+Setting.propTypes = {
+    definition: PropTypes.object.isRequired,
+    onChange: PropTypes.func.isRequired,
+};

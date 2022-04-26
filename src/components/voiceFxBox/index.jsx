@@ -32,3 +32,8 @@ export function VoiceFxBox(props) {
         </div>
     );
 }
+
+VoiceFxBox.propTypes = {
+    synthSettings: PropTypes.object.isRequired,
+    onChange: PropTypes.func.isRequired,
+};
