@@ -140,6 +140,20 @@ class Synth extends React.Component {
     else return {};
   };
 
+  mouseTriggerNote = (note) => {
+    var newState = this.addToCurrentlyPlaying(note);
+    if (Object.keys(newState).length > 0) {
+      this.setState(newState);
+    }
+  };
+
+  mouseReleaseNote = (note) => {
+    var newState = this.removeFromCurrentlyPlaying(note);
+    if (Object.keys(newState).length > 0) {
+      this.setState(newState);
+    }
+  };
+
   setMouseFlag = (e) => {
     e.stopPropagation();
     if (e.type === 'mousedown') this.isMouseDown = true;
@@ -154,7 +168,6 @@ class Synth extends React.Component {
       document.addEventListener('keyup', this.handleKeyRelease);
     }
   };
-
 
   setOctaveShift = value => {
     this.octaveShift = value;
@@ -191,8 +204,8 @@ class Synth extends React.Component {
           currentlyPlaying={this.state.currentlyPlaying}
           octaveShift={0}
           setMouseFlag={this.setMouseFlag}
-          onMouseDown={this.addToCurrentlyPlaying}
-          onMouseUp={this.removeFromCurrentlyPlaying}
+          onMouseDown={this.mouseTriggerNote}
+          onMouseUp={this.mouseReleaseNote}
         />
       </div>
     );

@@ -45,7 +45,7 @@ function PianoKeyInner(props) {
         (props.currentlyPlaying ? ' keyPressed' : '') +
         (props.hiddenOnMobile ? ' hiddenOnMobile' : '')
       }
-      onMouseDown={!props.isKeyDown ? sendMouseDown : undefined}
+      onMouseDown={(!props.isKeyDown ? sendMouseDown : undefined)}
       onMouseUp={!props.isKeyDown ? sendMouseUp : undefined}
       onMouseOver={!props.isKeyDown ? sendMouseDown : undefined}
       onMouseOut={!props.isKeyDown ? sendMouseUp : undefined}
