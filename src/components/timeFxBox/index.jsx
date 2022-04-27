@@ -8,36 +8,36 @@ import { delay, reverb, chorus, tremolo } from '../../scripts/settingsDefinition
 
 export function TimeFxBox(props) {
     return (
-        <div className="timeFx">
+        <React.Fragment>
             <div className="delay">
                 <h2>delay</h2>
                 <div className="showAsRows">
-                    <Setting definition={delay.settings.delayTime} label="time" css='gc1 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
-                    <Setting definition={delay.settings.feedback} label="repeat" css='gc2 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
+                    <Setting definition={delay.settings.delayTime} label="time" synthSettings={props.synthSettings} onChange={props.onChange} />
+                    <Setting definition={delay.settings.feedback} label="rpt" synthSettings={props.synthSettings} onChange={props.onChange} />
                 </div>
             </div>
             <div className="reverb">
                 <h2>reverb</h2>
                 <div className="showAsRows">
-                    <Setting definition={reverb.settings.wet} label="mix" css='gc1 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
-                    <Setting definition={reverb.settings.decay} label="decay" css='gc2 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
+                    <Setting definition={reverb.settings.decay} label="time" synthSettings={props.synthSettings} onChange={props.onChange} />
+                    <Setting definition={reverb.settings.wet} label="mix" synthSettings={props.synthSettings} onChange={props.onChange} />
                 </div>
             </div>
             <div className="chorus">
                 <h2>chorus</h2>
                 <div className="showAsRows">
-                    <Setting definition={chorus.settings.frequency} label="freq" css='gc1 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
-                    <Setting definition={chorus.settings.depth} label="depth" css='gc2 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
+                    <Setting definition={chorus.settings.frequency} label="freq" synthSettings={props.synthSettings} onChange={props.onChange} />
+                    <Setting definition={chorus.settings.depth} label="amt" synthSettings={props.synthSettings} onChange={props.onChange} />
                 </div>
             </div>
             <div className="tremolo">
                 <h2>tremolo</h2>
                 <div className="showAsRows">
-                    <Setting definition={tremolo.settings.frequency} label="freq" css='gc1 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
-                    <Setting definition={tremolo.settings.depth} label="depth" css='gc2 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
+                    <Setting definition={tremolo.settings.frequency} label="freq" synthSettings={props.synthSettings} onChange={props.onChange} />
+                    <Setting definition={tremolo.settings.depth} label="amt" synthSettings={props.synthSettings} onChange={props.onChange} />
                 </div>
             </div>
-        </div>
+        </React.Fragment>
     );
 }
 TimeFxBox.propTypes = {

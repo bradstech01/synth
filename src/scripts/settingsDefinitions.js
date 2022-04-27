@@ -55,7 +55,7 @@ export const filterEnvelope = {
             settingGrp: 'filterEnvelope',
             settingName: 'octaves',
         },
-        cutoff: {
+        baseFrequency: {
             default: 20,
             min: 20,
             max: 20000,

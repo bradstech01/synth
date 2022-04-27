@@ -8,7 +8,7 @@ import { stereoWidener, eq, distortion } from '../../scripts/settingsDefinitions
 
 export function VoiceFxBox(props) {
     return (
-        <div className="voiceFx">
+        <React.Fragment>
             <div className="width">
                 <h2>width</h2>
                 <div className="showAsRows">
@@ -18,18 +18,18 @@ export function VoiceFxBox(props) {
             <div className="eq">
                 <h2>equalizer</h2>
                 <div className="showAsRows">
-                    <Setting definition={eq.settings.low} label="low" css=' gc1 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
-                    <Setting definition={eq.settings.mid} label="mid" css=' gc2 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
-                    <Setting definition={eq.settings.high} label="high" css=' gc3 gr1' synthSettings={props.synthSettings} onChange={props.onChange} />
+                    <Setting definition={eq.settings.low} label="low" synthSettings={props.synthSettings} onChange={props.onChange} />
+                    <Setting definition={eq.settings.mid} label="mid" synthSettings={props.synthSettings} onChange={props.onChange} />
+                    <Setting definition={eq.settings.high} label="high" synthSettings={props.synthSettings} onChange={props.onChange} />
                 </div>
             </div>
             <div className="distortion">
                 <h2>distortion</h2>
                 <div className="showAsRows">
-                    <Setting definition={distortion.settings.distortion} label="amount" synthSettings={props.synthSettings} onChange={props.onChange} />
+                    <Setting definition={distortion.settings.distortion} label="amt" synthSettings={props.synthSettings} onChange={props.onChange} />
                 </div>
             </div>
-        </div>
+        </React.Fragment>
     );
 }
 
