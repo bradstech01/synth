@@ -14,8 +14,9 @@ export function Setting(props) {
                     value={props.synthSettings[props.definition.settingGrp][props.definition.settingName]}
                     step={props.definition.step}
                     onChange={(e) => {
-                        props.onChange(e.target.value, props.definition.settingGrp, props.definition.settingName);
-                    }}
+                        props.onChange(e.target.value, props.definition.valueScaler ? props.definition.valueScaler(e.target.value) : e.target.value, props.definition.settingGrp, props.definition.settingName);
+                    }
+                    }
                 />
             </div>
             <span className="textCenter">

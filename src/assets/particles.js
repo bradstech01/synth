@@ -1,7 +1,7 @@
 export const particleOptions = {
   "fullScreen": {
     enable: true,
-    zIndex: -2,
+    zIndex: -5,
   },
   "particles": {
     "number": {
@@ -12,36 +12,36 @@ export const particleOptions = {
       }
     },
     "color": {
-      "value": "#0f893b"
+      "value": "#000"
     },
     "shape": {
       "type": "circle",
       "stroke": {
         "width": 0,
-        "color": "#000"
+        "color": "#fff"
       },
       "polygon": {
         "nb_sides": 12
       },
     },
     "opacity": {
-      "value": 0.3,
+      "value": 1,
       "random": true,
       "anim": {
         "enable": true,
-        "speed": .3,
-        "opacity_min": 0.1,
+        "speed": .2,
+        "opacity_min": 0.8,
         "sync": false
       }
     },
     "size": {
-      "value": 10,
+      "value": 5,
       "random": true,
       "anim": {
         "enable": true,
-        "speed": 15,
+        "speed": 3,
         "size_min": 1,
-        "sync": false
+        "sync": true
       }
     },
     "line_linked": {
@@ -53,7 +53,7 @@ export const particleOptions = {
     },
     "move": {
       "enable": true,
-      "speed": 2,
+      "speed": .2,
       "direction": "none",
       "random": false,
       "straight": false,

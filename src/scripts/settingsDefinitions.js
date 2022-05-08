@@ -27,7 +27,7 @@ export const envelope = {
             settingName: 'decay',
         },
         sustain: {
-            default: 0,
+            default: 1,
             min: 0,
             max: 1,
             step: .01,
@@ -57,11 +57,14 @@ export const filterEnvelope = {
         },
         baseFrequency: {
             default: 20,
-            min: 20,
-            max: 20000,
-            step: 1,
+            min: 0,
+            max: 100,
+            step: .01,
             settingGrp: 'filterEnvelope',
-            settingName: 'baseFrequency'
+            settingName: 'baseFrequency',
+            valueScaler: val => {
+                return ((100 * (val ^ 2)));
+            },
         },
         attack: {
             default: 0,

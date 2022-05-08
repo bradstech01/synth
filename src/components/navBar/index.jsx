@@ -23,7 +23,7 @@ export function NavBar(props) {
 
     return (
         <div className="navBar">
-            {renderViews([['KEYBOARD', 'KEYS'], ['OSCILLATOR', 'OSC'], ['EFFECTS', 'FX'], ['SEQUENCE', 'SEQ']])}
+            {renderViews([['KEYBOARD', 'KEY'], ['OSCILLATOR', 'OSC'], ['EFFECTS', 'FX'], ['SEQUENCE', 'SEQ']])}
         </div>
     );
 }

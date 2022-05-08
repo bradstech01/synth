@@ -3,12 +3,10 @@ import PropTypes from 'prop-types';
 import { OscillatorBox } from '../oscillatorBox';
 import { LpfEnvBox } from '../lpfEnvBox';
 import { AmpEnvBox } from '../ampEnvBox';
-import { handleChange } from '../../scripts/settingsAPI.js';
 
 export class OscillatorSettings extends React.Component {
     constructor(props) {
         super(props);
-        this.handleChange = handleChange.bind(this);
     }
 
     static propTypes = {

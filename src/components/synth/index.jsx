@@ -63,10 +63,10 @@ class Synth extends React.Component {
 
   //This function is a "wrapper" around the settings API.
   //The callback function is expected to enact the change in Tone.js settings, while this function sets the corresponding React state. 
-  updateSettingState = (value, setting, name, cb) => {
+  updateSettingState = (value, internalValue, setting, name, cb) => {
     let synthSettings = { ...this.state.synthSettings };
     synthSettings[setting][name] = value;
-    cb(value, setting, name);
+    cb(internalValue, setting, name);
     this.setState(synthSettings);
   };
 
@@ -184,12 +184,12 @@ class Synth extends React.Component {
         <div className={(this.state.activeView === 'OSCILLATOR') ? 'oscSettings' : 'hidden'}>
           <OscillatorSettings
             synthSettings={this.state.synthSettings}
-            handleChange={(value, setting, name) => { this.updateSettingState(value, setting, name, this.handleChange); }} />
+            handleChange={(value, internalValue, setting, name) => { this.updateSettingState(value, internalValue, setting, name, this.handleChange); }} />
         </div>
         <div className={(this.state.activeView === 'EFFECTS') ? 'fxSettings' : 'hidden'}>
           <FxSettings
             synthSettings={this.state.synthSettings}
-            handleFxChange={(value, setting, name) => { this.updateSettingState(value, setting, name, this.handleFxChange); }} />
+            handleFxChange={(value, internalValue, setting, name) => { this.updateSettingState(value, internalValue, setting, name, this.handleFxChange); }} />
         </div>
       </React.Fragment>
     );
