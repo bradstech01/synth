@@ -32,3 +32,9 @@ export function triggerNote(note, velocity) {
 export function triggerRelease(note) {
     synth.triggerRelease(note, Tone.now());
 };
+
+document.body.addEventListener('keydown', (e) => {
+    if (e.key === 'p') {
+        console.log(synth.get());
+    }
+});

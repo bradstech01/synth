@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './css/index.scss';
-import './fonts/MajorMonoDisplay-Regular.ttf';
+import './fonts/MajorMono/MajorMonoDisplay-Regular.ttf';
+import './fonts/Comfortaa/Comfortaa-VariableFont_wght.ttf';
 import Synth from './components/synth';
 import reportWebVitals from './reportWebVitals';
 

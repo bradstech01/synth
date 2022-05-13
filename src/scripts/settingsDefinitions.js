@@ -48,39 +48,48 @@ export const envelope = {
 export const filterEnvelope = {
     settings: {
         octaves: {
-            default: 8,
+            default: 50,
             min: 0,
-            max: 16,
+            max: 100,
             step: .01,
             settingGrp: 'filterEnvelope',
             settingName: 'octaves',
+            valueScaler: val => {
+                return (2 * val / 12.5);
+            },
         },
         baseFrequency: {
-            default: 20,
+            default: 0,
             min: 0,
             max: 100,
             step: .01,
             settingGrp: 'filterEnvelope',
             settingName: 'baseFrequency',
             valueScaler: val => {
-                return ((100 * (val ^ 2)));
+                return ((100 * val ^ 2));
             },
         },
         attack: {
             default: 0,
             min: 0,
-            max: 5,
+            max: 100,
             step: .01,
             settingGrp: 'filterEnvelope',
             settingName: 'attack',
+            valueScaler: val => {
+                return (((val) ^ 2) / 25);
+            },
         },
         decay: {
             default: 0,
             min: 0,
-            max: 5,
+            max: 100,
             step: .01,
             settingGrp: 'filterEnvelope',
             settingName: 'decay',
+            valueScaler: val => {
+                return (((val) ^ 2) / 25);
+            },
         },
         sustain: {
             default: 0,

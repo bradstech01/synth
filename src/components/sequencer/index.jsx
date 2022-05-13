@@ -253,10 +253,10 @@ export class Sequencer extends React.Component {
 
   render() {
     return (
-      <React.Fragment>
+      <div className='sequencer'>
         {this.renderControls()}
         {this.renderSequence(this.steps)}
-      </React.Fragment>
+      </div>
     );
   }
 }

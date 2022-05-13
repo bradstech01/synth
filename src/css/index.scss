@@ -4,7 +4,7 @@ $small: 650px;
   small:  $small;
 }
 
-$bkgcolor: rgba(0,0,0,.1);
+$bkgcolor: rgba(0,0,0,.2);
 $primary-font-color: black;
 $secondary-font-color: white;
 $accent-color: #345414;
@@ -38,14 +38,20 @@ $small_blackKey_Offset: (-(math.div($small_blackKey_Width, 2)) - $small_border_W
 
 @font-face {
 font-family: "MajorMono";
-/*Can be any text*/
 src: local("MajorMonoDisplay-Regular"),
-  url("../fonts/MajorMonoDisplay-Regular.ttf") format("truetype");
+  url("../fonts/MajorMono/MajorMonoDisplay-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Comfortaa";
+  src: local("Comfortaa-Medium"),
+    url("../fonts/Comfortaa/Comfortaa-VariableFont_wght.ttf") format("truetype");
 }
 
 body {
+  background-color: $bkgcolor;
 margin: 0;
-font-family: MajorMono, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+font-family: Comfortaa, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
@@ -58,20 +64,10 @@ user-select: none;
 border: 1px solid red;
 }
 
-.waveform {
-width: 100%;
-height: 100%;
-}
-
 .btn {
 padding: 2%;
 width: 2%;
 margin: 2%;
-}
-
-.visualizer, .musicGui, .settingsGui {
-  background-color: $bkgcolor;
-  color: #fff;
 }
 
 .textCenter {
@@ -155,26 +151,30 @@ input[type=range]::-moz-range-thumb {
   height: 100vh;
   width: 100vw;
   text-align: center;
-  background-color: black;
   overflow: hidden;
-  color: #fff;
-  transition-property: opacity;
-  transition-duration: 4s;
 }
 
 .app {
-  height: 100vh;
   width: 100vw;
-  overflow: hidden;
+  min-height: 100vh;
 }
 
 .wrapper {
-  background-color: $bkgcolor;
-  height: 90%;
-  width: 100%;
+  position: absolute;
+  top: 10%;
+  @media screen and (max-width: $small) {
+    width: 100%;
+  }
+  @media screen and (min-width: $small) {
+    width: 100%;
+    height: 90%;
+  }
 }
 
 .navBar{
+  position: fixed;
+  z-index: 999;
+  top: 0;
   height: 10%;
   width: 100%;
   display: flex;
@@ -186,7 +186,7 @@ input[type=range]::-moz-range-thumb {
 }
 
 .navBar > .radioContainer {
-  width: 25%;
+  width: 33%;
   height: 100%;
 
   h1 {
@@ -202,44 +202,83 @@ input[type=range]::-moz-range-thumb {
   }
 }
 
-.keyboardWrapper {
-  width: 100%;
-  height: 100%;
-  background-color: $bkgcolor;
+.musicGui {
   display: flex;
-  flex-flow: column nowrap;
-  justify-content: space-evenly;
+  align-items: center;
+  @media screen and (max-width: $small) {
+    width: 100%;
+    height: 200%;
+    flex-flow: column nowrap;
+    align-items: flex-start;
+  }
+  @media screen and (min-width: $small) {
+    width: 100%;
+    height: 100%;
+    flex-flow: row nowrap;
+    justify-content: space-evenly;
+    align-items: center;
+  }
 }
 
-.keyboardWrapper > * {
-  height: 50%;
+.keyboardWrapper {
+  @media screen and (max-width: $small) {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  @media screen and (min-width: $small) {
+    padding: 1%;
+    width: 70%;
+    height: 90%;
+    justify-content: space-evenly;
+  }
+
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
 }
 
 .visualizerContainer {
-  height: 80%;
-  width: 50%;
-  padding: 1px;
+  @media screen and (max-width: $small) {
+    height: 200px;
+    width: 200px;
+  }
+  
+  @media screen and (min-width: $small) {
+    height: 400px;
+    width: 400px;
+  }
+
+  padding: 5%;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-evenly;
+  align-items: center;
   filter: drop-shadow(0 0.4rem .5rem rgba(0, 0, 0, 0.5));
 }
-.musicGui {
-  height: 35%;
-  width: 100%;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-evenly;
+.waveform {
+  height: inherit;
+  width: inherit;
+  clip-path: circle();
+  margin: 2.5%;
 }
 .sequencer {
-  width: 100%;
-  height: 100%;
-  background-color: $bkgcolor;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+
+  @media screen and (max-width: $small) {
+    width: 100%;
+  }
+
+  @media screen and (min-width: $small) {
+    width: 30%;
+    height: 100%;
+  }
 }
 .oscSettings {
   width: 100%;
   height: 100%;
-  background-color: $bkgcolor;
   display: flex;
   flex-flow: column wrap;
 }
@@ -249,36 +288,33 @@ input[type=range]::-moz-range-thumb {
 }
 
 .fxSettings {
-  width: 100%;
+  width: inherit;
   height: 100%;
-  background-color: $bkgcolor;
   display: flex;
   flex-flow: column nowrap;
-  justify-content: start;
+  justify-content: flex-start;
+  overflow-y: scroll;
   row-gap: 1%;
 
   @media screen and (max-width: $small) {
-
-    .width,
+    .stereo,
     .delay,
     .distortion,
     .reverb,
     .chorus,
     .tremolo {
       width: 100%;
-      height: 10%;
     }
 
     .eq {
       width: 100%;
-      height: 15%;
       display: flex;
       flex-flow: column nowrap;
     }
 
     h2 {
       margin-left: 2%;
-      padding-top: 10%;
+      padding-top: 2%;
       font-size: 1.25rem;
       display: block;
     }
@@ -289,37 +325,33 @@ input[type=range]::-moz-range-thumb {
   }
 
   @media screen and (min-width: $small) {
-    .width,
+    .stereo,
     .delay,
     .distortion,
     .reverb,
     .chorus,
     .tremolo {
       width: 60%;
-      height: 10%;
+      margin: 10px;
     }
 
     .eq {
       width: 60%;
-      height: 15%;
       display: flex;
       flex-flow: column nowrap;
     }
 
     h2 {
-      margin-left: 2%;
-      font-size: 2rem;
+      margin-left: 10px;
+      font-size: 1.5rem;
       display: block;
     }
     
     label {
       margin-left: 5%;
-    }
-    label, span {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
     }
   }
-
 }
 
 .timeFx>* {
@@ -334,33 +366,13 @@ input[type=range]::-moz-range-thumb {
   flex-flow: column nowrap;
   justify-content: space-evenly;
 }
-.distortion {
-  width: 100%;
-  height: 20%;
-}
-.delay {
-  width: 100%;
-  height: 20%;
-}
-.reverb {
-  width: 100%;
-  height: 20%;
-}
-.chorus {
-  width: 100%;
-  height: 20%;
-}
-.tremolo {
-  width: 100%;
-  height: 20%;
-}
-.visualizer {
-  height: 100%;
-  width: 100%;
-  shape-outside: circle();
-}
 .oscillatorSelection {
-  width: 25%;
+  @media screen and (min-width: $small) {
+    width: 25%;
+  }
+  @media screen and (max-width: $small) {
+      width: 100%;
+  }
   height: 25%;
 
   h1 {
@@ -373,7 +385,7 @@ input[type=range]::-moz-range-thumb {
   }
 
     .osc {
-      width: calc(100% - 1px);
+      width: calc(70% - 1px);
       height: calc(100% - 1px);
       border: 1px solid white;
       border-radius: 3px;
@@ -413,12 +425,18 @@ input[type=range]::-moz-range-thumb {
     }
 }
 .ampEnv, .lpfEnv{
-  width: 80%;
-  height: 25%;
+  @media screen and (min-width: $small) {
+    width: 80%;
+  }
+  
+  @media screen and (max-width: $small) {
+    width: 100%;
+  }
+  height: 35%;
   display: flex;
   flex-flow: column nowrap;
   h2 {
-    margin-left: 5%;
+    padding-left: 5%;
     @media screen and (min-width: $small) {
       font-size: 2rem;
     }
@@ -428,12 +446,17 @@ input[type=range]::-moz-range-thumb {
     }  
   }
   label, span {
+    text-align: left;
+    padding-left: 1%;
     @media screen and (min-width: $small) {
       font-size: 1.5rem;
+      width: 10%;
     }
     
     @media screen and (max-width: $small) {
       font-size: 1rem;
+      text-align: left;
+      width: 20%;
     }
   }
   .ampSettings, .lpfSettings {
@@ -441,6 +464,9 @@ input[type=range]::-moz-range-thumb {
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-evenly;
+    .setting {
+      width: 100%;
+    }
   }
 }
 
@@ -462,13 +488,8 @@ input[type=range]::-moz-range-thumb {
   background-color: #ddd;
 }
 .stepsContainer {
-  @media screen and (min-width: $small) {
-    width: 40%;
-  }
-  
-  @media screen and (max-width: $small) {
-    width: 80%;
-  }
+  width: 90%;
+  padding: 5%;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-evenly;
@@ -484,13 +505,8 @@ input[type=range]::-moz-range-thumb {
   justify-content: center;
 }
 .seqControls {
-  @media screen and (min-width: $small) {
-    width: 40%;
-  }
-  
-  @media screen and (max-width: $small) {
-    width: 80%;
-  }
+  width: 90%;
+  padding: 5%;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-evenly;
@@ -672,8 +688,8 @@ input[type=range]::-moz-range-thumb {
 }
 .radioContainer {
   display: block;
-  width: 100%;
-  height: 100%;
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
   text-align: center;
   cursor: pointer;
 }
@@ -704,14 +720,12 @@ input[type=range]::-moz-range-thumb {
 
 .slider {
   width: 90%;
-  margin-left: 5%;
-  margin-right: 0%;
   height: 25%;
   cursor: pointer;
 }
 .sliderWrapper {
   height: 100%;
-  width: 70%;
+  width: 60%;
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-evenly;
@@ -726,16 +740,17 @@ input[type=range]::-moz-range-thumb {
   text-align: center;
   display: flex;
   flex-flow: row nowrap;
+  justify-content: space-evenly;
   margin: .2%;
 }
 .settingLbl {
-  width: 10%;
+  width: 20%;
 }
 .keyboard {
+  padding: 0px;
   display: flex;
   flex-flow: row nowrap;
-  justify-content: space-evenly;
-  height: 50%;
+  justify-content: flex-start;
   filter: drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 0.2));
 }
 
@@ -823,4 +838,7 @@ input[type=range]::-moz-range-thumb {
   text-align: center;
   bottom: 10%;
   width: 50%;
+  @media screen and (max-width: $small) {
+    display: none;
+  }
 }

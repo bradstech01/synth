@@ -9,7 +9,7 @@ import { stereoWidener, eq, distortion } from '../../scripts/settingsDefinitions
 export function VoiceFxBox(props) {
     return (
         <React.Fragment>
-            <div className="width">
+            <div className="stereo">
                 <h2>width</h2>
                 <div className="showAsRows">
                     <Setting definition={stereoWidener.settings.width} label="amt" synthSettings={props.synthSettings} onChange={props.onChange} />

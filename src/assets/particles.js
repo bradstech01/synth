@@ -18,7 +18,7 @@ export const particleOptions = {
       "type": "circle",
       "stroke": {
         "width": 0,
-        "color": "#fff"
+        "color": "#000"
       },
       "polygon": {
         "nb_sides": 12
@@ -35,20 +35,20 @@ export const particleOptions = {
       }
     },
     "size": {
-      "value": 5,
+      "value": 3,
       "random": true,
       "anim": {
         "enable": true,
-        "speed": 3,
-        "size_min": 1,
+        "speed": .2,
+        "size_min": 2.5,
         "sync": true
       }
     },
     "line_linked": {
-      "enable": false,
+      "enable": true,
       "distance": 200,
       "color": "#354a21",
-      "opacity": 1,
+      "opacity": .2,
       "width": 2
     },
     "move": {

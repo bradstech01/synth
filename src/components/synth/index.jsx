@@ -5,11 +5,9 @@ import Particles from 'react-tsparticles';
 import { loadFull } from 'tsparticles';
 import { particleOptions } from '../../assets/particles';
 
-import { Visualizer } from '../visualizer';
-import { Keyboard } from '../keyboard';
+import { MusicGui } from '../musicGui';
 import { OscillatorSettings } from '../oscillatorSettings';
 import { FxSettings } from '../fxSettings';
-import { Sequencer } from '../sequencer';
 import { NavBar } from '../navBar';
 
 import { keyMap, midiMap } from '../../scripts/inputMaps.js';
@@ -67,6 +65,9 @@ class Synth extends React.Component {
     let synthSettings = { ...this.state.synthSettings };
     synthSettings[setting][name] = value;
     cb(internalValue, setting, name);
+    console.log('update setting state');
+    console.log(internalValue);
+    console.log(value);
     this.setState(synthSettings);
   };
 
@@ -184,7 +185,9 @@ class Synth extends React.Component {
         <div className={(this.state.activeView === 'OSCILLATOR') ? 'oscSettings' : 'hidden'}>
           <OscillatorSettings
             synthSettings={this.state.synthSettings}
-            handleChange={(value, internalValue, setting, name) => { this.updateSettingState(value, internalValue, setting, name, this.handleChange); }} />
+            handleChange={(value, internalValue, setting, name) => {
+              this.updateSettingState(value, internalValue, setting, name, this.handleChange);
+            }} />
         </div>
         <div className={(this.state.activeView === 'EFFECTS') ? 'fxSettings' : 'hidden'}>
           <FxSettings
@@ -192,53 +195,6 @@ class Synth extends React.Component {
             handleFxChange={(value, internalValue, setting, name) => { this.updateSettingState(value, internalValue, setting, name, this.handleFxChange); }} />
         </div>
       </React.Fragment>
-    );
-  }
-
-  renderKeyboard() {
-    return (
-      <div className='keyboard'>
-        <Keyboard
-          isKeyDown={this.state.isKeyDown}
-          isMouseDown={this.isMouseDown}
-          currentlyPlaying={this.state.currentlyPlaying}
-          octaveShift={0}
-          setMouseFlag={this.setMouseFlag}
-          onMouseDown={this.mouseTriggerNote}
-          onMouseUp={this.mouseReleaseNote}
-        />
-      </div>
-    );
-  }
-
-  renderVisualizer() {
-    return (
-      <div className='visualizerContainer'>
-        <div className="visualizer">
-          <Visualizer />
-        </div>
-      </div>
-    );
-  }
-
-  renderMusicGui() {
-    return (
-      <div className={(this.state.activeView === 'KEYBOARD') ? 'keyboardWrapper' : 'hidden'}>
-        <div className='centerX centerCross'>
-          {this.renderVisualizer()}
-        </div>
-        {this.renderKeyboard()}
-      </div>
-    );
-  }
-
-  renderSequencer() {
-    return (
-      <div className={(this.state.activeView === 'SEQUENCE') ? 'sequencer' : 'hidden'}>
-        <Sequencer
-          currentlyPlaying={this.state.currentlyPlaying}
-        />
-      </div>
     );
   }
 
@@ -255,9 +211,16 @@ class Synth extends React.Component {
       <React.Fragment>
         <NavBar onChange={this.setActiveView} />
         <div className="wrapper">
-          {this.renderMusicGui()}
+          <MusicGui
+            activeView={this.state.activeView}
+            isKeyDown={this.state.isKeyDown}
+            isMouseDown={this.isMouseDown}
+            currentlyPlaying={this.state.currentlyPlaying}
+            setMouseFlag={this.setMouseFlag}
+            onMouseDown={this.mouseTriggerNote}
+            onMouseUp={this.mouseReleaseNote}
+          />
           {this.renderSettings()}
-          {this.renderSequencer()}
         </div>
       </React.Fragment>
     );
