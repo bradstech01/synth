@@ -10,7 +10,7 @@ export function AmpEnvBox(props) {
     return (
         <div className="ampEnv">
             <h2>amp env</h2>
-            <div className="ampSettings">
+            <div className="settingContainer">
                 <Setting definition={envelope.settings.attack} label="attack" synthSettings={props.synthSettings} onChange={props.onChange} />
                 <Setting definition={envelope.settings.decay} label="decay" synthSettings={props.synthSettings} onChange={props.onChange} />
                 <Setting definition={envelope.settings.sustain} label="sustain" synthSettings={props.synthSettings} onChange={props.onChange} />

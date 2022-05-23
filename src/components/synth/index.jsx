@@ -62,6 +62,8 @@ class Synth extends React.Component {
   //This function is a "wrapper" around the settings API.
   //The callback function is expected to enact the change in Tone.js settings, while this function sets the corresponding React state. 
   updateSettingState = (value, internalValue, setting, name, cb) => {
+    console.log(setting);
+    console.log(name);
     let synthSettings = { ...this.state.synthSettings };
     synthSettings[setting][name] = value;
     cb(internalValue, setting, name);
@@ -188,11 +190,12 @@ class Synth extends React.Component {
             handleChange={(value, internalValue, setting, name) => {
               this.updateSettingState(value, internalValue, setting, name, this.handleChange);
             }} />
-        </div>
-        <div className={(this.state.activeView === 'EFFECTS') ? 'fxSettings' : 'hidden'}>
           <FxSettings
             synthSettings={this.state.synthSettings}
             handleFxChange={(value, internalValue, setting, name) => { this.updateSettingState(value, internalValue, setting, name, this.handleFxChange); }} />
+        </div>
+        <div className={(this.state.activeView === 'SETTINGS') ? 'systemSettings' : 'hidden'}>
+
         </div>
       </React.Fragment>
     );
@@ -219,6 +222,7 @@ class Synth extends React.Component {
             setMouseFlag={this.setMouseFlag}
             onMouseDown={this.mouseTriggerNote}
             onMouseUp={this.mouseReleaseNote}
+            octaveShift={0}
           />
           {this.renderSettings()}
         </div>

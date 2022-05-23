@@ -1,10 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { oscillator } from '../../scripts/settingsDefinitions.js';
+
 
 export function OscillatorBox(props) {
     const renderOscillatorTypes = (subProp, settingName, optionArray) => {
         return (
-            <div className="grid">
+            <div className="oscButtons">
                 {optionArray.map((option) => {
                     return (
                         <div key={option} className={'osc ' + option}>
@@ -18,7 +20,7 @@ export function OscillatorBox(props) {
                                     checked={
                                         props.synthSettings[subProp][settingName] === option
                                     }
-                                    onChange={(e) => { props.onChange(e.target.value, subProp, settingName); }}
+                                    onChange={(e) => { props.onChange(e.target.value, e.target.value, oscillator.settings.type.settingGrp, oscillator.settings.type.settingName); }}
                                 />
                                 <span>{option}</span>
                             </label>

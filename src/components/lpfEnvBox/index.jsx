@@ -10,7 +10,7 @@ export function LpfEnvBox(props) {
     return (
         <div className="lpfEnv">
             <h2>filter env</h2>
-            <div className="lpfSettings">
+            <div className="settingContainer">
                 <Setting definition={filterEnvelope.settings.baseFrequency} label="cutoff" css="lpFreq" synthSettings={props.synthSettings} onChange={props.onChange} />
                 <Setting definition={filterEnvelope.settings.octaves} label="env amt" css="freq" synthSettings={props.synthSettings} onChange={props.onChange} />
                 <Setting definition={filterEnvelope.settings.attack} label="attack" css="lpA" synthSettings={props.synthSettings} onChange={props.onChange} />
