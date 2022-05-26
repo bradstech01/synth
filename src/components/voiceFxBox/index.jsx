@@ -6,7 +6,7 @@ import { stereoWidener, eq, distortion } from '../../scripts/settingsDefinitions
 //lpf = low pass filter
 //box that contains settings for low pass filter & ADSR envelope
 
-export function VoiceFxBox(props) {
+export function VoiceFxBoxInner(props) {
     return (
         <React.Fragment>
             <div className="stereo">
@@ -33,7 +33,9 @@ export function VoiceFxBox(props) {
     );
 }
 
-VoiceFxBox.propTypes = {
+VoiceFxBoxInner.propTypes = {
     synthSettings: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
 };
+
+export const VoiceFxBox = React.memo(VoiceFxBoxInner);

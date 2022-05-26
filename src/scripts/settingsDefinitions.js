@@ -1,6 +1,7 @@
 export const oscillator = {
+    type: 'synth',
     settings: {
-        type: {
+        waveshape: {
             default: 'sawtooth',
             settingGrp: 'oscillator',
             settingName: 'type',
@@ -9,22 +10,29 @@ export const oscillator = {
 };
 
 export const envelope = {
+    type: 'synth',
     settings: {
         attack: {
             default: 0,
             min: 0,
-            max: 5,
+            max: 100,
             step: .01,
             settingGrp: 'envelope',
             settingName: 'attack',
+            valueScaler: val => {
+                return (((val) ^ 2) / 25);
+            },
         },
         decay: {
-            default: 0,
+            default: 10,
             min: 0,
-            max: 5,
+            max: 100,
             step: .01,
             settingGrp: 'envelope',
             settingName: 'decay',
+            valueScaler: val => {
+                return (((val) ^ 2) / 25);
+            },
         },
         sustain: {
             default: 1,
@@ -35,7 +43,7 @@ export const envelope = {
             settingName: 'sustain',
         },
         release: {
-            default: 0,
+            default: 1,
             min: 0,
             max: 5,
             step: .01,
@@ -46,6 +54,7 @@ export const envelope = {
 };
 
 export const filterEnvelope = {
+    type: 'synth',
     settings: {
         octaves: {
             default: 50,
@@ -81,14 +90,14 @@ export const filterEnvelope = {
             },
         },
         decay: {
-            default: 0,
+            default: 10,
             min: 0,
             max: 100,
             step: .01,
             settingGrp: 'filterEnvelope',
             settingName: 'decay',
             valueScaler: val => {
-                return (((val) ^ 2) / 25);
+                return (((val) ^ 2) / 2);
             },
         },
         sustain: {
@@ -100,7 +109,7 @@ export const filterEnvelope = {
             settingName: 'sustain',
         },
         release: {
-            default: 0,
+            default: 1,
             min: 0,
             max: 5,
             step: .01,
@@ -111,6 +120,7 @@ export const filterEnvelope = {
 };
 
 export const stereoWidener = {
+    type: 'effect',
     settings: {
         width: {
             default: 0,
@@ -124,6 +134,7 @@ export const stereoWidener = {
 };
 
 export const distortion = {
+    type: 'effect',
     settings: {
         distortion: {
             default: 0,
@@ -137,6 +148,7 @@ export const distortion = {
 };
 
 export const eq = {
+    type: 'effect',
     settings: {
         low: {
             default: 0,
@@ -167,6 +179,7 @@ export const eq = {
 };
 
 export const reverb = {
+    type: 'effect',
     settings: {
         wet: {
             default: 1,
@@ -196,6 +209,7 @@ export const reverb = {
 };
 
 export const delay = {
+    type: 'effect',
     settings: {
         delayTime: {
             default: 0,
@@ -225,6 +239,7 @@ export const delay = {
 };
 
 export const tremolo = {
+    type: 'effect',
     settings: {
         frequency: {
             default: 0,
@@ -246,6 +261,7 @@ export const tremolo = {
 };
 
 export const chorus = {
+    type: 'effect',
     settings: {
         frequency: {
             default: 0,

@@ -1,6 +1,7 @@
 import '../../css/index.scss';
 import * as Tone from 'tone';
-import React from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
+import { usePrevious } from '../../scripts/hooks';
 import Particles from 'react-tsparticles';
 import { loadFull } from 'tsparticles';
 import { particleOptions } from '../../assets/particles';
@@ -12,240 +13,229 @@ import { NavBar } from '../navBar';
 
 import { keyMap, midiMap } from '../../scripts/inputMaps.js';
 import * as midiFunctions from '../../scripts/midiFunctions.js';
-import { handleChange, handleFxChange, getDefaults } from '../../scripts/settingsAPI.js';
+import { handleChange, handleFxChange, getDefaults, loadSettings } from '../../scripts/settingsAPI.js';
 import { triggerNote, triggerRelease } from '../../scripts/synthAPI.js';
 
 
-class Synth extends React.Component {
-  constructor(props) {
-    super(props);
+function Synth() {
+  const [hasToneStarted, setToneStartedFlag] = useState(false);
+  const [currentlyPlaying, setCurrentlyPlaying] = useState([]);
+  const [activeView, setActiveView] = useState('keyboard');
+  const [octaveShift, setOctaveShift] = useState(0);
+  const [synthSettings, setSynthSettings] = useState(getDefaults());
 
-    let synthSettings = getDefaults();
+  const particlesInit = async (main) => {
+    await loadFull(main);
+  };
 
-    this.state = {
-      hasToneStarted: false,
-      currentlyPlaying: [],
-      isKeyDown: false,
-      activeView: 'KEYBOARD',
-      synthSettings: synthSettings,
-    };
+  //this only needs to render once, so we memo it
+  const particlesMemo = useRef(<Particles init={particlesInit} options={particleOptions} />);
 
-    this.isMouseDown = false;
-    this.octaveShift = 0;
-    this.noteVelocityData = {};
 
-    this.particlesInit = async (main) => {
-      await loadFull(main);
-    };
 
-    this.startTone = this.startTone.bind(this);
-    this.handleChange = handleChange.bind(this);
-    this.handleFxChange = handleFxChange.bind(this);
-    this.triggerNote = triggerNote.bind(this);
-    this.triggerRelease = triggerRelease.bind(this);
-  }
-
-  componentDidMount() {
-    document.addEventListener('keydown', this.startTone);
-    document.addEventListener('mousedown', this.startTone);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    for (let note of this.state.currentlyPlaying) {
-      if (!prevState.currentlyPlaying.includes(note)) this.triggerNote(note, this.noteVelocityData[note]);
-    }
-    for (let note of prevState.currentlyPlaying) {
-      if (!this.state.currentlyPlaying.includes(note)) this.triggerRelease(note);
-    }
-  }
+  //Refs
+  const isKeyDown = useRef(false);
+  const currentlyPlayingRef = useRef();
+  currentlyPlayingRef.current = currentlyPlaying;
+  const prevPlaying = usePrevious(currentlyPlaying);
+  const isMounted = useRef(false);
+  const noteVelocityDataRef = useRef({});
+  const isMouseDownRef = useRef(false);
 
   //This function is a "wrapper" around the settings API.
   //The callback function is expected to enact the change in Tone.js settings, while this function sets the corresponding React state. 
-  updateSettingState = (value, internalValue, setting, name, cb) => {
-    console.log(setting);
-    console.log(name);
-    let synthSettings = { ...this.state.synthSettings };
-    synthSettings[setting][name] = value;
-    cb(internalValue, setting, name);
-    console.log('update setting state');
-    console.log(internalValue);
-    console.log(value);
-    this.setState(synthSettings);
+  const updateSettingState = (value, internalValue, setting, name, cb) => {
+    let newSettings = { ...synthSettings };
+    newSettings[setting][name] = value;
+    if (newSettings[setting].off !== true) cb(internalValue, setting, name);
+    setSynthSettings(newSettings);
   };
 
-  async startTone(e) {
-    if (!this.state.hasToneStarted) {
-      await Tone.start();
-      this.setState({
-        hasToneStarted: true,
-      });
-      midiFunctions.setUpMIDI(this.getMIDIMessage);
-
-      document.removeEventListener('keydown', this.startTone);
-      document.removeEventListener('mousedown', this.startTone);
-      document.addEventListener('mousedown', this.setMouseFlag);
-      document.addEventListener('mouseup', this.setMouseFlag);
-      document.addEventListener('keydown', this.handleKeyPress);
-      document.addEventListener('keyup', this.handleKeyRelease);
+  const addToCurrentlyPlaying = useCallback((note, velocity) => {
+    if (!currentlyPlayingRef.current.includes(note)) {
+      let newPlaying = [...currentlyPlayingRef.current];
+      newPlaying.push(note);
+      noteVelocityDataRef.current[note] = velocity ? velocity : synthSettings.misc.defaultVelocity;
+      setCurrentlyPlaying(newPlaying);
     }
-  }
+  }, [synthSettings.misc.defaultVelocity]);
 
-  getMIDIMessage = midiMessage => {
+  const removeFromCurrentlyPlaying = useCallback((note) => {
+    if (currentlyPlayingRef.current.includes(note)) {
+      let currentlyPlayingCopy = [...currentlyPlayingRef.current];
+      let newPlaying = currentlyPlayingCopy.filter((value) => {
+        if (value === note) delete noteVelocityDataRef.current[note];
+        return value !== note;
+      });
+      setCurrentlyPlaying(newPlaying);
+      return newPlaying.length;
+    }
+  }, []);
+
+  const handleKeyPress = useCallback(e => {
+    if (keyMap(e.key)) {
+      if (!isKeyDown.current) isKeyDown.current = true;
+      addToCurrentlyPlaying(keyMap(e.key));
+    }
+  }, [isKeyDown, addToCurrentlyPlaying]);
+
+  const handleKeyRelease = useCallback(e => {
+    if (keyMap(e.key)) {
+      let numberNotes = removeFromCurrentlyPlaying(keyMap(e.key));
+      if (numberNotes === 0) {
+        isKeyDown.current = false;
+      }
+    }
+  }, [removeFromCurrentlyPlaying]);
+
+  const handleMouseDown = useCallback(note => {
+    if (isKeyDown.current) return;
+    addToCurrentlyPlaying(note);
+  }, [addToCurrentlyPlaying, isKeyDown]);
+
+  const handleMouseUp = useCallback(note => {
+    if (isKeyDown.current) return;
+    removeFromCurrentlyPlaying(note);
+  }, [removeFromCurrentlyPlaying, isKeyDown]);
+
+
+  const setMouseFlag = useCallback(e => {
+    e.stopPropagation();
+    if (e.type === 'mousedown') isMouseDownRef.current = true;
+    else isMouseDownRef.current = false;
+
+    if (!isKeyDown.current && isMouseDownRef.current) {
+      document.removeEventListener('keydown', handleKeyPress);
+      document.removeEventListener('keyup', handleKeyRelease);
+    }
+    if (!isMouseDownRef.current) {
+      document.addEventListener('keydown', handleKeyPress);
+      document.addEventListener('keyup', handleKeyRelease);
+    }
+  }, [handleKeyPress, handleKeyRelease]);
+
+  const getMIDIMessage = useCallback((midiMessage) => {
     const dataArray = midiMessage.data;
     const command = dataArray[0];
     const note = midiMap(dataArray[1]);
     const velocity = (dataArray[2] / 200);
-    if (command === 144) {
-      this.addToCurrentlyPlaying(note, velocity);
-    } else if (command === 128) {
-      this.removeFromCurrentlyPlaying(note);
+    if (command === 144) addToCurrentlyPlaying(note, velocity);
+    else if (command === 128) removeFromCurrentlyPlaying(note);
+  }, [addToCurrentlyPlaying, removeFromCurrentlyPlaying]);
+
+  const startTone = useCallback(async (e) => {
+    if (!hasToneStarted) {
+      await Tone.start();
+      setToneStartedFlag(true);
+      midiFunctions.setUpMIDI(getMIDIMessage);
+
+      document.removeEventListener('keydown', startTone);
+      document.removeEventListener('mousedown', startTone);
+      document.addEventListener('mousedown', setMouseFlag);
+      document.addEventListener('mouseup', setMouseFlag);
+      document.addEventListener('keydown', handleKeyPress);
+      document.addEventListener('keyup', handleKeyRelease);
     }
-  };
+  }, [getMIDIMessage, handleKeyPress, handleKeyRelease, hasToneStarted, setMouseFlag]);
 
-  handleKeyPress = (e) => {
-    var newState = {};
-    if (keyMap(e.key)) newState = this.addToCurrentlyPlaying(keyMap(e.key));
-    if (!this.state.isKeyDown) newState.isKeyDown = true;
-    this.setState(newState);
-  };
+  //Use effect for on mount only
+  useEffect(() => {
+    if (isMounted.current) return;
+    document.addEventListener('keydown', startTone);
+    document.addEventListener('mousedown', startTone);
+    document.addEventListener('keydown', e => {
+      if (e.key === '.') {
+        console.log(currentlyPlayingRef.current);
+        let cachedSettings = loadSettings();
+        if (cachedSettings) {
+          let newSynthSettings = { ...synthSettings, ...cachedSettings };
+          setSynthSettings(newSynthSettings);
+        }
+      }
+      else if (e.key === '=') {
+        localStorage.clear();
+        localStorage.setItem('synthSettings', JSON.stringify(synthSettings));
+      }
+    });
+  }, [startTone, synthSettings]);
 
-  //handles the key release within app; does not get passed around
-  handleKeyRelease = (e) => {
-    var newState = {};
-    if (keyMap(e.key)) newState = this.removeFromCurrentlyPlaying(keyMap(e.key));
-    if (this.state.currentlyPlaying.length === 0) newState.isKeyDown = false;
-    this.setState(newState);
-  };
-
-  addToCurrentlyPlaying = (note, velocity) => {
-    if (!this.state.currentlyPlaying.includes(note)) {
-      let newPlaying = [...this.state.currentlyPlaying];
-      newPlaying.push(note);
-      this.noteVelocityData[note] = velocity ? velocity : this.state.synthSettings.misc.defaultVelocity;
-      return {
-        currentlyPlaying: newPlaying,
-      };
+  //Use effect for triggering notes on note updates
+  useEffect(() => {
+    if (!isMounted.current) isMounted.current = true;
+    else {
+      for (let note of currentlyPlaying) {
+        if (!prevPlaying.includes(note)) triggerNote(note, noteVelocityDataRef.current[note]);
+      }
+      for (let note of prevPlaying) {
+        if (!currentlyPlaying.includes(note)) triggerRelease(note);
+      }
     }
-    else return {};
-  };
-
-  removeFromCurrentlyPlaying = (note) => {
-    if (this.state.currentlyPlaying.includes(note)) {
-      let currentlyPlaying = [...this.state.currentlyPlaying];
-      let newPlaying = currentlyPlaying.filter((value) => {
-        if (value === note) delete this.noteVelocityData[note];
-        return value !== note;
-      });
-      return {
-        currentlyPlaying: newPlaying,
-      };
-    }
-    else return {};
-  };
-
-  mouseTriggerNote = (note) => {
-    var newState = this.addToCurrentlyPlaying(note);
-    if (Object.keys(newState).length > 0) {
-      this.setState(newState);
-    }
-  };
-
-  mouseReleaseNote = (note) => {
-    var newState = this.removeFromCurrentlyPlaying(note);
-    if (Object.keys(newState).length > 0) {
-      this.setState(newState);
-    }
-  };
-
-  setMouseFlag = (e) => {
-    e.stopPropagation();
-    if (e.type === 'mousedown') this.isMouseDown = true;
-    else this.isMouseDown = false;
-
-    if (!this.state.isKeyDown && this.isMouseDown) {
-      document.removeEventListener('keydown', this.handleKeyPress);
-      document.removeEventListener('keyup', this.handleKeyRelease);
-    }
-    if (!this.isMouseDown) {
-      document.addEventListener('keydown', this.handleKeyPress);
-      document.addEventListener('keyup', this.handleKeyRelease);
-    }
-  };
-
-  setOctaveShift = value => {
-    this.octaveShift = value;
-  };
-
-  setActiveView = value => {
-    this.setState({ activeView: value });
-  };
+  }, [currentlyPlaying, prevPlaying]);
 
   //rendering methods
-  renderSettings() {
+  const renderSettings = () => {
     return (
-      <React.Fragment>
-        <div className={(this.state.activeView === 'OSCILLATOR') ? 'oscSettings' : 'hidden'}>
+      <>
+        <div className={(activeView === 'oscillator') ? 'oscSettings' : 'hidden'}>
           <OscillatorSettings
-            synthSettings={this.state.synthSettings}
+            synthSettings={synthSettings}
             handleChange={(value, internalValue, setting, name) => {
-              this.updateSettingState(value, internalValue, setting, name, this.handleChange);
+              updateSettingState(value, internalValue, setting, name, handleChange);
             }} />
           <FxSettings
-            synthSettings={this.state.synthSettings}
-            handleFxChange={(value, internalValue, setting, name) => { this.updateSettingState(value, internalValue, setting, name, this.handleFxChange); }} />
+            synthSettings={synthSettings}
+            handleFxChange={(value, internalValue, setting, name) => { updateSettingState(value, internalValue, setting, name, handleFxChange); }} />
         </div>
-        <div className={(this.state.activeView === 'SETTINGS') ? 'systemSettings' : 'hidden'}>
+        <div className={(activeView === 'system') ? 'systemSettings' : 'hidden'}>
 
         </div>
-      </React.Fragment>
+      </>
     );
-  }
+  };
 
-  renderSplash() {
+  const renderSplash = () => {
     return (
       <div className="splash">
         <h2>press any button to begin...</h2>
       </div>
     );
-  }
+  };
 
-  renderApp() {
+  const renderApp = () => {
     return (
-      <React.Fragment>
-        <NavBar onChange={this.setActiveView} />
+      <>
+        <NavBar onChange={setActiveView} />
         <div className="wrapper">
           <MusicGui
-            activeView={this.state.activeView}
-            isKeyDown={this.state.isKeyDown}
-            isMouseDown={this.isMouseDown}
-            currentlyPlaying={this.state.currentlyPlaying}
-            setMouseFlag={this.setMouseFlag}
-            onMouseDown={this.mouseTriggerNote}
-            onMouseUp={this.mouseReleaseNote}
+            activeView={activeView}
+            isMouseDown={isMouseDownRef.current}
+            currentlyPlaying={currentlyPlaying}
+            setMouseFlag={setMouseFlag}
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
             octaveShift={0}
           />
-          {this.renderSettings()}
+          {renderSettings()}
         </div>
-      </React.Fragment>
+      </>
+    );
+  };
+
+
+  if (hasToneStarted) {
+    return (
+      <>
+        {particlesMemo.current}
+        {renderApp()};
+      </>
     );
   }
-
-  render() {
-    if (this.state.hasToneStarted) {
-      return (
-        <React.Fragment>
-          <Particles init={this.particlesInit} options={particleOptions} />
-          {this.renderApp()};
-        </React.Fragment>
-      );
-    }
-    else {
-      return (
-        <React.Fragment>
-          {this.renderSplash()}
-        </React.Fragment>
-      );
-    }
+  else {
+    return (
+      <>
+        {renderSplash()}
+      </>
+    );
   }
 }
 

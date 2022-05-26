@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export function SequencerStep(props) {
+export function SequencerStepInner(props) {
   const setSelfAsActive = (e) => {
     props.updateActiveBeat((props.step.beat - 1) % props.steps.length);
   };
@@ -25,9 +25,11 @@ export function SequencerStep(props) {
   );
 }
 
-SequencerStep.propTypes = {
+SequencerStepInner.propTypes = {
   step: PropTypes.object.isRequired,
   steps: PropTypes.array.isRequired,
   beat: PropTypes.number.isRequired,
   updateActiveBeat: PropTypes.func.isRequired,
 };
+
+export const SequencerStep = React.memo(SequencerStepInner);

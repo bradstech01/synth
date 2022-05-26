@@ -71,8 +71,14 @@ export function getDefaults() {
     for (const definition in definitions) {
         returnSettings[definition] = {};
         for (const setting in definitions[definition].settings) {
+            if (definitions[definition].type === 'effect') returnSettings[definition].off = true;
             returnSettings[definition][setting] = definitions[definition].settings[setting].default;
         }
     }
     return returnSettings;
 };
+
+export function loadSettings() {
+    const savedSettingsString = localStorage.getItem('synthSettings');
+    return savedSettingsString ? JSON.parse(savedSettingsString) : null;
+}

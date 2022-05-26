@@ -85,7 +85,7 @@ export class Sequencer extends React.Component {
       return false;
     }
     else {
-      return true;
+      return false;
     }
   }
 

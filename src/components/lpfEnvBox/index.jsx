@@ -6,7 +6,7 @@ import { filterEnvelope } from '../../scripts/settingsDefinitions.js';
 //lpf = low pass filter
 //box that contains settings for low pass filter & ADSR envelope
 
-export function LpfEnvBox(props) {
+export function LpfEnvBoxInner(props) {
     return (
         <div className="lpfEnv">
             <h2>filter env</h2>
@@ -22,7 +22,9 @@ export function LpfEnvBox(props) {
     );
 }
 
-LpfEnvBox.propTypes = {
+LpfEnvBoxInner.propTypes = {
     synthSettings: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
 };
+
+export const LpfEnvBox = React.memo(LpfEnvBoxInner);

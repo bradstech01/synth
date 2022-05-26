@@ -6,7 +6,7 @@ import { delay, reverb, chorus, tremolo } from '../../scripts/settingsDefinition
 //lpf = low pass filter
 //box that contains settings for low pass filter & ADSR envelope
 
-export function TimeFxBox(props) {
+export function TimeFxBoxInner(props) {
     return (
         <React.Fragment>
             <div className="delay">
@@ -40,7 +40,9 @@ export function TimeFxBox(props) {
         </React.Fragment>
     );
 }
-TimeFxBox.propTypes = {
+TimeFxBoxInner.propTypes = {
     synthSettings: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
 };
+
+export const TimeFxBox = React.memo(TimeFxBoxInner);

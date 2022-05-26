@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
  * Uses props.dataArray to output audio data on an HTML canvas element.
  */
 
-export function Oscilloscope(props) {
+export function OscilloscopeInner(props) {
     const canvasRef = React.useRef(null);
     React.useEffect(draw);
 
@@ -51,7 +51,9 @@ export function Oscilloscope(props) {
     return <canvas className="waveform" ref={canvasRef} />;
 }
 
-Oscilloscope.propTypes = {
+OscilloscopeInner.propTypes = {
     bufferLength: PropTypes.number.isRequired,
     dataArray: PropTypes.object.isRequired,
 };
+
+export const Oscilloscope = React.memo(OscilloscopeInner);

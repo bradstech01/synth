@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 export function Setting(props) {
+    useEffect(() => {
+        let val = props.synthSettings[props.definition.settingGrp][props.definition.settingName];
+        props.onChange(val, props.definition.valueScaler ? props.definition.valueScaler(val) : val, props.definition.settingGrp, props.definition.settingName);
+
+    }, [props]);
+
     return (
         <div className={'setting ' + (props.css ? props.css : '')}>
             <label className="settingLbl textCenter" >{props.label}</label>
@@ -25,7 +31,9 @@ export function Setting(props) {
         </div>
     );
 }
+
 Setting.propTypes = {
+    synthSettings: PropTypes.object.isRequired,
     definition: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
 };

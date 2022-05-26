@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { TimeFxBox } from '../timeFxBox';
 import { VoiceFxBox } from '../voiceFxBox';
 
-export function FxSettings(props) {
+function FxSettingsInner(props) {
     return (
         <React.Fragment>
             <VoiceFxBox
@@ -16,7 +16,9 @@ export function FxSettings(props) {
     );
 }
 
-FxSettings.propTypes = {
+FxSettingsInner.propTypes = {
     synthSettings: PropTypes.object.isRequired,
     handleFxChange: PropTypes.func.isRequired,
 };
+
+export const FxSettings = React.memo(FxSettingsInner);

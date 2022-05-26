@@ -4,7 +4,7 @@ import { OscillatorBox } from '../oscillatorBox';
 import { LpfEnvBox } from '../lpfEnvBox';
 import { AmpEnvBox } from '../ampEnvBox';
 
-export function OscillatorSettings(props) {
+export function OscillatorSettingsInner(props) {
     return (
         <React.Fragment>
             <OscillatorBox
@@ -23,6 +23,8 @@ export function OscillatorSettings(props) {
     );
 }
 
-OscillatorSettings.propTypes = {
+OscillatorSettingsInner.propTypes = {
     synthSettings: PropTypes.object.isRequired,
 };
+
+export const OscillatorSettings = React.memo(OscillatorSettingsInner);

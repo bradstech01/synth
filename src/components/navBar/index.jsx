@@ -4,7 +4,7 @@ import { ViewButton } from '../viewButton';
 
 //navigation bar that holds buttons to change between views in the app
 
-export function NavBar(props) {
+export function NavBarInner(props) {
     const renderViews = (viewArray) => {
         return (
             <React.Fragment>
@@ -23,11 +23,13 @@ export function NavBar(props) {
 
     return (
         <div className="navBar">
-            {renderViews([['KEYBOARD', 'KEYS'], ['OSCILLATOR', 'OSC'], ['EFFECTS', 'FX']])}
+            {renderViews([['keyboard', 'keys'], ['oscillator', 'osc'], ['system', 'sys']])}
         </div>
     );
 }
 
-NavBar.propTypes = {
+NavBarInner.propTypes = {
     onChange: PropTypes.func.isRequired,
 };
+
+export const NavBar = React.memo(NavBarInner);

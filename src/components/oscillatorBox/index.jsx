@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { oscillator } from '../../scripts/settingsDefinitions.js';
 
 
-export function OscillatorBox(props) {
+export function OscillatorBoxInner(props) {
     const renderOscillatorTypes = (subProp, settingName, optionArray) => {
         return (
             <div className="oscButtons">
@@ -20,7 +20,7 @@ export function OscillatorBox(props) {
                                     checked={
                                         props.synthSettings[subProp][settingName] === option
                                     }
-                                    onChange={(e) => { props.onChange(e.target.value, e.target.value, oscillator.settings.type.settingGrp, oscillator.settings.type.settingName); }}
+                                    onChange={(e) => { props.onChange(e.target.value, e.target.value, oscillator.settings.waveshape.settingGrp, oscillator.settings.waveshape.settingName); }}
                                 />
                                 <span>{option}</span>
                             </label>
@@ -44,7 +44,9 @@ export function OscillatorBox(props) {
     );
 }
 
-OscillatorBox.propTypes = {
+OscillatorBoxInner.propTypes = {
     synthSettings: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
 };
+
+export const OscillatorBox = React.memo(OscillatorBoxInner);

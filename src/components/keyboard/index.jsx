@@ -6,12 +6,11 @@ import { PianoKey } from '../pianoKey';
  * Component containing the visual keyboard; the "money maker", as it were.
  * TODO: Fix current hacky CSS for the keyboard, so that it appropriately flexes and is better modularized for different viewports
  */
-export function Keyboard(props) {
+export function KeyboardInner(props) {
   const renderPianoKey = (note, octave, triggerKey, hiddenOnMobile) => {
     return (
       <PianoKey
         note={note + (octave + props.octaveShift)}
-        isKeyDown={props.isKeyDown}
         isMouseDown={props.isMouseDown}
         currentlyPlaying={props.currentlyPlaying.includes(
           note + (octave + props.octaveShift)
@@ -60,12 +59,13 @@ export function Keyboard(props) {
   );
 }
 
-Keyboard.propTypes = {
+KeyboardInner.propTypes = {
   setMouseFlag: PropTypes.func.isRequired,
-  isKeyDown: PropTypes.bool.isRequired,
   isMouseDown: PropTypes.bool.isRequired,
   currentlyPlaying: PropTypes.array.isRequired,
   onMouseDown: PropTypes.func.isRequired,
   onMouseUp: PropTypes.func.isRequired,
   octaveShift: PropTypes.number.isRequired,
 };
+
+export const Keyboard = React.memo(KeyboardInner);
