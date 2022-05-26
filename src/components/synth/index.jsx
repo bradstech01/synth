@@ -6,10 +6,10 @@ import Particles from 'react-tsparticles';
 import { loadFull } from 'tsparticles';
 import { particleOptions } from '../../assets/particles';
 
-import { MusicGui } from '../musicGui';
-import { OscillatorSettings } from '../oscillatorSettings';
-import { FxSettings } from '../fxSettings';
-import { NavBar } from '../navBar';
+import MusicGui from '../musicGui';
+import OscillatorSettings from '../oscillatorSettings';
+import FxSettings from '../fxSettings';
+import NavBar from '../navBar';
 
 import { keyMap, midiMap } from '../../scripts/inputMaps.js';
 import * as midiFunctions from '../../scripts/midiFunctions.js';
@@ -173,10 +173,22 @@ function Synth() {
   }, [currentlyPlaying, prevPlaying]);
 
   //rendering methods
-  const renderSettings = () => {
-    return (
-      <>
-        <div className={(activeView === 'oscillator') ? 'oscSettings' : 'hidden'}>
+  const renderBody = () => {
+    if (activeView === 'keyboard') {
+      return (
+        <MusicGui
+          isMouseDown={isMouseDownRef.current}
+          currentlyPlaying={currentlyPlaying}
+          setMouseFlag={setMouseFlag}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          octaveShift={0}
+        />
+      );
+    }
+    else if (activeView === 'oscillator') {
+      return (
+        <div className='oscSettings'>
           <OscillatorSettings
             synthSettings={synthSettings}
             handleChange={(value, internalValue, setting, name) => {
@@ -186,11 +198,14 @@ function Synth() {
             synthSettings={synthSettings}
             handleFxChange={(value, internalValue, setting, name) => { updateSettingState(value, internalValue, setting, name, handleFxChange); }} />
         </div>
-        <div className={(activeView === 'system') ? 'systemSettings' : 'hidden'}>
-
+      );
+    }
+    else if (activeView === 'system') {
+      return (
+        <div className='systemSettings'>
         </div>
-      </>
-    );
+      );
+    }
   };
 
   const renderSplash = () => {
@@ -206,16 +221,7 @@ function Synth() {
       <>
         <NavBar onChange={setActiveView} />
         <div className="wrapper">
-          <MusicGui
-            activeView={activeView}
-            isMouseDown={isMouseDownRef.current}
-            currentlyPlaying={currentlyPlaying}
-            setMouseFlag={setMouseFlag}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            octaveShift={0}
-          />
-          {renderSettings()}
+          {renderBody()}
         </div>
       </>
     );

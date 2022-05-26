@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
  * Note that the export is memoized, as every render should be linked to exactly ONE note trigger or release
  * TODO: Try to hack through issues with touch support
  */
-function PianoKeyInner(props) {
+function PianoKey(props) {
   const sendMouseDown = (e) => {
     e.preventDefault();
     if (e.type === 'mouseover') {
@@ -61,7 +61,7 @@ function PianoKeyInner(props) {
   );
 }
 
-PianoKeyInner.propTypes = {
+PianoKey.propTypes = {
   note: PropTypes.string.isRequired,
   currentlyPlaying: PropTypes.bool.isRequired,
   hiddenOnMobile: PropTypes.bool,
@@ -69,4 +69,4 @@ PianoKeyInner.propTypes = {
   onMouseUp: PropTypes.func.isRequired,
 };
 
-export const PianoKey = React.memo(PianoKeyInner);
+export default React.memo(PianoKey);

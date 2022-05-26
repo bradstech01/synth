@@ -1,13 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { ViewButton } from '../viewButton';
+import ViewButton from '../viewButton';
 
 //navigation bar that holds buttons to change between views in the app
 
-export function NavBarInner(props) {
+function NavBar(props) {
     const renderViews = (viewArray) => {
         return (
-            <React.Fragment>
+            <>
                 {viewArray.map((view) => {
                     return (
                         <ViewButton
@@ -17,7 +17,7 @@ export function NavBarInner(props) {
                         />
                     );
                 })}
-            </React.Fragment>
+            </>
         );
     };
 
@@ -28,8 +28,8 @@ export function NavBarInner(props) {
     );
 }
 
-NavBarInner.propTypes = {
+NavBar.propTypes = {
     onChange: PropTypes.func.isRequired,
 };
 
-export const NavBar = React.memo(NavBarInner);
+export default React.memo(NavBar);

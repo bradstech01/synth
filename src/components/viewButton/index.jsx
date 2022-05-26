@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 //box that contains settings for low pass filter & ADSR envelope
 
 //TODO: add window size to state so it can trigger updates to ensure the right label shows
-export function ViewButtonInner(props) {
+function ViewButton(props) {
     return (
         <label className='radioContainer'>
             <input
@@ -19,13 +19,13 @@ export function ViewButtonInner(props) {
                 onChange={(e) => { props.onChange(e.target.value); }}
             />
             <h1 className='centerY fitContainer'>
-                {window.innerWidth < 451 ? <div>{props.view[1]}</div> : <div>{props.view[0]}</div>}
+                {window.Width < 451 ? <div>{props.view[1]}</div> : <div>{props.view[0]}</div>}
             </h1>
         </label>
     );
 }
-ViewButtonInner.propTypes = {
+ViewButton.propTypes = {
     view: PropTypes.array.isRequired,
 };
 
-export const ViewButton = React.memo(ViewButtonInner);
+export default React.memo(ViewButton);

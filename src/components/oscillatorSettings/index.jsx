@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { OscillatorBox } from '../oscillatorBox';
-import { LpfEnvBox } from '../lpfEnvBox';
-import { AmpEnvBox } from '../ampEnvBox';
+import OscillatorBox from '../oscillatorBox';
+import LpfEnvBox from '../lpfEnvBox';
+import AmpEnvBox from '../ampEnvBox';
 
-export function OscillatorSettingsInner(props) {
+function OscillatorSettings(props) {
     return (
-        <React.Fragment>
+        <>
             <OscillatorBox
                 synthSettings={props.synthSettings}
                 onChange={props.handleChange}
@@ -19,12 +19,12 @@ export function OscillatorSettingsInner(props) {
                 synthSettings={props.synthSettings}
                 onChange={props.handleChange}
             />
-        </React.Fragment>
+        </>
     );
 }
 
-OscillatorSettingsInner.propTypes = {
+OscillatorSettings.propTypes = {
     synthSettings: PropTypes.object.isRequired,
 };
 
-export const OscillatorSettings = React.memo(OscillatorSettingsInner);
+export default React.memo(OscillatorSettings);

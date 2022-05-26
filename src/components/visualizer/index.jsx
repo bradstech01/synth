@@ -1,5 +1,5 @@
 import React from "react";
-import { Oscilloscope } from '../oscilloscope';
+import Oscilloscope from '../oscilloscope';
 import { audioCtx, synth } from '../../scripts/synthAPI.js';
 
 /**

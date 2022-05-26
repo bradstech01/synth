@@ -1,14 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Setting } from '../setting';
+import Setting from '../setting';
+
 import { delay, reverb, chorus, tremolo } from '../../scripts/settingsDefinitions.js';
 
 //lpf = low pass filter
 //box that contains settings for low pass filter & ADSR envelope
 
-export function TimeFxBoxInner(props) {
+function TimeFxBox(props) {
     return (
-        <React.Fragment>
+        <>
             <div className="delay">
                 <h2>delay</h2>
                 <div className="showAsRows">
@@ -37,12 +38,12 @@ export function TimeFxBoxInner(props) {
                     <Setting definition={tremolo.settings.depth} label="amt" synthSettings={props.synthSettings} onChange={props.onChange} />
                 </div>
             </div>
-        </React.Fragment>
+        </>
     );
 }
-TimeFxBoxInner.propTypes = {
+TimeFxBox.propTypes = {
     synthSettings: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
 };
 
-export const TimeFxBox = React.memo(TimeFxBoxInner);
+export default React.memo(TimeFxBox);

@@ -1,14 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Setting } from '../setting';
+import Setting from '../setting';
+
 import { stereoWidener, eq, distortion } from '../../scripts/settingsDefinitions.js';
 
 //lpf = low pass filter
 //box that contains settings for low pass filter & ADSR envelope
 
-export function VoiceFxBoxInner(props) {
+function VoiceFxBox(props) {
     return (
-        <React.Fragment>
+        <>
             <div className="stereo">
                 <h2>width</h2>
                 <div className="settingContainer">
@@ -29,13 +30,13 @@ export function VoiceFxBoxInner(props) {
                     <Setting definition={distortion.settings.distortion} label="amt" synthSettings={props.synthSettings} onChange={props.onChange} />
                 </div>
             </div>
-        </React.Fragment>
+        </>
     );
 }
 
-VoiceFxBoxInner.propTypes = {
+VoiceFxBox.propTypes = {
     synthSettings: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
 };
 
-export const VoiceFxBox = React.memo(VoiceFxBoxInner);
+export default React.memo(VoiceFxBox);

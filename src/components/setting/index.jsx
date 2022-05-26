@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-export function Setting(props) {
+function Setting(props) {
+    let val = props.synthSettings[props.definition.settingGrp][props.definition.settingName];
+
     useEffect(() => {
-        let val = props.synthSettings[props.definition.settingGrp][props.definition.settingName];
+        console.log('rerender setting');
         props.onChange(val, props.definition.valueScaler ? props.definition.valueScaler(val) : val, props.definition.settingGrp, props.definition.settingName);
 
-    }, [props]);
+    }, [val]);
 
     return (
         <div className={'setting ' + (props.css ? props.css : '')}>
@@ -37,3 +39,5 @@ Setting.propTypes = {
     definition: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
 };
+
+export default React.memo(Setting);

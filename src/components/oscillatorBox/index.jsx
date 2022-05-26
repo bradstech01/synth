@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { oscillator } from '../../scripts/settingsDefinitions.js';
 
 
-export function OscillatorBoxInner(props) {
+function OscillatorBox(props) {
     const renderOscillatorTypes = (subProp, settingName, optionArray) => {
         return (
             <div className="oscButtons">
@@ -44,9 +44,9 @@ export function OscillatorBoxInner(props) {
     );
 }
 
-OscillatorBoxInner.propTypes = {
+OscillatorBox.propTypes = {
     synthSettings: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
 };
 
-export const OscillatorBox = React.memo(OscillatorBoxInner);
+export default React.memo(OscillatorBox);

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as Tone from 'tone';
-import { SequencerStep } from '../sequencerStep/index.jsx';
+import SequencerStep from '../sequencerStep/index.jsx';
 import { synth } from '../../scripts/synthAPI.js';
 
 export class Sequencer extends React.Component {

@@ -1,12 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Setting } from '../setting';
+import Setting from '../setting';
 import { envelope } from '../../scripts/settingsDefinitions.js';
 
 //lpf = low pass filter
 //box that contains settings for low pass filter & ADSR envelope
 
-function AmpEnvBoxInner(props) {
+function AmpEnvBox(props) {
     return (
         <div className="ampEnv">
             <h2>amp env</h2>
@@ -20,9 +20,9 @@ function AmpEnvBoxInner(props) {
     );
 }
 
-AmpEnvBoxInner.propTypes = {
+AmpEnvBox.propTypes = {
     synthSettings: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
 };
 
-export const AmpEnvBox = React.memo(AmpEnvBoxInner);
+export default React.memo(AmpEnvBox);

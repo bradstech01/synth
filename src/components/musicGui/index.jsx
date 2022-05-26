@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Keyboard } from '../keyboard';
+import Keyboard from '../keyboard';
 import { Sequencer } from '../sequencer';
 import { Visualizer } from '../visualizer';
 
@@ -8,9 +8,9 @@ import { Visualizer } from '../visualizer';
  * Component containing the visual keyboard; the "money maker", as it were.
  * TODO: Fix current hacky CSS for the keyboard, so that it appropriately flexes and is better modularized for different viewports
  */
-export function MusicGuiInner(props) {
+function MusicGui(props) {
     return (
-        <div className={(props.activeView === 'keyboard') ? 'musicGui' : 'hidden'}>
+        <div className='musicGui'>
             <div className="keyboardWrapper">
                 <div className='visualizerContainer'>
                     <Visualizer />
@@ -31,8 +31,7 @@ export function MusicGuiInner(props) {
     );
 }
 
-MusicGuiInner.propTypes = {
-    activeView: PropTypes.string.isRequired,
+MusicGui.propTypes = {
     setMouseFlag: PropTypes.func.isRequired,
     isMouseDown: PropTypes.bool.isRequired,
     currentlyPlaying: PropTypes.array.isRequired,
@@ -41,4 +40,4 @@ MusicGuiInner.propTypes = {
     octaveShift: PropTypes.number.isRequired,
 };
 
-export const MusicGui = React.memo(MusicGuiInner);
+export default React.memo(MusicGui);
