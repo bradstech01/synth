@@ -1,7 +1,23 @@
 import * as Tone from 'tone';
 
+async function startTone() {
+    await Tone.start();
+};
+
+startTone();
 export const audioCtx = Tone.getContext();
 export const synth = new Tone.PolySynth(Tone.MonoSynth).toDestination();
+
+//callback passed to piano keys to trigger attack
+export function triggerNote(note, velocity) {
+    console.log('honk honk');
+    synth.triggerAttack(note, Tone.now(), velocity ? velocity : undefined);
+};
+
+//callback passed to piano keys to trigger release
+export function triggerRelease(note) {
+    synth.triggerRelease(note, Tone.now());
+};
 
 synth.set({
     maxPolyphony: 128,
@@ -23,18 +39,9 @@ synth.set({
 
 Tone.Destination.volume.value = -12;
 
-//callback passed to piano keys to trigger attack
-export function triggerNote(note, velocity) {
-    synth.triggerAttack(note, Tone.now(), velocity ? velocity : undefined);
-};
-
-//callback passed to piano keys to trigger release
-export function triggerRelease(note) {
-    synth.triggerRelease(note, Tone.now());
-};
-
 document.body.addEventListener('keydown', (e) => {
     if (e.key === 'p') {
         console.log(synth.get());
+        console.log(audioCtx.isOffline);
     }
 });

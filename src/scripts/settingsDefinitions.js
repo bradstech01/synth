@@ -283,5 +283,10 @@ export const chorus = {
 };
 
 export const misc = {
-    settings: {}
+    type: 'synth',
+    settings: {
+        velocity: {
+            default: .5
+        },
+    }
 };

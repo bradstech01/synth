@@ -3,13 +3,18 @@ import ReactDOM from 'react-dom';
 import './css/index.scss';
 import './fonts/MajorMono/MajorMonoDisplay-Regular.ttf';
 import './fonts/Comfortaa/Comfortaa-VariableFont_wght.ttf';
-import Synth from './components/synth';
+import App from './app/app';
+import store from './app/store';
+import { Provider } from 'react-redux';
+
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
     <div className='app'>
-      <Synth />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </div>
   </React.StrictMode>,
   document.getElementById('root')
