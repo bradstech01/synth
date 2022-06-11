@@ -19,19 +19,13 @@ function PianoKey(props) {
   const isMouseActive = useSelector(state => state.keyboard.isMouseActive);
 
   const sendMouseDown = (e) => {
-    e.preventDefault();
     if (isAnyMusicKeyDown) return;
-    else if (isMouseActive) {
-      dispatch(addToCurrentlyPlaying({ note: props.note, velocity: .5, source: 'mouse' }));
-    }
+    else dispatch(addToCurrentlyPlaying({ note: props.note, velocity: .5, source: 'mouse' }));
   };
 
   const sendMouseUp = (e) => {
     e.preventDefault();
-    if (isAnyMusicKeyDown) return;
-    else if (isMouseActive) {
-      if (e.type === 'mouseover') dispatch(removeFromCurrentlyPlaying({ note: props.note, velocity: .5, source: 'mouse' }));
-    }
+    dispatch(removeFromCurrentlyPlaying({ note: props.note, velocity: .5, source: 'mouse' }));
   };
 
   const mapNoteToClass = (note) => {
@@ -61,7 +55,7 @@ function PianoKey(props) {
       }
       onMouseDown={(sendMouseDown)}
       onMouseUp={sendMouseUp}
-      onMouseOver={sendMouseDown}
+      onMouseOver={e => { if (isMouseActive) sendMouseDown(e); }}
       onMouseOut={sendMouseUp}
       onTouchStart={sendMouseDown}
       onTouchEnd={sendMouseUp}
@@ -80,4 +74,4 @@ PianoKey.propTypes = {
   hiddenOnMobile: PropTypes.bool,
 };
 
-export default React.memo(PianoKey);
+export default PianoKey;

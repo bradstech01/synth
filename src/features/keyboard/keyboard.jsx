@@ -15,26 +15,14 @@ import { triggerNote, triggerRelease } from '../../scripts/synthAPI';
 export function Keyboard() {
   const dispatch = useDispatch();
   const octaveShift = useSelector(state => state.keyboard.octaveShift);
-  const isAnyMusicKeyDown = useSelector(state => state.keyboard.isAnyMusicKeyDown);
-  const isMouseActive = useSelector(state => state.keyboard.isMouseActive);
   const currentlyPlaying = useSelector(state => state.keyboard.currentlyPlaying);
+  const isMouseActive = useSelector(state => state.keyboard.isMouseActive);
 
   const prevPlaying = usePrevious(currentlyPlaying);
 
   //Handles 'musical' key presses & releases. 
-  const handleKeyPress = e => { if (keyMap(e.key)) dispatch(addToCurrentlyPlaying({ note: keyMap(e.key), velocity: .5, source: 'keyboard' })); };
-  const handleKeyRelease = e => { if (keyMap(e.key)) dispatch(removeFromCurrentlyPlaying({ note: keyMap(e.key), source: 'keyboard' })); };
 
-  useEffect(() => {
-    if (!isAnyMusicKeyDown && isMouseActive) {
-      document.removeEventListener('keydown', handleKeyPress);
-      document.removeEventListener('keyup', handleKeyRelease);
-    }
-    else if (!isMouseActive) {
-      document.addEventListener('keydown', handleKeyPress);
-      document.addEventListener('keyup', handleKeyRelease);
-    }
-  }, [isAnyMusicKeyDown, isMouseActive]);
+
 
   //Use effect for triggering notes on note updates
   useEffect(() => {
@@ -50,7 +38,6 @@ export function Keyboard() {
         if (noteWasRemoved) triggerRelease(note);
       }
     }
-
   }, [currentlyPlaying]);
 
   const renderPianoKey = (note, octave, triggerKey, hiddenOnMobile) => {
@@ -64,12 +51,7 @@ export function Keyboard() {
   };
 
   return (
-    <div
-      className="keyboard"
-      role="button"
-      onMouseDown={() => { dispatch(setMouseFlag('down')); }}
-      onMouseUp={() => { dispatch(setMouseFlag('up')); }}
-    >
+    <div className="keyboard" role="button" onMouseDown={() => { dispatch(setMouseFlag('down')); }}>
       {renderPianoKey('C', 3 + octaveShift, 'q')}
       {renderPianoKey('C#', 3 + octaveShift, '2')}
       {renderPianoKey('D', 3 + octaveShift, 'w')}
