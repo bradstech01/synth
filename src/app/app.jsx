@@ -14,65 +14,30 @@ import FxSettings from '../features/synthSettings/fxSettings';
 import NavBar from './nav';
 import { synth } from '../scripts/synthAPI.js';
 
-import { keyMap, midiMap } from '../scripts/inputMaps.js';
+import { midiMap } from '../scripts/inputMaps.js';
 import * as midiFunctions from '../scripts/midiFunctions.js';
 import { handleChange, handleFxChange, getDefaults, loadSettings } from '../features/synthSettings/settingsAPI.js';
-import { triggerNote, triggerRelease } from '../scripts/synthAPI.js';
-import { initTransport, setStepsInternal, getSteps, getNumSteps } from '../features/sequencer/sequencerAPI';
+import { initTransport } from '../features/sequencer/sequencerAPI';
 import { startedTone } from './appSlice';
 import { addToCurrentlyPlaying, removeFromCurrentlyPlaying } from '../features/keyboard/keyboardSlice';
+import { updateSequencerBeat } from '../features/sequencer/sequencerSlice';
 
 
 function App() {
-  const hasToneStarted = useSelector(state => state.app.hasToneStarted);
-  const currentlyPlaying = useSelector(state => state.keyboard.currentlyPlaying);
-  const [activeView, setActiveView] = useState('keyboard');
-  const [octaveShift, setOctaveShift] = useState(0);
-  const [settings, setSynthSettingsState] = useState(getDefaults());
-  const [bpm, setBpm] = useState(20);
-  const [sequencerBeat, setSequencerBeat] = useState(0);
-  const [sequencerStarted, setSequencerStarted] = useState(false);
-  const [sequencerRecording, setSequencerRecording] = useState(false);
-  const [sequencerSteps, setSequencerSteps] = useState(getSteps());
-  const [sequencerNumSteps, setSequencerNumSteps] = useState(getNumSteps());
   const dispatch = useDispatch();
 
+  const hasToneStarted = useSelector(state => state.app.hasToneStarted);
 
-  const setBpmFromChild = useCallback((data) => {
-    setBpm(data);
-  }, [setBpm]);
+  const [activeView, setActiveView] = useState('keyboard');
+  const [settings, setSynthSettingsState] = useState(getDefaults());
 
-  const setSequencerStartedCb = useCallback((data) => {
-    setSequencerStarted(data);
-  }, [setSequencerStarted]);
-
-  const setSequencerRecordingCb = useCallback((data) => {
-    setSequencerRecording(data);
-  }, [setSequencerRecording]);
-
-  const setSequencerStepsCb = useCallback((data) => {
-    setStepsInternal(data);
-    setSequencerSteps(data);
-  }, [setSequencerSteps]);
-
-  const setSequencerBeatCb = useCallback((data) => {
-    setSequencerBeat(data);
-  }, [setSequencerBeat]);
-
-  const particlesInit = async (main) => {
-    await loadFull(main);
-  };
+  const particlesInit = async main => await loadFull(main);
 
   //never needs to re-render
   const particlesMemo = useRef(<Particles init={particlesInit} options={particleOptions} />);
 
   //Refs
-  const isKeyDown = useRef(false);
-  const currentlyPlayingRef = useRef();
-  currentlyPlayingRef.current = currentlyPlaying;
-  const prevPlaying = usePrevious(currentlyPlaying);
   const isMounted = useRef(false);
-  const isMouseDownRef = useRef(false);
 
   //This function is a "wrapper" around the settings API.
   //The callback function is expected to enact the change in Tone.js settings, while this function sets the corresponding React state. 
@@ -96,52 +61,7 @@ function App() {
     updateSettingState(prevState, value, internalValue, definition, type, handleFxChange);
   }, [updateSettingState]);
 
-  //Handles 'musical' key presses. 
-  //Sets "isKeyDown" flag to disable musical mouse input. 
-  const handleKeyPress = useCallback(e => {
-    if (keyMap(e.key)) dispatch(addToCurrentlyPlaying({ note: keyMap(e.key), velocity: .5 }));
-  }, []);
 
-  //Handles 'musical' key releases. 
-  //Sets "isKeyDown" flag to enable musical mouse input.
-  const handleKeyRelease = useCallback(e => {
-    if (keyMap(e.key)) dispatch(removeFromCurrentlyPlaying(keyMap(e.key)));
-
-  }, []);
-
-  //Mousedown handler for piano keys. 
-  //Passed as callback to individual piano key components. 
-  //Does nothing if a musical key is being pressed.
-  const handleMouseDown = useCallback(note => {
-    if (isKeyDown.current) return;
-    dispatch(addToCurrentlyPlaying({ note: note, velocity: .5 }));
-  }, [isKeyDown]);
-
-  //Mouseup handler for piano keys.
-  //Passed as callback to individual piano key components. 
-  //Does nothing if a musical key is being pressed. 
-  const handleMouseUp = useCallback(note => {
-    if (isKeyDown.current) return;
-    dispatch(removeFromCurrentlyPlaying(note));
-  }, [isKeyDown]);
-
-  //Mousedown/mouseup handler for keyboard.
-  //Passed as callback to keyboard component. 
-  //Helps track whether mouse is being used in musical context in order to enable and disable keydown/keyup event listeners as appropriate.
-  const setMouseFlag = useCallback(e => {
-    e.stopPropagation();
-    if (e.type === 'mousedown') isMouseDownRef.current = true;
-    else isMouseDownRef.current = false;
-
-    if (!isKeyDown.current && isMouseDownRef.current) {
-      document.removeEventListener('keydown', handleKeyPress);
-      document.removeEventListener('keyup', handleKeyRelease);
-    }
-    if (!isMouseDownRef.current) {
-      document.addEventListener('keydown', handleKeyPress);
-      document.addEventListener('keyup', handleKeyRelease);
-    }
-  }, [handleKeyPress, handleKeyRelease]);
 
   //MIDI message handler. 
   //Tracks all types of MIDI messages and triggers appropriate action. 
@@ -150,13 +70,13 @@ function App() {
     const command = dataArray[0];
     const note = midiMap(dataArray[1]);
     const velocity = (dataArray[2] / 200);
-    if (command === 144) dispatch(addToCurrentlyPlaying(note, velocity));
-    else if (command === 128) dispatch(removeFromCurrentlyPlaying(note));
+    if (command === 144) dispatch(addToCurrentlyPlaying({ note: note, velocity: velocity, source: "midi" }));
+    else if (command === 128) dispatch(removeFromCurrentlyPlaying({ note: note, source: "midi" }));
   }, []);
 
   //Tone engine starter. 
   //WebAudio API doesn't work if there isn't a triggering user input, so on the first user action this makes sure that 
-  const startTone = useCallback(async (e) => {
+  const startTone = async (e) => {
     if (!hasToneStarted) {
       await Tone.start();
       dispatch(startedTone());
@@ -166,11 +86,8 @@ function App() {
       if (cachedSettings) {
         synth.set({ ...cachedSettings.synthSettings });
         setSynthSettingsState({
-          synthSettings: {
-            ...settings.synthSettings, ...cachedSettings.synthSettings
-          }, fxSettings: {
-            ...settings.fxSettings, ...cachedSettings.fxSettings
-          }
+          synthSettings: { ...settings.synthSettings, ...cachedSettings.synthSettings },
+          fxSettings: { ...settings.fxSettings, ...cachedSettings.fxSettings }
         });
         if (cachedSettings.fxSettings) {
           for (const effect in cachedSettings.fxSettings) {
@@ -184,18 +101,15 @@ function App() {
 
       document.removeEventListener('keydown', startTone);
       document.removeEventListener('mousedown', startTone);
-      document.addEventListener('mousedown', setMouseFlag);
-      document.addEventListener('mouseup', setMouseFlag);
-      document.addEventListener('keydown', handleKeyPress);
-      document.addEventListener('keyup', handleKeyRelease);
     }
-  }, [getMIDIMessage, handleKeyPress, handleKeyRelease, hasToneStarted, setMouseFlag]);
+  };
 
   //Use effect for on mount only
   useEffect(() => {
     if (isMounted.current) return;
+    else isMounted.current = true;
 
-    initTransport(setSequencerBeat);
+    initTransport((newBeat) => { dispatch(updateSequencerBeat(newBeat)); });
 
     document.addEventListener('keydown', startTone);
     document.addEventListener('mousedown', startTone);
@@ -205,11 +119,8 @@ function App() {
         if (cachedSettings) {
           synth.set({ ...cachedSettings.synthSettings });
           setSynthSettingsState({
-            synthSettings: {
-              ...settings.synthSettings, ...cachedSettings.synthSettings
-            }, fxSettings: {
-              ...settings.fxSettings, ...cachedSettings.fxSettings
-            }
+            synthSettings: { ...settings.synthSettings, ...cachedSettings.synthSettings },
+            fxSettings: { ...settings.fxSettings, ...cachedSettings.fxSettings }
           });
         }
       }
@@ -221,54 +132,11 @@ function App() {
     });
   }, [startTone, settings]);
 
-  //Use effect for triggering notes on note updates
-  useEffect(() => {
-    console.log('fx use');
-    console.log(currentlyPlaying);
-
-    if (!isMounted.current) isMounted.current = true;
-    else {
-      for (let noteVelocityPair of currentlyPlaying) {
-        const { note, velocity } = noteVelocityPair;
-        const noteWasAdded = !prevPlaying.find(pair => pair.note === note);
-        console.log('was note added? hmm', noteWasAdded);
-        if (noteWasAdded) triggerNote(note, velocity);
-      }
-      for (let noteVelocityPair of prevPlaying) {
-        const { note, velocity } = noteVelocityPair;
-        const noteWasRemoved = !currentlyPlaying.find(pair => pair.note === noteVelocityPair.note);
-        console.log('was note removed? hmm', noteWasRemoved);
-        if (noteWasRemoved) triggerRelease(note);
-      }
-    }
-
-    if (currentlyPlaying.length === 0) isKeyDown.current = false;
-    else isKeyDown.current = true;
-  }, [currentlyPlaying, prevPlaying, settings.synthSettings.misc.velocity]);
-
   //rendering methods
   const renderBody = () => {
     if (activeView === 'keyboard') {
       return (
-        <MusicGui
-          isMouseDown={isMouseDownRef.current}
-          currentlyPlaying={currentlyPlaying}
-          prevPlaying={prevPlaying}
-          setMouseFlag={setMouseFlag}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          bpm={bpm}
-          setBpm={setBpmFromChild}
-          sequencerSteps={sequencerSteps}
-          sequencerRecording={sequencerRecording}
-          sequencerStarted={sequencerStarted}
-          currentBeat={sequencerBeat}
-          setSequencerSteps={setSequencerStepsCb}
-          setSequencerStarted={setSequencerStartedCb}
-          setSequencerRecording={setSequencerRecordingCb}
-          setSequencerBeat={setSequencerBeatCb}
-          octaveShift={octaveShift}
-        />
+        <MusicGui />
       );
     }
     else if (activeView === 'oscillator') {

@@ -1,25 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateSequencerBeat } from './sequencerSlice';
 
 function SequencerStep(props) {
-  const setSelfAsActive = (e) => {
-    props.updateActiveBeat((props.step.beat - 1) % props.steps.length);
-  };
+  const dispatch = useDispatch();
+
+  const steps = useSelector(state => state.sequencer.steps);
+  const activeBeat = useSelector(state => state.sequencer.beat);
 
   return (
-    <div
-      onMouseDown={setSelfAsActive}
-      key={props.step.beat}
-      className={
-        'step' +
-        (props.step.beat % props.steps.length ===
-          (props.beat + 1) % props.steps.length
-          ? ' activeStep'
-          : '')
-      }
-    >
-      <div className={'stepNoteDisplay'} beat={props.step.beat}>
-        {props.steps[props.step.beat - 1].note}
+    <div onMouseDown={() => { dispatch(updateSequencerBeat(((props.step.beat - 1) % steps.length))); }}
+      className={'step' + (props.step.beat % steps.length === (activeBeat) % steps.length ? ' activeStep' : '')}>
+      <div className='stepNoteDisplay'>
+        {props.step.note}
       </div>
     </div>
   );
@@ -27,9 +21,6 @@ function SequencerStep(props) {
 
 SequencerStep.propTypes = {
   step: PropTypes.object.isRequired,
-  steps: PropTypes.array.isRequired,
-  beat: PropTypes.number.isRequired,
-  updateActiveBeat: PropTypes.func.isRequired,
 };
 
 export default React.memo(SequencerStep);

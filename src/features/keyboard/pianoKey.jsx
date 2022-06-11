@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { addToCurrentlyPlaying, removeFromCurrentlyPlaying } from './keyboardSlice';
 
 /**
  * Piano key element, which notably holds event listeners for mouse/touch input for each individual key.
@@ -8,16 +11,27 @@ import PropTypes from 'prop-types';
  * TODO: Try to hack through issues with touch support
  */
 function PianoKey(props) {
+  const dispatch = useDispatch();
+
+  const currentlyPlaying = useSelector(state => state.keyboard.currentlyPlaying);
+  const isPlaying = currentlyPlaying.find(pair => props.note === pair.note);
+  const isAnyMusicKeyDown = useSelector(state => state.keyboard.isAnyMusicKeyDown);
+  const isMouseActive = useSelector(state => state.keyboard.isMouseActive);
+
   const sendMouseDown = (e) => {
     e.preventDefault();
-    if (e.type === 'mouseover') {
-      if (props.isMouseDown) props.onMouseDown(props.note);
-    } else props.onMouseDown(props.note);
+    if (isAnyMusicKeyDown) return;
+    else if (isMouseActive) {
+      dispatch(addToCurrentlyPlaying({ note: props.note, velocity: .5, source: 'mouse' }));
+    }
   };
 
   const sendMouseUp = (e) => {
     e.preventDefault();
-    props.onMouseUp(props.note);
+    if (isAnyMusicKeyDown) return;
+    else if (isMouseActive) {
+      if (e.type === 'mouseover') dispatch(removeFromCurrentlyPlaying({ note: props.note, velocity: .5, source: 'mouse' }));
+    }
   };
 
   const mapNoteToClass = (note) => {
@@ -42,7 +56,7 @@ function PianoKey(props) {
         (props.note.length < 3
           ? 'keyWhite' + mapNoteToClass(props.note)
           : 'keyBlack') +
-        (props.currentlyPlaying ? ' keyPressed' : '') +
+        (isPlaying ? ' keyPressed' : '') +
         (props.hiddenOnMobile ? ' hiddenOnMobile' : '')
       }
       onMouseDown={(sendMouseDown)}
@@ -63,10 +77,7 @@ function PianoKey(props) {
 
 PianoKey.propTypes = {
   note: PropTypes.string.isRequired,
-  currentlyPlaying: PropTypes.bool.isRequired,
   hiddenOnMobile: PropTypes.bool,
-  onMouseDown: PropTypes.func.isRequired,
-  onMouseUp: PropTypes.func.isRequired,
 };
 
 export default React.memo(PianoKey);

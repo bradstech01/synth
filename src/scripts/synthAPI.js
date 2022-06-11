@@ -10,7 +10,6 @@ export const synth = new Tone.PolySynth(Tone.MonoSynth).toDestination();
 
 //callback passed to piano keys to trigger attack
 export function triggerNote(note, velocity) {
-    console.log('honk honk');
     synth.triggerAttack(note, Tone.now(), velocity ? velocity : undefined);
 };
 

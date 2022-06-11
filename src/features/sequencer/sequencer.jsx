@@ -1,34 +1,44 @@
 import { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { usePrevious } from '../../scripts/hooks';
+
+import { setBpm } from '../../app/appSlice.js';
+import { updateRecFlag, updateSequencerSteps, updateSequencerBeat, updateStartFlag, updateSingleStep } from './sequencerSlice.js';
+
 import * as Tone from 'tone';
 import SequencerStep from './sequencerStep.jsx';
 import { synth } from '../../scripts/synthAPI.js';
-import { startSequence, stopSequence } from './sequencerAPI.js';
+import { setBeatInternal, startSequence, stopSequence } from './sequencerAPI.js';
 
 function Sequencer(props) {
   //reference to state setter from top-level
-  let steps = props.sequencerSteps;
-  let isRecording = props.sequencerRecording;
-  let isStarted = props.sequencerStarted;
+  const steps = useSelector(state => state.sequencer.steps);
+  const beat = useSelector(state => state.sequencer.beat);
+  const isRecording = useSelector(state => state.sequencer.isRecording);
+  const isStarted = useSelector(state => state.sequencer.isStarted);
+  const currentlyPlaying = useSelector(state => state.keyboard.currentlyPlaying);
+  const prevPlaying = usePrevious(currentlyPlaying);
   let numSteps = 64;
 
+  const dispatch = useDispatch();
+  const bpm = useSelector(state => state.app.bpm);
+
   const isMounted = useRef(false);
-  const currentStepNotes = useRef(null);
+  const currentStepNotes = useRef([]);
   const currentNote = useRef(null);
-  const currentBeatRef = useRef(0);
-  currentBeatRef.current = props.currentBeat;
 
   const handleSeqStart = (e) => {
     if (isStarted) {
       stopSequence();
       currentNote.current = '';
-      props.setSequencerStarted(false);
-      props.setSequencerBeat(0);
+      dispatch(updateStartFlag(false));
+      dispatch(updateSequencerBeat(0));
       synth.triggerRelease(currentNote.current, Tone.now());
     } else {
       if (isRecording) disableRecording();
-      props.setSequencerStarted(true);
-      props.setSequencerBeat(0);
+      dispatch(updateStartFlag(true));
+      dispatch(updateSequencerBeat(0));
       startSequence();
     }
   };
@@ -36,44 +46,38 @@ function Sequencer(props) {
   const handleSeqRecord = (e) => {
     if (isStarted) {
       stopSequence();
-      props.setSequencerStarted(false);
+      dispatch(updateStartFlag(false));
     }
-    props.setSequencerBeat(0);
+    dispatch(updateSequencerBeat(0));
     if (!isRecording) enableRecording();
     else disableRecording();
   };
 
   const enableRecording = () => {
-    props.setSequencerRecording(true);
+    dispatch(updateRecFlag(true));
     currentStepNotes.current = [];
   };
 
   const disableRecording = () => {
-    props.setSequencerRecording(false);
-    currentStepNotes.current = null;
+    dispatch(updateRecFlag(false));
+    currentStepNotes.current = [];
   };
 
-  const raiseBpm = (e) => {
-    props.setBpm(props.bpm + 1);
-    Tone.Transport.bpm.value = props.bpm;
-  };
-
-  const lowerBpm = (e) => {
-    props.setBpm(props.bpm - 1);
-    Tone.Transport.bpm.value = props.bpm;
-  };
+  const raiseBpm = () => dispatch(setBpm(bpm + 1));
+  const lowerBpm = () => dispatch(setBpm(bpm - 1));
 
   const addRest = (e) => {
     if (isRecording) {
-      steps[currentBeatRef.current].note = 'rest';
-      props.setSequencerBeat((currentBeatRef.current + 1) % numSteps);
+      steps[beat].note = 'rest';
+      dispatch(updateSequencerBeat((beat + 1) % numSteps));
     }
   };
 
   const clearEntry = (e) => {
     if (isRecording) {
-      steps[currentBeatRef.current].note = '';
-      props.setSequencerBeat((currentBeatRef.current + 1) % numSteps);
+      steps[beat].note = '';
+      dispatch(updateSingleStep({ beat: beat, note: '' }));
+      dispatch(updateSequencerBeat((beat + 1) % numSteps));
     }
   };
 
@@ -82,32 +86,32 @@ function Sequencer(props) {
     else {
       const addToSequence = (note) => {
         if ((currentStepNotes) && (!currentStepNotes.current.includes(note))) {
-          currentStepNotes.current.push(note);
-          let newSteps = [...steps];
-          newSteps[currentBeatRef.current].note = currentStepNotes.current;
-          props.setSequencerSteps(newSteps);
+          const newStepNotes = [...currentStepNotes.current];
+          newStepNotes.push(note);
+          currentStepNotes.current = newStepNotes;
+          dispatch(updateSingleStep({ beat: beat, note: currentStepNotes.current }));
         }
       };
 
       const advanceSequence = () => {
         currentStepNotes.current = [];
-        props.setSequencerBeat((currentBeatRef.current + 1) % numSteps);
+        dispatch(updateSequencerBeat((beat + 1) % numSteps));
       };
 
-      if (isRecording) {
-        if (props.prevPlaying !== props.currentlyPlaying) {
-          if (props.currentlyPlaying.length === 0) {
-            advanceSequence();
-          }
-          else {
-            props.currentlyPlaying.forEach((note) => {
-              addToSequence(note);
-            });
-          }
+      if (isRecording && prevPlaying !== currentlyPlaying) {
+        if (currentlyPlaying.length === 0) {
+          advanceSequence();
         }
+        else {
+          currentlyPlaying.forEach(pair => {
+            const { note } = pair;
+            addToSequence(note);
+          });
+        }
+
       }
     }
-  }, [props.currentlyPlaying, props.prevPlaying, isRecording, numSteps, props, steps]);
+  }, [currentlyPlaying, prevPlaying, isRecording, numSteps, props, steps]);
 
   const renderControls = () => {
     return (
@@ -127,7 +131,7 @@ function Sequencer(props) {
             <div className='centerY'>
               <div className="bpmDisplayBox">
                 <div className="bpmDisplay">
-                  <span>{props.bpm}</span>
+                  <span>{bpm}</span>
                 </div>
               </div>
             </div>
@@ -160,8 +164,7 @@ function Sequencer(props) {
                   key={step.beat}
                   step={step}
                   steps={steps}
-                  beat={props.currentBeat}
-                  updateActiveBeat={props.setSequencerBeat}
+                  beat={beat}
                 />
               );
             })}
@@ -179,8 +182,5 @@ function Sequencer(props) {
   );
 }
 
-Sequencer.propTypes = {
-  currentlyPlaying: PropTypes.array.isRequired,
-};
 
 export default Sequencer;
