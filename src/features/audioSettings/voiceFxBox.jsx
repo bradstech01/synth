@@ -13,30 +13,28 @@ function VoiceFxBox(props) {
             <div className="stereo">
                 <h2>width</h2>
                 <div className="settingContainer">
-                    <Setting definition={stereoWidener.settings.width} type={stereoWidener.type} label="amt" settings={props.settings} onChange={props.onChange} />
+                    <Setting parameter={stereoWidener.settings.wet} type={stereoWidener.type} label="mix" />
+                    <Setting parameter={stereoWidener.settings.width} type={stereoWidener.type} label="amt" />
                 </div>
             </div>
             <div className="eq">
                 <h2>equalizer</h2>
                 <div className="settingContainer">
-                    <Setting definition={eq.settings.low} type={eq.type} label="low" settings={props.settings} onChange={props.onChange} />
-                    <Setting definition={eq.settings.mid} type={eq.type} label="mid" settings={props.settings} onChange={props.onChange} />
-                    <Setting definition={eq.settings.high} type={eq.type} label="high" settings={props.settings} onChange={props.onChange} />
+                    <Setting parameter={eq.settings.wet} type={eq.type} label="mix" />
+                    <Setting parameter={eq.settings.low} type={eq.type} label="low" />
+                    <Setting parameter={eq.settings.mid} type={eq.type} label="mid" />
+                    <Setting parameter={eq.settings.high} type={eq.type} label="high" />
                 </div>
             </div>
             <div className="distortion">
                 <h2>distortion</h2>
                 <div className="settingContainer">
-                    <Setting definition={distortion.settings.distortion} type={distortion.type} label="amt" settings={props.settings} onChange={props.onChange} />
+                    <Setting parameter={distortion.settings.wet} type={distortion.type} label="mix" />
+                    <Setting parameter={distortion.settings.distortion} type={distortion.type} label="amt" />
                 </div>
             </div>
         </>
     );
 }
-
-VoiceFxBox.propTypes = {
-    settings: PropTypes.object.isRequired,
-    onChange: PropTypes.func.isRequired,
-};
 
 export default React.memo(VoiceFxBox);

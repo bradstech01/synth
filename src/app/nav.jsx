@@ -22,8 +22,10 @@ function NavBar(props) {
     };
 
     return (
-        <nav className="navBar">
-            {renderViews([['keyboard', 'keys'], ['oscillator', 'osc'], ['system', 'sys']])}
+        <nav >
+            <ul className="navBar">
+                {renderViews([['keyboard', 'keys'], ['oscillator', 'osc'], ['system', 'sys']])}
+            </ul>
         </nav>
     );
 }

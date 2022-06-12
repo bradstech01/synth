@@ -122,6 +122,14 @@ export const filterEnvelope = {
 export const stereoWidener = {
     type: 'effect',
     settings: {
+        wet: {
+            default: 0,
+            min: 0,
+            max: 1,
+            step: .01,
+            settingGrp: 'stereoWidener',
+            settingName: 'wet'
+        },
         width: {
             default: 0,
             min: 0,
@@ -133,23 +141,18 @@ export const stereoWidener = {
     }
 };
 
-export const distortion = {
-    type: 'effect',
-    settings: {
-        distortion: {
-            default: 0,
-            min: 0,
-            max: 1,
-            step: .01,
-            settingGrp: 'distortion',
-            settingName: 'distortion',
-        }
-    }
-};
 
 export const eq = {
     type: 'effect',
     settings: {
+        wet: {
+            default: 0,
+            min: 0,
+            max: 1,
+            step: .01,
+            settingGrp: 'eq',
+            settingName: 'wet'
+        },
         low: {
             default: 0,
             min: -5,
@@ -175,7 +178,119 @@ export const eq = {
             settingName: 'high',
         },
     }
+};
 
+export const distortion = {
+    type: 'effect',
+    settings: {
+        wet: {
+            default: 0,
+            min: 0,
+            max: 1,
+            step: .01,
+            settingGrp: 'distortion',
+            settingName: 'wet'
+        },
+        distortion: {
+            default: 0,
+            min: 0,
+            max: 1,
+            step: .01,
+            settingGrp: 'distortion',
+            settingName: 'distortion',
+        }
+    }
+};
+
+
+export const tremolo = {
+    type: 'effect',
+    settings: {
+        wet: {
+            default: 0,
+            min: 0,
+            max: 1,
+            step: .01,
+            settingGrp: 'tremolo',
+            settingName: 'wet'
+        },
+        frequency: {
+            default: 0,
+            min: 0,
+            max: 1,
+            step: .01,
+            settingGrp: 'tremolo',
+            settingName: 'frequency',
+        },
+        depth: {
+            default: 0,
+            min: 0,
+            max: 1,
+            step: .01,
+            settingGrp: 'tremolo',
+            settingName: 'depth'
+        }
+    }
+};
+
+export const chorus = {
+    type: 'effect',
+    settings: {
+        wet: {
+            default: 0,
+            min: 0,
+            max: 1,
+            step: .01,
+            settingGrp: 'chorus',
+            settingName: 'wet'
+        },
+        frequency: {
+            default: 0,
+            min: 0,
+            max: 10,
+            step: .01,
+            settingGrp: 'chorus',
+            settingName: 'frequency',
+        },
+        depth: {
+            default: 0,
+            min: 0,
+            max: 1,
+            step: .01,
+            settingGrp: 'chorus',
+            settingName: 'depth'
+        }
+    }
+};
+
+export const delay = {
+    type: 'effect',
+    settings: {
+        wet: {
+            default: 0,
+            min: 0,
+            max: 1,
+            step: .01,
+            settingGrp: 'delay',
+            settingName: 'wet'
+        },
+        delayTime: {
+            default: 0,
+            min: 0,
+            max: 1,
+            step: .01,
+            settingGrp: 'delay',
+            settingName: 'delayTime'
+        },
+        feedback: {
+            default: .01,
+            min: 0,
+            max: 1,
+            step: .01,
+            settingGrp: 'delay',
+            settingName: 'feedback'
+        }
+    }
 };
 
 export const reverb = {
@@ -208,79 +323,6 @@ export const reverb = {
     }
 };
 
-export const delay = {
-    type: 'effect',
-    settings: {
-        delayTime: {
-            default: 0,
-            min: 0,
-            max: 1,
-            step: .01,
-            settingGrp: 'delay',
-            settingName: 'delayTime'
-        },
-        feedback: {
-            default: .01,
-            min: 0,
-            max: 1,
-            step: .01,
-            settingGrp: 'delay',
-            settingName: 'feedback'
-        },
-        wet: {
-            default: .5,
-            min: 0,
-            max: 1,
-            step: .01,
-            settingGrp: 'delay',
-            settingName: 'wet'
-        }
-    }
-};
-
-export const tremolo = {
-    type: 'effect',
-    settings: {
-        frequency: {
-            default: 0,
-            min: 0,
-            max: 10,
-            step: .01,
-            settingGrp: 'tremolo',
-            settingName: 'frequency',
-        },
-        depth: {
-            default: 0,
-            min: 0,
-            max: 1,
-            step: .01,
-            settingGrp: 'tremolo',
-            settingName: 'depth'
-        }
-    }
-};
-
-export const chorus = {
-    type: 'effect',
-    settings: {
-        frequency: {
-            default: 0,
-            min: 0,
-            max: 10,
-            step: .01,
-            settingGrp: 'chorus',
-            settingName: 'frequency',
-        },
-        depth: {
-            default: 0,
-            min: 0,
-            max: 1,
-            step: .01,
-            settingGrp: 'chorus',
-            settingName: 'depth'
-        }
-    }
-};
 
 export const misc = {
     type: 'synth',

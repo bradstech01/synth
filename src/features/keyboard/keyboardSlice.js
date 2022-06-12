@@ -11,7 +11,6 @@ const keyboardSlice = createSlice({
     initialState,
     reducers: {
         addToCurrentlyPlaying(state, action) {
-            console.log('active listener at ', action.payload.source);
             const { note, velocity, source } = action.payload;
             const noteInList = state.currentlyPlaying.find(noteVelocityPair => noteVelocityPair.note === note);
             if (!noteInList) state.currentlyPlaying.push({ note: note, velocity: velocity });

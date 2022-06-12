@@ -36,7 +36,7 @@ synth.set({
     },
 });
 
-Tone.Destination.volume.value = -12;
+Tone.Destination.volume.value = -30;
 
 document.body.addEventListener('keydown', (e) => {
     if (e.key === 'p') {

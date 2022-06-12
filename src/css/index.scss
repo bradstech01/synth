@@ -169,34 +169,81 @@ input[type="range"]::-moz-range-thumb {
   }
 }
 
-.navBar {
+nav {
   position: fixed;
-  z-index: 999;
   top: 0;
   height: 10%;
   width: 100%;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-evenly;
-  background-color: #222;
-  color: $secondary-font-color;
-  filter: drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 0.2));
-}
 
-.navBar > .radioContainer {
-  width: 33%;
-  height: 100%;
+  ul {
+    z-index: 999;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-evenly;
+    background-color: #222;
+    color: $secondary-font-color;
+    filter: drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 0.2));
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 0px;
 
-  h1 {
-    display: block;
-  }
+    li {
+      display: block;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      margin-top: 0px;
+      margin-left: 0px;
+      padding-top: 0px;
+      margin-block-start: 0px;
+      margin-block-end: 0px;
+      list-style-type: none;
+    }
 
-  @media screen and (min-width: $small) {
-    font-size: 1rem;
-  }
+    .radioContainer {
+      display: block;
+      width: calc(100% - 2px);
+      height: calc(100% - 2px);
+      text-align: center;
+      cursor: pointer;
 
-  @media screen and (max-width: $small) {
-    font-size: 1rem;
+      h1 {
+        margin-block-start: 0px;
+        margin-block-end: 0px;
+      }
+
+      @media screen and (min-width: $small) {
+        font-size: 1rem;
+      }
+
+      @media screen and (max-width: $small) {
+        font-size: 1rem;
+      }
+
+      input {
+        visibility: hidden;
+        position: absolute;
+      }
+      input + span {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      input:checked + span {
+        background-color: $accent-color;
+      }
+    }
+    .radioContainer:hover {
+      background-color: #333;
+    }
+    .radioContainer:active {
+      background-color: #ddd;
+    }
   }
 }
 
@@ -656,31 +703,6 @@ input[type="range"]::-moz-range-thumb {
 .hold:active,
 .clear:active {
   background-color: $btnpress;
-}
-.radioContainer {
-  display: block;
-  width: calc(100% - 2px);
-  height: calc(100% - 2px);
-  text-align: center;
-  cursor: pointer;
-}
-.radioContainer:hover {
-  background-color: #333;
-}
-.radioContainer:active {
-  background-color: #ddd;
-}
-.radioContainer > input {
-  visibility: hidden;
-  position: absolute;
-}
-.radioContainer > input + span {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-.radioContainer > input:checked + span {
-  background-color: $accent-color;
 }
 
 .osc {

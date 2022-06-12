@@ -1,12 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PianoKey from './pianoKey';
 import { useDispatch, useSelector } from 'react-redux';
-import { usePrevious } from '../../scripts/hooks';
-import { setMouseFlag, addToCurrentlyPlaying, removeFromCurrentlyPlaying } from './keyboardSlice';
-
-import { keyMap } from '../../scripts/inputMaps.js';
-import { triggerNote, triggerRelease } from '../../scripts/synthAPI';
-
+import { setMouseFlag } from './keyboardSlice';
 
 /**
  * Component containing the visual keyboard; the "money maker", as it were.
@@ -15,31 +10,9 @@ import { triggerNote, triggerRelease } from '../../scripts/synthAPI';
 export function Keyboard() {
   const dispatch = useDispatch();
   const octaveShift = useSelector(state => state.keyboard.octaveShift);
-  const currentlyPlaying = useSelector(state => state.keyboard.currentlyPlaying);
-  const isMouseActive = useSelector(state => state.keyboard.isMouseActive);
 
-  const prevPlaying = usePrevious(currentlyPlaying);
 
   //Handles 'musical' key presses & releases. 
-
-
-
-  //Use effect for triggering notes on note updates
-  useEffect(() => {
-    for (let noteVelocityPair of currentlyPlaying) {
-      const { note, velocity } = noteVelocityPair;
-      const noteWasAdded = !prevPlaying || !prevPlaying.find(pair => pair.note === note);
-      if (noteWasAdded) triggerNote(note, velocity);
-    }
-    if (prevPlaying) {
-      for (let noteVelocityPair of prevPlaying) {
-        const { note, velocity } = noteVelocityPair;
-        const noteWasRemoved = !currentlyPlaying.find(pair => pair.note === noteVelocityPair.note);
-        if (noteWasRemoved) triggerRelease(note);
-      }
-    }
-  }, [currentlyPlaying]);
-
   const renderPianoKey = (note, octave, triggerKey, hiddenOnMobile) => {
     return (
       <PianoKey

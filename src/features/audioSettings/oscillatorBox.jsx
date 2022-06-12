@@ -1,20 +1,27 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { oscillator } from '../../scripts/settingsDefinitions.js';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { usePrevious } from '../../scripts/hooks.js';
+import { setSynthSetting } from './audioSettingsSlice';
 
 function OscillatorBox(props) {
-    let type = oscillator.type;
-    let settings = props.settings.synthSettings;
-    let definition = oscillator.settings.waveshape;
-    let val = settings[definition.settingGrp][definition.settingName];
-    let onChange = props.onChange;
+    const dispatch = useDispatch();
+    const type = oscillator.type;
+    const settings = useSelector(state => state.audioSettings.synthSettings);
+
+
+    let parameter = oscillator.settings.waveshape;
+    let val = settings[parameter.settingGrp][parameter.settingName];
+    const prevVal = usePrevious(val);
 
     useEffect(() => {
-        onChange({ ...props.settings }, val, definition.valueScaler ? definition.valueScaler(val) : val, definition, type);
-    }, [val, definition, props.onChange, settings, onChange, props.settings, type]);
+        if (prevVal && val !== prevVal) {
+            dispatch(setSynthSetting(parameter, val));
+        }
+    }, [parameter, val]);
 
-    const renderOscillatorTypes = (subProp, settingName, optionArray) => {
+    const renderOscillatorTypes = (setting, name, optionArray) => {
         return (
             <div className="oscButtons">
                 {optionArray.map((option) => {
@@ -24,13 +31,11 @@ function OscillatorBox(props) {
                                 <input
                                     key={option}
                                     type="radio"
-                                    name={settingName}
-                                    section={subProp}
+                                    name={name}
+                                    section={setting}
                                     value={option}
-                                    checked={
-                                        props.settings.synthSettings[subProp][settingName] === option
-                                    }
-                                    onChange={(e) => { props.onChange({ ...props.settings }, e.target.value, e.target.value, oscillator.settings.waveshape, oscillator.type); }}
+                                    checked={settings[setting][name] === option}
+                                    onChange={(e) => { dispatch(setSynthSetting(parameter, e.target.value)); }}
                                 />
                                 <span>{option}</span>
                             </label>
@@ -53,10 +58,5 @@ function OscillatorBox(props) {
         </div>
     );
 }
-
-OscillatorBox.propTypes = {
-    settings: PropTypes.object.isRequired,
-    onChange: PropTypes.func.isRequired,
-};
 
 export default React.memo(OscillatorBox);

@@ -6,16 +6,25 @@ import Particles from 'react-tsparticles';
 import { loadFull } from 'tsparticles';
 import { particleOptions } from '../assets/particles';
 
-import MusicGui from './musicGui';
-import OscillatorSettings from '../features/synthSettings/oscillatorSettings';
-import FxSettings from '../features/synthSettings/fxSettings';
+import Keyboard from '../features/keyboard/keyboard';
+import Sequencer from '../features/sequencer/sequencer';
+import { Visualizer } from '../features/visualizer/visualizer';
+import OscillatorBox from '../features/audioSettings/oscillatorBox';
+import LpfEnvBox from '../features/audioSettings/lpfEnvBox';
+import AmpEnvBox from '../features/audioSettings/ampEnvBox';
+import TimeFxBox from '../features/audioSettings/timeFxBox';
+import VoiceFxBox from '../features/audioSettings/voiceFxBox';
+
+
 import NavBar from './nav';
-import { synth } from '../scripts/synthAPI.js';
+import { synth, triggerNote, triggerRelease } from '../scripts/synthAPI.js';
 
 import { keyMap, midiMap } from '../scripts/inputMaps.js';
 import * as midiFunctions from '../scripts/midiFunctions.js';
-import { handleChange, handleFxChange, getDefaults, loadSettings } from '../features/synthSettings/settingsAPI.js';
+import { getDefaults, initEffects, loadSettings } from '../features/audioSettings/settingsAPI.js';
 import { initTransport } from '../features/sequencer/sequencerAPI';
+import { usePrevious } from '../scripts/hooks.js';
+
 import { startedTone } from './appSlice';
 import { addToCurrentlyPlaying, removeFromCurrentlyPlaying, setMouseFlag } from '../features/keyboard/keyboardSlice';
 import { updateSequencerBeat } from '../features/sequencer/sequencerSlice';
@@ -27,6 +36,7 @@ function App() {
   const hasToneStarted = useSelector(state => state.app.hasToneStarted);
 
   const currentlyPlaying = useSelector(state => state.keyboard.currentlyPlaying);
+  const prevPlaying = usePrevious(currentlyPlaying);
   const currentlyPlayingRef = useRef([...currentlyPlaying]);
   currentlyPlayingRef.current = currentlyPlaying;
 
@@ -40,30 +50,6 @@ function App() {
 
   //Refs
   const isMounted = useRef(false);
-
-  //This function is a "wrapper" around the settings API.
-  //The callback function is expected to enact the change in Tone.js settings, while this function sets the corresponding React state. 
-  const updateSettingState = useCallback((prevState, value, internalValue, definition, type, cb) => {
-    let setting = definition.settingGrp;
-    let name = definition.settingName;
-    let newSettings = prevState;
-    let settingsObjectName = (type === 'synth') ? 'synthSettings' : 'fxSettings';
-    newSettings[settingsObjectName][setting][name] = value;
-    if (type === 'effect' && newSettings[settingsObjectName].flags[setting].off !== true) cb(internalValue, setting, name, type);
-    localStorage.setItem('settings', JSON.stringify(newSettings));
-    setSynthSettingsState(newSettings);
-  }, [settings]);
-
-  //Specific handlers based on setting being updated
-  const synthUpdater = useCallback((prevState, value, internalValue, definition, type) => {
-    updateSettingState(prevState, value, internalValue, definition, type, handleChange);
-  }, [updateSettingState]);
-
-  const fxUpdater = useCallback((prevState, value, internalValue, definition, type) => {
-    updateSettingState(prevState, value, internalValue, definition, type, handleFxChange);
-  }, [updateSettingState]);
-
-
 
   //MIDI message handler. 
   //Tracks all types of MIDI messages and triggers appropriate action. 
@@ -132,6 +118,8 @@ function App() {
       if (e.key === '.') {
         let cachedSettings = loadSettings();
         if (cachedSettings) {
+          console.log('viewing cache');
+          console.log(cachedSettings);
           synth.set({ ...cachedSettings.synthSettings });
           setSynthSettingsState({
             synthSettings: { ...settings.synthSettings, ...cachedSettings.synthSettings },
@@ -147,23 +135,47 @@ function App() {
     });
   }, [startTone, settings]);
 
+  //Use effect for triggering notes on note updates
+  useEffect(() => {
+    for (let noteVelocityPair of currentlyPlaying) {
+      const { note, velocity } = noteVelocityPair;
+      const noteWasAdded = !prevPlaying || !prevPlaying.find(pair => pair.note === note);
+      if (noteWasAdded) triggerNote(note, velocity);
+    }
+    if (prevPlaying) {
+      for (let noteVelocityPair of prevPlaying) {
+        const { note, velocity } = noteVelocityPair;
+        const noteWasRemoved = !currentlyPlaying.find(pair => pair.note === noteVelocityPair.note);
+        if (noteWasRemoved) triggerRelease(note);
+      }
+    }
+  }, [currentlyPlaying]);
+
+
 
   //rendering methods
   const renderBody = () => {
     if (activeView === 'keyboard') {
       return (
-        <MusicGui />
+        <div className='musicGui'>
+          <div className="keyboardWrapper">
+            <div className='visualizerContainer'>
+              <Visualizer />
+            </div>
+            <Keyboard />
+          </div>
+          <Sequencer />
+        </div>
       );
     }
     else if (activeView === 'oscillator') {
       return (
         <div className='oscSettings'>
-          <OscillatorSettings
-            settings={settings}
-            handleChange={synthUpdater} />
-          <FxSettings
-            settings={settings}
-            handleFxChange={fxUpdater} />
+          {<OscillatorBox />}
+          <LpfEnvBox />
+          <AmpEnvBox />
+          <VoiceFxBox />
+          <TimeFxBox />
         </div>
       );
     }
