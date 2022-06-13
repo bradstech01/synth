@@ -171,13 +171,11 @@ input[type="range"]::-moz-range-thumb {
 
 nav {
   position: fixed;
-  top: 0;
   height: 10%;
   width: 100%;
+  z-index: 999;
 
   ul {
-    z-index: 999;
-    top: 0;
     height: 100%;
     width: 100%;
     display: flex;
@@ -421,13 +419,52 @@ nav {
 .oscSettings {
   .oscillatorSelection {
     width: 80%;
-
     height: 25%;
 
-    .oscButtons {
+    ul {
       display: flex;
       flex-flow: column nowrap;
       align-items: center;
+    }
+
+    .radioContainer {
+      display: block;
+      width: calc(100% - 2px);
+      height: calc(100% - 2px);
+      text-align: center;
+      cursor: pointer;
+
+      h1 {
+        margin-block-start: 0px;
+        margin-block-end: 0px;
+      }
+
+      @media screen and (min-width: $small) {
+        font-size: 1rem;
+      }
+
+      @media screen and (max-width: $small) {
+        font-size: 1rem;
+      }
+
+      input {
+        visibility: hidden;
+        position: absolute;
+      }
+      input + span {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      input:checked + span {
+        background-color: $accent-color;
+      }
+    }
+    .radioContainer:hover {
+      background-color: #333;
+    }
+    .radioContainer:active {
+      background-color: #ddd;
     }
 
     .osc {
@@ -541,101 +578,93 @@ nav {
   background-color: #ddd;
 }
 .stepsContainer {
-  width: 90%;
-  padding: 5%;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-evenly;
   filter: drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 0.75));
 }
 .activeStep {
   background-color: #666;
 }
 .steps {
-  width: 100%;
+  width: 90%;
+  padding: 5%;
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
 }
 .seqControls {
-  width: 90%;
+  width: calc(90% - 1px);
   padding: 5%;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-evenly;
-}
-.seqStart {
-  width: 0px;
-  height: 0px;
-  margin-top: 1.5rem;
-  border-width: 1.5rem 0rem 1.5rem 3rem;
-
-  border-style: solid;
-  border-color: transparent transparent transparent $btncolor;
+  align-items: center;
+  border-left: 1px solid $btncolor;
+  border-bottom: 1px solid $btncolor;
   border-radius: 3px;
-  filter: drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 1));
-}
-.seqStart:hover {
-  border-color: transparent transparent transparent $btnhover;
-}
-.seqStart:active {
-  border-color: transparent transparent transparent $btnpress;
-}
-.seqRecord {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 3rem;
-  margin: 1.5rem;
+  background-color: rgba(0, 0, 0, 0.2);
 
-  font-size: 0;
-  background-color: maroon;
-  border: 0;
+  .seqStart {
+    width: 0px;
+    height: 0px;
+    border-width: 1.5rem 0rem 1.5rem 3rem;
 
-  outline: none;
-  filter: drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 1));
+    border-style: solid;
+    border-color: transparent transparent transparent $btncolor;
+    border-radius: 3px;
+    filter: drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 1));
+  }
+  .seqStart:hover {
+    border-color: transparent transparent transparent $btnhover;
+  }
+  .seqStart:active {
+    border-color: transparent transparent transparent $btnpress;
+  }
+  .seqRecord {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 3rem;
+    margin: 1.5rem;
+
+    font-size: 0;
+    background-color: maroon;
+    border: 0;
+
+    outline: none;
+    filter: drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 1));
+  }
+  .seqRecord:hover {
+    opacity: 0.75;
+  }
+  .seqRecord:active {
+    opacity: 0.6;
+  }
+  .bpm {
+    width: 20%;
+    height: 50%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    filter: drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 1));
+    font-size: 1.5rem;
+    border: 1px solid white;
+    background-color: $btncolor;
+    color: $secondary-font-color;
+
+    span {
+      position: relative;
+      width: 100%;
+      display: block;
+      text-align: center;
+    }
+  }
 }
-.seqRecord:hover {
-  opacity: 0.75;
-}
-.seqRecord:active {
-  opacity: 0.6;
-}
-.bpmBox {
-  width: 20%;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-evenly;
-  filter: drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 1));
-}
-.bpmBox > * {
-  margin: 5px;
-}
-.bpmDisplayBox {
-  height: 70%;
-  width: 100%;
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: space-evenly;
-}
-.bpmDisplay {
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: space-evenly;
-  width: 100%;
-  height: 80%;
-  border: 1px solid white;
-  border-radius: 2px;
-  font-size: 1rem;
-  text-align: center;
-  background-color: $btncolor;
-  color: $secondary-font-color;
-}
+
 .bpmButtons {
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-evenly;
-  height: 100%;
-  width: 50%;
+  height: 80%;
+  width: 10%;
 }
 .bpmUp {
   width: 0px;

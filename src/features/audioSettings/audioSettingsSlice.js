@@ -16,9 +16,6 @@ const audioSettingsSlice = createSlice({
         },
         setSynthSetting: {
             prepare(parameter, val) {
-                console.log('preparing');
-                console.log(parameter);
-                console.log(val);
                 const setting = parameter.settingGrp;
                 const name = parameter.settingName;
                 const internalValue = parameter.valueScaler ? parameter.valueScaler(val) : val;
@@ -45,9 +42,6 @@ const audioSettingsSlice = createSlice({
         },
         setFxSetting: {
             prepare(parameter, val) {
-                console.log('preparing2');
-                console.log(parameter);
-                console.log(val);
                 const setting = parameter.settingGrp;
                 const name = parameter.settingName;
                 const internalValue = parameter.valueScaler ? parameter.valueScaler(val) : val;

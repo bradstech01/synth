@@ -1,7 +1,7 @@
 export const oscillator = {
     type: 'synth',
     settings: {
-        waveshape: {
+        type: {
             default: 'sawtooth',
             settingGrp: 'oscillator',
             settingName: 'type',

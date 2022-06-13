@@ -10,7 +10,7 @@ function SequencerStep(props) {
   const activeBeat = useSelector(state => state.sequencer.beat);
 
   return (
-    <div onMouseDown={() => { dispatch(updateSequencerBeat(((props.step.beat - 1) % steps.length))); }}
+    <div onMouseDown={() => { dispatch(updateSequencerBeat(((props.step.beat) % steps.length))); }}
       className={'step' + (props.step.beat % steps.length === (activeBeat) % steps.length ? ' activeStep' : '')}>
       <div className='stepNoteDisplay'>
         {props.step.note}

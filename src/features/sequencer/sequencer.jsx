@@ -68,14 +68,13 @@ function Sequencer(props) {
 
   const addRest = (e) => {
     if (isRecording) {
-      steps[beat].note = 'rest';
+      dispatch(updateSingleStep({ beat: beat, note: 'rest' }));
       dispatch(updateSequencerBeat((beat + 1) % numSteps));
     }
   };
 
   const clearEntry = (e) => {
     if (isRecording) {
-      steps[beat].note = '';
       dispatch(updateSingleStep({ beat: beat, note: '' }));
       dispatch(updateSequencerBeat((beat + 1) % numSteps));
     }
@@ -115,38 +114,28 @@ function Sequencer(props) {
 
   const renderControls = () => {
     return (
-      <div className='centerX'>
-        <div className="seqControls">
-          <div
-            className="seqStart"
-            role="button"
-            onMouseDown={handleSeqStart}
-          ></div>
-          <div
-            className="seqRecord"
-            role="button"
-            onMouseDown={handleSeqRecord}
-          ></div>
-          <div className="bpmBox">
-            <div className='centerY'>
-              <div className="bpmDisplayBox">
-                <div className="bpmDisplay">
-                  <span>{bpm}</span>
-                </div>
-              </div>
-            </div>
-            <div className="bpmButtons">
-              <div className="bpmUp" onMouseDown={raiseBpm} />
-              <div className="bpmDown" onMouseDown={lowerBpm} />
-            </div>
+      <div className="seqControls">
+        <div
+          className="seqStart"
+          role="button"
+          onMouseDown={handleSeqStart} />
+        <div
+          className="seqRecord"
+          role="button"
+          onMouseDown={handleSeqRecord} />
+        <div className="bpm">
+          <span>{bpm}</span>
+        </div>
+        <div className="bpmButtons">
+          <div className="bpmUp" onMouseDown={raiseBpm} />
+          <div className="bpmDown" onMouseDown={lowerBpm} />
+        </div>
+        <div className="seqCommands centerY">
+          <div className="rest" onMouseDown={addRest}>
+            <span>REST</span>
           </div>
-          <div className="seqCommands centerY">
-            <div className="rest" onMouseDown={addRest}>
-              <span>REST</span>
-            </div>
-            <div className="clear" onMouseDown={clearEntry}>
-              <span>CLEAR</span>
-            </div>
+          <div className="clear" onMouseDown={clearEntry}>
+            <span>CLEAR</span>
           </div>
         </div>
       </div>
@@ -155,21 +144,8 @@ function Sequencer(props) {
 
   const renderSequence = (steps) => {
     return (
-      <div className='centerX'>
-        <div className="stepsContainer">
-          <div className="steps">
-            {steps.map((step) => {
-              return (
-                <SequencerStep
-                  key={step.beat}
-                  step={step}
-                  steps={steps}
-                  beat={beat}
-                />
-              );
-            })}
-          </div>
-        </div>
+      <div className="steps">
+        {steps.map((step) => <SequencerStep step={step} />)}
       </div>
     );
   };

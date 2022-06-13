@@ -7,12 +7,10 @@ import { setSynthSetting } from './audioSettingsSlice';
 
 function OscillatorBox(props) {
     const dispatch = useDispatch();
-    const type = oscillator.type;
     const settings = useSelector(state => state.audioSettings.synthSettings);
 
-
-    let parameter = oscillator.settings.waveshape;
-    let val = settings[parameter.settingGrp][parameter.settingName];
+    const parameter = oscillator.settings.type;
+    const val = settings[parameter.settingGrp][parameter.settingName];
     const prevVal = usePrevious(val);
 
     useEffect(() => {
@@ -21,35 +19,35 @@ function OscillatorBox(props) {
         }
     }, [parameter, val]);
 
-    const renderOscillatorTypes = (setting, name, optionArray) => {
+    const renderOscillatorTypes = (optionArray) => {
         return (
-            <div className="oscButtons">
+            <ul className="oscButtons">
                 {optionArray.map((option) => {
                     return (
-                        <div key={option} className={'osc ' + option}>
+                        <li key={option} className={'osc ' + option}>
                             <label className='radioContainer'>
                                 <input
                                     key={option}
                                     type="radio"
-                                    name={name}
-                                    section={setting}
+                                    name={parameter.settingName}
+                                    section={parameter.settingGrp}
                                     value={option}
-                                    checked={settings[setting][name] === option}
+                                    checked={val === option}
                                     onChange={(e) => { dispatch(setSynthSetting(parameter, e.target.value)); }}
                                 />
                                 <span>{option}</span>
                             </label>
-                        </div>
+                        </li>
                     );
                 })}
-            </div>
+            </ul>
         );
     };
 
     return (
         <div className="oscillatorSelection">
             <h1>oscillator</h1>
-            {renderOscillatorTypes('oscillator', 'type', [
+            {renderOscillatorTypes([
                 'sine',
                 'sawtooth',
                 'square',
