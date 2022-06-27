@@ -19,7 +19,7 @@ const sequencerSlice = createSlice({
             state.steps = action.payload;
         },
         updateSingleStep(state, action) {
-            const { beat, note } = action.payload;
+            const { beat } = action.payload;
             setSingleStepInternal(action.payload);
             state.steps[beat] = action.payload;
         },

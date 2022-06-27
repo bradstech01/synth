@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import Setting from './setting';
 
 import { delay, reverb, chorus, tremolo } from '../../scripts/settingsDefinitions.js';
@@ -7,7 +6,7 @@ import { delay, reverb, chorus, tremolo } from '../../scripts/settingsDefinition
 //lpf = low pass filter
 //box that contains settings for low pass filter & ADSR envelope
 
-function TimeFxBox(props) {
+function TimeFxBox() {
     return (
         <>
             <div className="delay">

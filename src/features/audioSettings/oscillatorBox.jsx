@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
-import PropTypes from "prop-types";
 import { oscillator } from '../../scripts/settingsDefinitions.js';
 import { useSelector, useDispatch } from 'react-redux';
 import { usePrevious } from '../../scripts/hooks.js';
 import { setSynthSetting } from './audioSettingsSlice';
 
-function OscillatorBox(props) {
+function OscillatorBox() {
     const dispatch = useDispatch();
     const settings = useSelector(state => state.audioSettings.synthSettings);
 

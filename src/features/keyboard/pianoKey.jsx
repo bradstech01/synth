@@ -1,6 +1,4 @@
-import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { addToCurrentlyPlaying, removeFromCurrentlyPlaying } from './keyboardSlice';
 

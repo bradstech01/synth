@@ -25,8 +25,6 @@ export function handleChange(value, section, name) {
 export function handleFxChange(value, setting, name) {
     let fxOptions = {};
     fxOptions[name] = value;
-    console.log('setting fx');
-    console.log(fx);
     fx[setting].set(fxOptions);
 };
 

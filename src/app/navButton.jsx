@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-function ViewButton(props) {
+function NavButton(props) {
     return (
         <li>
             <label className='radioContainer'>
@@ -11,15 +11,13 @@ function ViewButton(props) {
                     checked={props.activeView === props.view[0]}
                     onChange={(e) => { props.onChange(e.target.value); }}
                 />
-                <h1 className='centerY fitContainer'>
-                    {window.Width < 451 ? <>{props.view[1]}</> : <>{props.view[0]}</>}
-                </h1>
+                <div className={props.view[0] + ' centerY fitContainer'}></div>
             </label>
         </li>
     );
 }
-ViewButton.propTypes = {
+NavButton.propTypes = {
     view: PropTypes.array.isRequired,
 };
 
-export default React.memo(ViewButton);
+export default React.memo(NavButton);

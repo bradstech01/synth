@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import ViewButton from './navButton';
+import NavButton from './navButton';
 
 //navigation bar that holds buttons to change between views in the app
 
@@ -10,7 +10,7 @@ function NavBar(props) {
             <>
                 {viewArray.map((view) => {
                     return (
-                        <ViewButton
+                        <NavButton
                             key={view}
                             view={view}
                             onChange={props.onChange}
@@ -24,7 +24,7 @@ function NavBar(props) {
     return (
         <nav >
             <ul className="navBar">
-                {renderViews([['keyboard', 'keys'], ['oscillator', 'osc'], ['system', 'sys']])}
+                {renderViews([['keyboard', '../assets/img/keys.png'], ['oscillator', '../assets/img/sine.svg'], ['system', '../assets/img/gear.svg']])}
             </ul>
         </nav>
     );

@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import Setting from './setting';
 
 import { stereoWidener, eq, distortion } from '../../scripts/settingsDefinitions.js';
@@ -7,7 +6,7 @@ import { stereoWidener, eq, distortion } from '../../scripts/settingsDefinitions
 //lpf = low pass filter
 //box that contains settings for low pass filter & ADSR envelope
 
-function VoiceFxBox(props) {
+function VoiceFxBox() {
     return (
         <>
             <div className="stereo">

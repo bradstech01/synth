@@ -4,6 +4,7 @@ import sequencerReducer from "../features/sequencer/sequencerSlice";
 import audioSettingsReducer from "../features/audioSettings/audioSettingsSlice";
 import keyboardReducer from '../features/keyboard/keyboardSlice';
 import visualizerReducer from '../features/visualizer/visualizerSlice';
+import systemSettingsReducer from '../features/systemSettings/systemSettingsSlice';
 
 export default configureStore({
     reducer: {
@@ -11,6 +12,7 @@ export default configureStore({
         sequencer: sequencerReducer,
         audioSettings: audioSettingsReducer,
         keyboard: keyboardReducer,
-        visualizer: visualizerReducer
+        visualizer: visualizerReducer,
+        systemSettings: systemSettingsReducer,
     }
 });

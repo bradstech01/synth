@@ -1,5 +1,4 @@
 import { useRef, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { usePrevious } from '../../scripts/hooks';
 
@@ -9,10 +8,9 @@ import { updateRecFlag, updateSequencerSteps, updateSequencerBeat, updateStartFl
 import * as Tone from 'tone';
 import SequencerStep from './sequencerStep.jsx';
 import { synth } from '../../scripts/synthAPI.js';
-import { setBeatInternal, startSequence, stopSequence } from './sequencerAPI.js';
+import { startSequence, stopSequence } from './sequencerAPI.js';
 
-function Sequencer(props) {
-  //reference to state setter from top-level
+function Sequencer() {
   const steps = useSelector(state => state.sequencer.steps);
   const beat = useSelector(state => state.sequencer.beat);
   const isRecording = useSelector(state => state.sequencer.isRecording);
@@ -23,6 +21,8 @@ function Sequencer(props) {
 
   const dispatch = useDispatch();
   const bpm = useSelector(state => state.app.bpm);
+  const curBpm = useRef(bpm);
+  curBpm.current = bpm;
 
   const isMounted = useRef(false);
   const currentStepNotes = useRef([]);
@@ -63,8 +63,62 @@ function Sequencer(props) {
     currentStepNotes.current = [];
   };
 
-  const raiseBpm = () => dispatch(setBpm(bpm + 1));
-  const lowerBpm = () => dispatch(setBpm(bpm - 1));
+
+  let intervalId = useRef(undefined);
+
+  const bpmUpHandler = e => {
+    if (e.type === 'mousedown') {
+      if (!intervalId.current) {
+        dispatch(setBpm(curBpm.current + 1));
+
+        let count = 0;
+
+        intervalId.current = setInterval(() => {
+          dispatch(setBpm(curBpm.current + 1));
+          count += 1;
+          if (count > 4) {
+            clearInterval(intervalId.current);
+            intervalId.current = null;
+            intervalId.current = setInterval(() => {
+              dispatch(setBpm(curBpm.current + 1));
+            }, 20);
+          }
+        }, 100);
+
+      }
+    }
+    else {
+      clearInterval(intervalId.current);
+      intervalId.current = null;
+    }
+  };
+
+  const bpmDownHandler = e => {
+    if (e.type === 'mousedown') {
+      if (!intervalId.current) {
+        dispatch(setBpm(curBpm.current - 1));
+
+        let count = 0;
+
+        intervalId.current = setInterval(() => {
+          dispatch(setBpm(curBpm.current - 1));
+          count += 1;
+          if (count > 4) {
+            clearInterval(intervalId.current);
+            intervalId.current = null;
+            intervalId.current = setInterval(() => {
+              dispatch(setBpm(curBpm.current - 1));
+            }, 20);
+          }
+        }, 100);
+
+      }
+    }
+    else {
+      clearInterval(intervalId.current);
+      intervalId.current = null;
+    }
+  };
 
   const addRest = (e) => {
     if (isRecording) {
@@ -110,7 +164,7 @@ function Sequencer(props) {
 
       }
     }
-  }, [currentlyPlaying, prevPlaying, isRecording, numSteps, props, steps]);
+  }, [currentlyPlaying, prevPlaying, isRecording, numSteps, steps]);
 
   const renderControls = () => {
     return (
@@ -127,8 +181,8 @@ function Sequencer(props) {
           <span>{bpm}</span>
         </div>
         <div className="bpmButtons">
-          <div className="bpmUp" onMouseDown={raiseBpm} />
-          <div className="bpmDown" onMouseDown={lowerBpm} />
+          <div className="bpmUp" onMouseDown={bpmUpHandler} onMouseUp={bpmUpHandler} onMouseOut={bpmUpHandler} />
+          <div className="bpmDown" onMouseDown={bpmDownHandler} onMouseUp={bpmDownHandler} onMouseOut={bpmDownHandler} />
         </div>
         <div className="seqCommands centerY">
           <div className="rest" onMouseDown={addRest}>
@@ -145,7 +199,7 @@ function Sequencer(props) {
   const renderSequence = (steps) => {
     return (
       <div className="steps">
-        {steps.map((step) => <SequencerStep step={step} />)}
+        {steps.map((step) => <SequencerStep key={step.beat} step={step} />)}
       </div>
     );
   };

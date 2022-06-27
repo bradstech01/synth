@@ -1,6 +1,5 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getDefaults, getFxDefaults, getSynthDefaults, handleFxChange, handleChange } from './settingsAPI';
-import * as definitions from '../../scripts/settingsDefinitions.js';
+import { createSlice } from "@reduxjs/toolkit";
+import { getFxDefaults, getSynthDefaults, handleFxChange, handleChange } from './settingsAPI';
 
 const initialState = {
     synthSettings: getSynthDefaults(),

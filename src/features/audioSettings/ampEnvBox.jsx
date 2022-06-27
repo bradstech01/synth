@@ -1,12 +1,11 @@
 import React from "react";
-import PropTypes from "prop-types";
 import Setting from './setting';
 import { envelope } from '../../scripts/settingsDefinitions.js';
 
 //lpf = low pass filter
 //box that contains settings for low pass filter & ADSR envelope
 
-function AmpEnvBox(props) {
+function AmpEnvBox() {
     return (
         <div className="ampEnv">
             <h2>amp env</h2>

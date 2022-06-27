@@ -1,6 +1,6 @@
 import '../css/index.scss';
 import * as Tone from 'tone';
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import Particles from 'react-tsparticles';
 import { loadFull } from 'tsparticles';
@@ -21,19 +21,21 @@ import { synth, triggerNote, triggerRelease } from '../scripts/synthAPI.js';
 
 import { keyMap, midiMap } from '../scripts/inputMaps.js';
 import * as midiFunctions from '../scripts/midiFunctions.js';
-import { getDefaults, initEffects, loadSettings } from '../features/audioSettings/settingsAPI.js';
+import { getDefaults, loadSettings } from '../features/audioSettings/settingsAPI.js';
 import { initTransport } from '../features/sequencer/sequencerAPI';
 import { usePrevious } from '../scripts/hooks.js';
 
 import { startedTone } from './appSlice';
 import { addToCurrentlyPlaying, removeFromCurrentlyPlaying, setMouseFlag } from '../features/keyboard/keyboardSlice';
 import { updateSequencerBeat } from '../features/sequencer/sequencerSlice';
+import GuiSettings from '../features/systemSettings/guiSettings';
 
 
 function App() {
   const dispatch = useDispatch();
 
   const hasToneStarted = useSelector(state => state.app.hasToneStarted);
+  const particlesOn = useSelector(state => state.systemSettings.particlesOn);
 
   const currentlyPlaying = useSelector(state => state.keyboard.currentlyPlaying);
   const prevPlaying = usePrevious(currentlyPlaying);
@@ -85,7 +87,7 @@ function App() {
 
   //Tone engine starter. 
   //WebAudio API doesn't work if there isn't a triggering user input, so on the first user action this makes sure that 
-  const startTone = async (e) => {
+  const startTone = async () => {
     const handleKeyPress = e => { if (keyMap(e.key.toLowerCase()) && !currentlyPlayingRef.current.find(pair => pair.note === keyMap(e.key.toLowerCase()))) dispatch(addToCurrentlyPlaying({ note: keyMap(e.key.toLowerCase()), velocity: .5, source: 'keyboard' })); };
     const handleKeyRelease = e => { if (keyMap(e.key.toLowerCase()) && !currentlyPlaying.find(pair => pair.note === keyMap(e.key.toLowerCase()))) dispatch(removeFromCurrentlyPlaying({ note: keyMap(e.key.toLowerCase()), source: 'keyboard' })); };
 
@@ -121,11 +123,12 @@ function App() {
           console.log('viewing cache');
           console.log(cachedSettings);
           synth.set({ ...cachedSettings.synthSettings });
-          setSynthSettingsState({
+          /*setSynthSettingsState({
             synthSettings: { ...settings.synthSettings, ...cachedSettings.synthSettings },
             fxSettings: { ...settings.fxSettings, ...cachedSettings.fxSettings }
-          });
+          });*/
         }
+        else console.log('No cache found');
       }
       else if (e.key === '=') {
         localStorage.clear();
@@ -182,6 +185,7 @@ function App() {
     else if (activeView === 'system') {
       return (
         <div className='systemSettings'>
+          <GuiSettings />
         </div>
       );
     }
@@ -209,7 +213,7 @@ function App() {
 
   return (
     <>
-      {particlesMemo.current}
+      {particlesOn ? particlesMemo.current : undefined}
       {hasToneStarted ? renderApp() : renderSplash()};
     </>
   );

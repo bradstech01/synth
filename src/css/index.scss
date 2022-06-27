@@ -145,6 +145,21 @@ input[type="range"]::-moz-range-thumb {
   width: 100%;
 }
 
+.oscillator {
+  background-image: url("../assets/img/sine.svg");
+  background-size: 100% 100%;
+}
+
+.keyboard {
+  background-image: url("../assets/img/keys.svg");
+  background-size: 100% 100%;
+}
+
+.system {
+  background-image: url("../assets/img/gear.svg");
+  background-size: 100% 100%;
+}
+
 .splash {
   height: 100vh;
   width: 100vw;
@@ -319,12 +334,6 @@ nav {
     height: 100%;
   }
 }
-.oscSettings {
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: center;
-  width: 100%;
-}
 
 .settingContainer {
   width: 100%;
@@ -416,7 +425,25 @@ nav {
   justify-content: space-evenly;
 }
 
+.systemSettings {
+  width: 100%;
+  .guiSettings {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    width: 100%;
+    input {
+      width: 100px;
+      height: 100px;
+    }
+  }
+}
+
 .oscSettings {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  width: 100%;
   .oscillatorSelection {
     width: 80%;
     height: 25%;
@@ -528,7 +555,8 @@ nav {
   .delay,
   .reverb,
   .chorus,
-  .tremolo {
+  .tremolo,
+  .guiSettings {
     @media screen and (min-width: $small) {
       width: 80%;
     }
