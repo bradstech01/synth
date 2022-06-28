@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { triggerNote, triggerRelease } from '../../scripts/synthAPI';
 
 const initialState = {
     currentlyPlaying: [],
@@ -13,14 +14,20 @@ const keyboardSlice = createSlice({
         addToCurrentlyPlaying(state, action) {
             const { note, velocity, source } = action.payload;
             const noteInList = state.currentlyPlaying.find(noteVelocityPair => noteVelocityPair.note === note);
-            if (!noteInList) state.currentlyPlaying.push({ note: note, velocity: velocity });
-            if (source === 'keyboard') state.isAnyMusicKeyDown = true;
+            if (!noteInList) {
+                state.currentlyPlaying.push({ note: note, velocity: velocity });
+                triggerNote(note, velocity);
+                if (source === 'keyboard') state.isAnyMusicKeyDown = true;
+            }
         },
         removeFromCurrentlyPlaying(state, action) {
             const { note, source } = action.payload;
             const noteInList = state.currentlyPlaying.find(noteVelocityPair => noteVelocityPair.note === note);
-            if (noteInList) state.currentlyPlaying = state.currentlyPlaying.filter((noteVelocityPair) => noteVelocityPair.note !== note);
-            if (source === 'keyboard' && state.currentlyPlaying.length === 0) state.isAnyMusicKeyDown = false;
+            if (noteInList) {
+                state.currentlyPlaying = state.currentlyPlaying.filter((noteVelocityPair) => noteVelocityPair.note !== note);
+                triggerRelease(note);
+                if (source === 'keyboard' && state.currentlyPlaying.length === 0) state.isAnyMusicKeyDown = false;
+            }
         },
         setMouseFlag(state, action) {
             if (!state.isAnyMusicKeyDown && action.payload === 'down') state.isMouseActive = true;

@@ -1,10 +1,5 @@
 import * as Tone from 'tone';
 
-async function startTone() {
-    await Tone.start();
-};
-
-startTone();
 export const audioCtx = Tone.getContext();
 export const synth = new Tone.PolySynth(Tone.MonoSynth).toDestination();
 

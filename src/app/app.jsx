@@ -38,7 +38,6 @@ function App() {
   const particlesOn = useSelector(state => state.systemSettings.particlesOn);
 
   const currentlyPlaying = useSelector(state => state.keyboard.currentlyPlaying);
-  const prevPlaying = usePrevious(currentlyPlaying);
   const currentlyPlayingRef = useRef([...currentlyPlaying]);
   currentlyPlayingRef.current = currentlyPlaying;
 
@@ -137,24 +136,6 @@ function App() {
       }
     });
   }, [startTone, settings]);
-
-  //Use effect for triggering notes on note updates
-  useEffect(() => {
-    for (let noteVelocityPair of currentlyPlaying) {
-      const { note, velocity } = noteVelocityPair;
-      const noteWasAdded = !prevPlaying || !prevPlaying.find(pair => pair.note === note);
-      if (noteWasAdded) triggerNote(note, velocity);
-    }
-    if (prevPlaying) {
-      for (let noteVelocityPair of prevPlaying) {
-        const { note, velocity } = noteVelocityPair;
-        const noteWasRemoved = !currentlyPlaying.find(pair => pair.note === noteVelocityPair.note);
-        if (noteWasRemoved) triggerRelease(note);
-      }
-    }
-  }, [currentlyPlaying]);
-
-
 
   //rendering methods
   const renderBody = () => {
